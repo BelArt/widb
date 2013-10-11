@@ -36,5 +36,9 @@ protected/runtime/
 themes/classic/views/
 
 # NetBeans #
-nbproject
-/.project
+nbproject/
+
+# PhpStorm #
+.idea/
+
+.project
