@@ -20,4 +20,8 @@ class Controller extends CController
 	 * for more details on how to specify this property.
 	 */
 	public $breadcrumbs=array();
+    /**
+     * @var string название страницы. Будет доступно в лэйауте через $this->pageName
+     */
+    public $pageName = '';
 }

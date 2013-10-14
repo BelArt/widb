@@ -2,6 +2,13 @@
 
 class SiteController extends Controller
 {
+    /*public function filters()
+    {
+        return array(
+            array('ext.yiibooster.filters.BootstrapFilter + login')
+        );
+    }*/
+
 	/**
 	 * Declares class-based actions.
 	 */
@@ -21,16 +28,44 @@ class SiteController extends Controller
 		);
 	}
 
+    public function actionIndex()
+    {
+        $model=new LoginForm;
+
+        // collect user input data
+        if(isset($_POST['LoginForm']))
+        {
+            $model->attributes=$_POST['LoginForm'];
+            // validate user input and redirect to the previous page if valid
+            if($model->validate() && $model->login())
+                $this->redirect(Yii::app()->user->returnUrl);
+        }
+
+        // display the login form
+        $this->pageTitle = Yii::app()->name;
+        $this->pageName = 'Web Images Database';
+        $this->breadcrumbs = array();
+
+        $this->layout = 'empty';
+
+        $this->render('login',array(
+            'model' => $model,
+            'pageTitle' => 'xxx',
+            'pageName' => '',
+            'breadcrumbs' => ''
+        ));
+    }
+
 	/**
 	 * This is the default 'index' action that is invoked
 	 * when an action is not explicitly requested by users.
 	 */
-	public function actionIndex()
+	/*public function actionIndex()
 	{
 		// renders the view file 'protected/views/site/index.php'
 		// using the default layout 'protected/views/layouts/main.php'
-		$this->renderPartial('index');
-	}
+		$this->render('index');
+	}*/
 
 	/**
 	 * This is the action to handle external exceptions.
@@ -75,7 +110,7 @@ class SiteController extends Controller
 	/**
 	 * Displays the login page
 	 */
-	public function actionLogin()
+	/*public function actionLogin()
 	{
 		$model=new LoginForm;
 
@@ -96,7 +131,7 @@ class SiteController extends Controller
 		}
 		// display the login form
 		$this->render('login',array('model'=>$model));
-	}
+	}*/
 
 	/**
 	 * Logs out the current user and redirect to homepage.

@@ -7,13 +7,13 @@
 // CWebApplication properties can be configured here.
 return array(
 	'basePath'=>dirname(__FILE__).DIRECTORY_SEPARATOR.'..',
-	'name'=>'Web Images Database',
+	'name'=>'WIDB',
     'language'=>'ru',
 
 	// preloading 'log' component
 	'preload'=>array(
         'log',
-        //'bootstrap'
+        'bootstrap'
     ),
 
 	// autoloading model and component classes
@@ -73,6 +73,12 @@ return array(
 				*/
 			),
 		),
+        'clientScript'=>array(
+            'packages' => require_once('packages.php')
+        ),
+        'assetManager' => array(
+            'forceCopy' => YII_DEBUG,
+        ),
 	),
 
 	// application-level parameters that can be accessed

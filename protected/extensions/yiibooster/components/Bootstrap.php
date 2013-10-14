@@ -437,6 +437,7 @@ class Bootstrap extends CApplicationComponent
 		return array('bootstrap.css' => array(
 			'baseUrl' => $baseUrl,
 			'css' => array($filename),
+            'depends' => array('defaultLayout')
 		));
 	}
 
