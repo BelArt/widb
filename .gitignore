@@ -31,14 +31,14 @@ ehthumbs.db
 Thumbs.db
 
 # Yii #
-assets/
-protected/runtime/
-themes/classic/views/
-protected/config/main.php
-protected/config/test.php
-protected/config/console.php
-index.php
-index-test.php
+/assets/
+/protected/runtime/
+/themes/classic/views/
+/protected/config/main.php
+/protected/config/test.php
+/protected/config/console.php
+/index.php
+/index-test.php
 
 # NetBeans #
 nbproject/
