@@ -16,12 +16,12 @@ $form = $this->beginWidget(
 );
 
 echo $form->textFieldRow($model, 'username', array(
-    'class' => 'span3',
-    'onkeypress' => 'hideErrors($(this))'
+    'class' => 'span3 _hideErrors',
+    //'onkeypress' => 'hideErrors($(this))'
 ));
 echo $form->passwordFieldRow($model, 'password', array(
-    'class' => 'span3',
-    'onkeypress' => 'hideErrors($(this))'
+    'class' => 'span3 _hideErrors',
+    //'onkeypress' => 'hideErrors($(this))'
 ));
 echo $form->checkboxRow($model, 'rememberMe');
 
