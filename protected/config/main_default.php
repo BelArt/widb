@@ -40,6 +40,11 @@ return array(
 			// enable cookie-based authentication
 			'allowAutoLogin'=>true,
 		),
+        'db'=>array(
+            'emulatePrepare' => true,
+            'charset' => 'utf8',
+            'tablePrefix'=>'tbl_',
+        ),
 		// uncomment the following to enable URLs in path-format
 		/*
 		'urlManager'=>array(
