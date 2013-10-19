@@ -12,6 +12,11 @@ return array(
 
 	// application components
 	'components'=>array(
+        'db'=>array(
+            'emulatePrepare' => true,
+            'charset' => 'utf8',
+            'tablePrefix'=>'tbl_',
+        ),
 		'log'=>array(
 			'class'=>'CLogRouter',
 			'routes'=>array(
