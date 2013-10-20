@@ -16,12 +16,12 @@
 
 <div class="container" id="page">
 
-	<div id="header">
+	<!--<div id="header">
 		<div id="logo"><?php echo CHtml::encode($this->pageName); ?></div>
-	</div><!-- header -->
+	</div>--><!-- header -->
 
 	<div id="mainmenu">
-		<?php $this->widget('zii.widgets.CMenu',array(
+		<?php /*$this->widget('zii.widgets.CMenu',array(
 			'items'=>array(
 				array('label'=>'Home', 'url'=>array('/site/index')),
 				array('label'=>'About', 'url'=>array('/site/page', 'view'=>'about')),
@@ -29,12 +29,21 @@
 				array('label'=>'Login', 'url'=>array('/site/login'), 'visible'=>Yii::app()->user->isGuest),
 				array('label'=>'Logout ('.Yii::app()->user->name.')', 'url'=>array('/site/logout'), 'visible'=>!Yii::app()->user->isGuest)
 			),
-		)); ?>
+		)); */?>
+        <?php
+
+        ?>
 	</div><!-- mainmenu -->
-	<?php if(isset($this->breadcrumbs)):?>
-		<?php $this->widget('zii.widgets.CBreadcrumbs', array(
-			'links' => $this->breadcrumbs,
-		)); ?><!-- breadcrumbs -->
+
+	<?php if(!empty($this->breadcrumbs)):?>
+        <?php
+            $this->widget(
+                'bootstrap.widgets.TbBreadcrumbs',
+                array(
+                    'links' => $this->breadcrumbs,
+                )
+            );
+        ?>
 	<?php endif?>
 
 	<?php echo $content; ?>

@@ -24,4 +24,27 @@ class Controller extends CController
      * @var string название страницы. Будет доступно в лэйауте через $this->pageName
      */
     public $pageName = '';
+
+    private $_pageTitle;
+
+    /**
+     * @return string the page title. Defaults to the controller name and the action name.
+     */
+    public function getPageTitle()
+    {
+        if($this->_pageTitle!==null)
+            return $this->_pageTitle;
+        else
+        {
+            return $this->_pageTitle = Yii::app()->name;
+        }
+    }
+
+    /**
+     * @param string $value the page title.
+     */
+    public function setPageTitle($value)
+    {
+        $this->_pageTitle = Yii::app()->name.' | '.$value;
+    }
 }

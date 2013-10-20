@@ -107,9 +107,8 @@ class SiteController extends Controller
         }
 
         // параметры страницы
-        $this->pageTitle = Yii::app()->name;
+        //$this->pageTitle = Yii::app()->name;
         $this->pageName = 'Web Images Database';
-        $this->breadcrumbs = array();
 
         // применение других лэйаутов
         switch ($mode) {
