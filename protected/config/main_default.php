@@ -45,17 +45,15 @@ return array(
             'charset' => 'utf8',
             'tablePrefix'=>'tbl_',
         ),
-		// uncomment the following to enable URLs in path-format
-		/*
-		'urlManager'=>array(
+		/*'urlManager'=>array(
 			'urlFormat'=>'path',
 			'rules'=>array(
 				'<controller:\w+>/<id:\d+>'=>'<controller>/view',
 				'<controller:\w+>/<action:\w+>/<id:\d+>'=>'<controller>/<action>',
 				'<controller:\w+>/<action:\w+>'=>'<controller>/<action>',
 			),
-		),
-		*/
+		),*/
+
         'bootstrap' => array(
             'class' => 'ext.yiibooster.components.Bootstrap',
         ),
