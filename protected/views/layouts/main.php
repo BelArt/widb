@@ -1,8 +1,5 @@
 <?php
 /* @var $this Controller */
-$pageTitle = !empty($this->pageTitle) ? $this->pageTitle : '';
-$pageName = !empty($this->pageName) ? $this->pageName : '';
-$breadcrumbs = !empty($this->breadcrumbs) ? $this->breadcrumbs : array();
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -12,7 +9,7 @@ $breadcrumbs = !empty($this->breadcrumbs) ? $this->breadcrumbs : array();
 
     <? Yii::app()->clientScript->registerPackage('defaultLayout'); ?>
 
-	<title><?php echo CHtml::encode($pageTitle); ?></title>
+	<title><?php echo CHtml::encode($this->pageTitle); ?></title>
 </head>
 
 <body>
@@ -20,7 +17,7 @@ $breadcrumbs = !empty($this->breadcrumbs) ? $this->breadcrumbs : array();
 <div class="container" id="page">
 
 	<div id="header">
-		<div id="logo"><?php echo CHtml::encode($pageName); ?></div>
+		<div id="logo"><?php echo CHtml::encode($this->pageName); ?></div>
 	</div><!-- header -->
 
 	<div id="mainmenu">
@@ -36,7 +33,7 @@ $breadcrumbs = !empty($this->breadcrumbs) ? $this->breadcrumbs : array();
 	</div><!-- mainmenu -->
 	<?php if(isset($this->breadcrumbs)):?>
 		<?php $this->widget('zii.widgets.CBreadcrumbs', array(
-			'links' => $breadcrumbs,
+			'links' => $this->breadcrumbs,
 		)); ?><!-- breadcrumbs -->
 	<?php endif?>
 

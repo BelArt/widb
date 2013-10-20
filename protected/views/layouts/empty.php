@@ -1,8 +1,5 @@
 <?php
 /* @var $this Controller */
-$pageTitle = !empty($this->pageTitle) ? $this->pageTitle : '';
-$pageName = !empty($this->pageName) ? $this->pageName : '';
-$breadcrumbs = !empty($this->breadcrumbs) ? $this->breadcrumbs : array();
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -13,7 +10,7 @@ $breadcrumbs = !empty($this->breadcrumbs) ? $this->breadcrumbs : array();
     <? Yii::app()->clientScript->registerPackage('defaultLayout'); ?>
     <? Yii::app()->clientScript->registerPackage('emptyLayout'); ?>
 
-	<title><?php echo CHtml::encode($pageTitle); ?></title>
+	<title><?php echo CHtml::encode($this->pageTitle); ?></title>
 </head>
 
 <body>
@@ -22,7 +19,7 @@ $breadcrumbs = !empty($this->breadcrumbs) ? $this->breadcrumbs : array();
         <tr>
             <td class='emptyLayoutContainer'>
 
-                <h1 class='title'><?php echo CHtml::encode($pageName); ?></h1>
+                <h1 class='title'><?php echo CHtml::encode($this->pageName); ?></h1>
                 <?php echo $content; ?>
 
             </td>
