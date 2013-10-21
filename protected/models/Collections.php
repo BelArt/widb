@@ -20,6 +20,10 @@
  */
 class Collections extends CActiveRecord
 {
+    protected $thumbnailBig;
+    protected $thumbnailMedium;
+    protected $thumbnailSmall;
+
 	/**
 	 * @return string the associated database table name
 	 */
@@ -126,4 +130,52 @@ class Collections extends CActiveRecord
 	{
 		return parent::model($className);
 	}
+
+    protected function afterFind()
+    {
+        parent::afterFind();
+
+        // формируем превью
+        $this->setThumbnails();
+    }
+
+    /**
+     * Формирует превью
+     */
+    protected function setThumbnails()
+    {
+        $this->thumbnailBig = ImageHelper::getBigThumbnailForCollection($this);
+        $this->thumbnailMedium = ImageHelper::getMediumThumbnailForCollection($this);
+        $this->thumbnailSmall = ImageHelper::getSmallThumbnailForCollection($this);
+    }
+
+    public function getThumbnailBig()
+    {
+        return $this->thumbnailBig;
+    }
+
+    public function setThumbnailBig($value)
+    {
+        $this->thumbnailBig = $value;
+    }
+
+    public function getThumbnailMedium()
+    {
+        return $this->thumbnailMedium;
+    }
+
+    public function setThumbnailMedium($value)
+    {
+        $this->thumbnailMedium = $value;
+    }
+
+    public function getThumbnailSmall()
+    {
+        return $this->thumbnailSmall;
+    }
+
+    public function setThumbnailSmall($value)
+    {
+        $this->thumbnailSmall = $value;
+    }
 }

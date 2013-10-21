@@ -1,10 +1,12 @@
 <?php
 /* @var $this CollectionsController */
 /* @var $data Collections */
+// xdebug_var_dump($data);exit;
 ?>
 
 <li class="span3">
     <a href="#" class="thumbnail">
-        <img src="<?= Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets')).'/img/photo-not-available.jpg' ?>" alt="" />
+        <img src="<?= CHtml::encode($data->thumbnailBig) ?>" alt="" />
     </a>
+    <p class='cls_collectionName'><a href="#"><?= CHtml::encode($data->name) ?></a></p>
 </li>
