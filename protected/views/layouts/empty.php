@@ -8,6 +8,7 @@
 	<meta name="language" content="ru" />
 
     <? Yii::app()->clientScript->registerPackage('defaultLayout'); ?>
+    <? Yii::app()->clientScript->registerPackage('boosterFix'); ?>
     <? Yii::app()->clientScript->registerPackage('emptyLayout'); ?>
 
 	<title><?php echo CHtml::encode($this->pageTitle); ?></title>

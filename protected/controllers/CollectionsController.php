@@ -123,7 +123,7 @@ class CollectionsController extends Controller
 	public function actionIndex()
 	{
 		$dataProvider=new CActiveDataProvider('Collections');
-        //xdebug_var_dump($dataProvider);exit;
+        //xdebug_var_dump(Collections::getTree());exit;
 
         // параметры страницы
         $this->pageTitle = 'Коллекции';

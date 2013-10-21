@@ -20,9 +20,16 @@
  */
 class Collections extends CActiveRecord
 {
-    protected $thumbnailBig;
-    protected $thumbnailMedium;
-    protected $thumbnailSmall;
+    /**
+     * @var array массив с моделями-детьми (у кого parent_id = id)
+     * Сделан не через геттер\сеттер из-за того, что  иначе возникает
+     * indirect modification of overloaded property has no effect
+     */
+    public $children;
+
+    private $_thumbnailBig;
+    private $_thumbnailMedium;
+    private $_thumbnailSmall;
 
 	/**
 	 * @return string the associated database table name
@@ -135,12 +142,12 @@ class Collections extends CActiveRecord
     {
         parent::afterFind();
 
-        // формируем превью
+        // формируем набор превью
         $this->setThumbnails();
     }
 
     /**
-     * Формирует превью
+     * Формирует набор превью
      */
     protected function setThumbnails()
     {
@@ -149,33 +156,70 @@ class Collections extends CActiveRecord
         $this->thumbnailSmall = ImageHelper::getSmallThumbnailForCollection($this);
     }
 
+    /**
+     * Возвращает дерево моделей. Дочерние модели у каждой модели хранятся в
+     * поле {@link children}. Дочерние модели определяются по parent_id
+     * @return array массив с моделями
+     */
+    public static function getTree()
+    {
+        $Criteria = new CDbCriteria;
+        $Criteria->addCondition('parent_id = 0');
+        $Criteria->addCondition('deleted = 0');
+
+        $tree = self::model()->findAll($Criteria);
+
+        foreach ($tree as $Collection) {
+            self::getChildrenCollections($Collection);
+        }
+
+        return $tree;
+    }
+
+    /**
+     * Для переданной модели находит дочерние модели и кладет их в поле {@link children}
+     * самой модели. Дочерние модели определяются по parent_id
+     * @param Collections $Collection модель
+     */
+    private static function getChildrenCollections(Collections $Collection)
+    {
+        $Criteria = new CDbCriteria;
+        $Criteria->addCondition('parent_id = '.$Collection->id);
+
+        $Collection->children = self::model()->findAll($Criteria);
+
+        foreach ($Collection->children as $ChildCollection) {
+            self::getChildrenCollections($ChildCollection);
+        }
+    }
+
     public function getThumbnailBig()
     {
-        return $this->thumbnailBig;
+        return $this->_thumbnailBig;
     }
 
     public function setThumbnailBig($value)
     {
-        $this->thumbnailBig = $value;
+        $this->_thumbnailBig = $value;
     }
 
     public function getThumbnailMedium()
     {
-        return $this->thumbnailMedium;
+        return $this->_thumbnailMedium;
     }
 
     public function setThumbnailMedium($value)
     {
-        $this->thumbnailMedium = $value;
+        $this->_thumbnailMedium = $value;
     }
 
     public function getThumbnailSmall()
     {
-        return $this->thumbnailSmall;
+        return $this->_thumbnailSmall;
     }
 
     public function setThumbnailSmall($value)
     {
-        $this->thumbnailSmall = $value;
+        $this->_thumbnailSmall = $value;
     }
 }
