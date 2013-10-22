@@ -11,7 +11,7 @@ return array(
     'boosterFix' => array(
         'basePath'=>'application.assets',
         'css'=>array('css/booster-fix.css'),
-        'depends' => array('bootstrap.css', 'bootstrap.js') // подключится после booster'а
+        'depends' => array('bootstrap.css', 'bootstrap.js') // подключится после всех виджетов booster'а
     ),
     'emptyLayout' => array(
         'basePath'=>'application.assets',

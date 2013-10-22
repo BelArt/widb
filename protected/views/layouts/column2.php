@@ -3,21 +3,9 @@
 <div class="span-7">
     <div id="sidebar">
         <?php
-        /*$this->beginWidget('zii.widgets.CPortlet', array(
-            'title'=>'Operations',
-        ));
-        $this->widget('zii.widgets.CMenu', array(
-            'items'=>$this->menu,
-            'htmlOptions'=>array('class'=>'operations'),
-        ));
-        $this->endWidget();*/
-        $this->widget(
-            'bootstrap.widgets.TbMenu',
-            array(
-                'type' => 'list',
-                'items' => $this->menu
-            )
-        );
+            $this->widget('CTreeView', array(
+                'data' => Collections::getStructureForTreeViewWidget()
+            ));
         ?>
     </div><!-- sidebar -->
 </div>

@@ -32,7 +32,18 @@
 			),
 		)); */?>
         <?php
-
+            $this->widget(
+                'bootstrap.widgets.TbNavbar',
+                array(
+                    'brand' => Yii::app()->name,
+                    'fixed' => false,
+                    'items' => array(
+                        '<form class="navbar-search pull-left">
+                                <input type="text" class="search-query" placeholder="искать">
+                            </form>'
+                    )
+                )
+            );
         ?>
 	</div><!-- mainmenu -->
 
@@ -52,9 +63,7 @@
 	<div class="clear"></div>
 
 	<div id="footer">
-		Copyright &copy; <?php echo date('Y'); ?> by My Company.<br/>
-		All Rights Reserved.<br/>
-		<?php echo Yii::powered(); ?>
+		<a href="http://eposgroup.ru">ЗАО "Группа ЭПОС"</a> &copy; <?php echo date('Y'); ?>
 	</div><!-- footer -->
 
 </div><!-- page -->

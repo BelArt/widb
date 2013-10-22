@@ -193,6 +193,45 @@ class Collections extends CActiveRecord
         }
     }
 
+    /**
+     * Возвращает структуру для передачи в виджет TreeView
+     * @return array
+     */
+    public static function getStructureForTreeViewWidget()
+    {
+        $result = array();
+
+        $CollectionsTree = self::getTree();
+        foreach ($CollectionsTree as $Collection) {
+            $result[] = array(
+                'text' => '<a href="#">'.$Collection->name.'</a>',
+                'children' => self::getChildrenStructure($Collection),
+            );
+        }
+
+        return $result;
+    }
+
+    /**
+     * Для переданной модели возвращает структуру ее детей для виджета TreeView
+     * @param Collections $Collection модель
+     * @return array
+     */
+    private static function getChildrenStructure(Collections $Collection)
+    {
+        $result = array();
+
+        foreach ($Collection->children as $ChildCollection) {
+            $result[] = array(
+                'text' => '<a href="#">'.$ChildCollection->name.'</a>',
+                'children' => self::getChildrenStructure($ChildCollection),
+            );
+        }
+
+        return $result;
+    }
+
+
     public function getThumbnailBig()
     {
         return $this->_thumbnailBig;

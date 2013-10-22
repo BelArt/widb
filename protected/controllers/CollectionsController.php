@@ -123,10 +123,11 @@ class CollectionsController extends Controller
 	public function actionIndex()
 	{
 		$dataProvider=new CActiveDataProvider('Collections');
-        //xdebug_var_dump(Collections::getTree());exit;
+        //xdebug_var_dump(Collections::getStructureForTreeViewWidget());exit;
 
         // параметры страницы
         $this->pageTitle = 'Коллекции';
+        $this->breadcrumbs = array('Коллекции');
 
 		$this->render('index',array(
 			'dataProvider'=>$dataProvider,
