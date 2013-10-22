@@ -1,8 +1,5 @@
 <?php
 /* @var $this Controller */
-$pageTitle = !empty($this->pageTitle) ? $this->pageTitle : '';
-$pageName = !empty($this->pageName) ? $this->pageName : '';
-$breadcrumbs = !empty($this->breadcrumbs) ? $this->breadcrumbs : array();
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -11,20 +8,21 @@ $breadcrumbs = !empty($this->breadcrumbs) ? $this->breadcrumbs : array();
 	<meta name="language" content="ru" />
 
     <? Yii::app()->clientScript->registerPackage('defaultLayout'); ?>
+    <? Yii::app()->clientScript->registerPackage('boosterFix'); ?>
 
-	<title><?php echo CHtml::encode($pageTitle); ?></title>
+	<title><?php echo CHtml::encode($this->pageTitle); ?></title>
 </head>
 
 <body>
 
 <div class="container" id="page">
 
-	<div id="header">
-		<div id="logo"><?php echo CHtml::encode($pageName); ?></div>
-	</div><!-- header -->
+	<!--<div id="header">
+		<div id="logo"><?php echo CHtml::encode($this->pageName); ?></div>
+	</div>--><!-- header -->
 
 	<div id="mainmenu">
-		<?php $this->widget('zii.widgets.CMenu',array(
+		<?php /*$this->widget('zii.widgets.CMenu',array(
 			'items'=>array(
 				array('label'=>'Home', 'url'=>array('/site/index')),
 				array('label'=>'About', 'url'=>array('/site/page', 'view'=>'about')),
@@ -32,12 +30,21 @@ $breadcrumbs = !empty($this->breadcrumbs) ? $this->breadcrumbs : array();
 				array('label'=>'Login', 'url'=>array('/site/login'), 'visible'=>Yii::app()->user->isGuest),
 				array('label'=>'Logout ('.Yii::app()->user->name.')', 'url'=>array('/site/logout'), 'visible'=>!Yii::app()->user->isGuest)
 			),
-		)); ?>
+		)); */?>
+        <?php
+
+        ?>
 	</div><!-- mainmenu -->
-	<?php if(isset($this->breadcrumbs)):?>
-		<?php $this->widget('zii.widgets.CBreadcrumbs', array(
-			'links' => $breadcrumbs,
-		)); ?><!-- breadcrumbs -->
+
+	<?php if(!empty($this->breadcrumbs)):?>
+        <?php
+            $this->widget(
+                'bootstrap.widgets.TbBreadcrumbs',
+                array(
+                    'links' => $this->breadcrumbs,
+                )
+            );
+        ?>
 	<?php endif?>
 
 	<?php echo $content; ?>
