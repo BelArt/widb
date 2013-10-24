@@ -37,10 +37,10 @@
     margin-left: 25px;
     /*margin-top: 4px;*/
 }
-.navbar .navbarBtnLast {
+.navbar .navbarBtnLogout {
     margin-right: 0px;
     margin-left: 25px;
-    /*margin-top: 4px;*/
+    margin-top: 7px;
 }
 .navbar SELECT {
     margin-top: -5px;

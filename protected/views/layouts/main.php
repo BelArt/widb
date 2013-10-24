@@ -38,7 +38,7 @@
                     'brand' => Yii::app()->name,
                     'fixed' => false,
                     'items' => array(
-                        '<a class="btn pull-right navbarBtnLast btn-primary">Выйти</a>',
+                        '<a class="btn pull-right navbarBtnLogout btn-primary btn-small">Выйти</a>',
 
                         '<form class="navbar-form pull-right" action="#">
                             <div class="input-prepend">
