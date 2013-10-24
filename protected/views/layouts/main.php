@@ -38,9 +38,25 @@
                     'brand' => Yii::app()->name,
                     'fixed' => false,
                     'items' => array(
-                        '<form class="navbar-search pull-left">
-                                <input type="text" class="search-query" placeholder="искать">
-                            </form>'
+                        '<a class="btn pull-right navbarBtnLast btn-primary">Выйти</a>',
+
+                        '<form class="navbar-form pull-right" action="#">
+                            <div class="input-prepend">
+                                <span class="add-on">
+                                    <i class="icon-search"></i>
+                                </span>
+                                <input class="input-large" placeholder="Поиск" name="" id="" type="text">
+                            </div>
+                            <select name="" id="" class="navbarSelect">
+                                <option value="0">Выберите поле</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select>
+                            <button type="submit" class="btn navbarBtnSubmit">Искать</button>
+                        </form>',
                     )
                 )
             );

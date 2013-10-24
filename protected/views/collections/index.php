@@ -6,6 +6,23 @@ Yii::app()->clientScript->registerPackage('collections');
 ?>
 
 <?php
+$this->widget(
+    'bootstrap.widgets.TbMenu',
+    array(
+        'type' => 'pills',
+        'items' => array(
+            array(
+                'label' => 'Добавить коллекцию',
+                'url' => '#',
+                'itemOptions' => array('class' => 'active')
+            ),
+
+        )
+    )
+);
+?>
+
+<?php
     echo CHtml::openTag('div', array('class' => 'row-fluid'));
     $this->widget(
         'bootstrap.widgets.TbThumbnails',
