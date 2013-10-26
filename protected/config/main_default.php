@@ -9,7 +9,7 @@ return array(
 	'basePath'=>dirname(__FILE__).DIRECTORY_SEPARATOR.'..',
 	'name'=>'WIDB',
     'language'=>'ru',
-    'homeUrl' => '/',
+    'homeUrl' => array('collections/index'),
 
 	// preloading 'log' component
 	'preload'=>array(
@@ -46,14 +46,17 @@ return array(
             'charset' => 'utf8',
             'tablePrefix'=>'tbl_',
         ),
-		/*'urlManager'=>array(
+		'urlManager'=>array(
 			'urlFormat'=>'path',
+            'showScriptName' => false,
 			'rules'=>array(
+                ''=>'site/index',
+                '<controller:\w+>'=>'<controller>/index',
 				'<controller:\w+>/<id:\d+>'=>'<controller>/view',
 				'<controller:\w+>/<action:\w+>/<id:\d+>'=>'<controller>/<action>',
 				'<controller:\w+>/<action:\w+>'=>'<controller>/<action>',
 			),
-		),*/
+		),
 
         'bootstrap' => array(
             'class' => 'ext.yiibooster.components.Bootstrap',

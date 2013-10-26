@@ -30,6 +30,10 @@ class SiteController extends Controller
 
     public function actionIndex()
     {
+        if (!Yii::app()->user->isGuest) {
+            $this->redirect(Yii::app()->homeUrl);
+        }
+
         $this->login('index');
     }
 
@@ -78,7 +82,7 @@ class SiteController extends Controller
      */
     public function actionLogin()
     {
-        $this->login();
+        $this->redirect(array('site/index'));
     }
 
     /**
@@ -102,8 +106,13 @@ class SiteController extends Controller
         {
             $model->attributes=$_POST['LoginForm'];
             // validate user input and redirect to the previous page if valid
-            if($model->validate() && $model->login())
-                $this->redirect(array('collections/index'));
+            if($model->validate() && $model->login()) {
+                if (Yii::app()->user->returnUrl) {
+                    $this->redirect(Yii::app()->user->returnUrl);
+                } else {
+                    $this->redirect(Yii::app()->homeUrl);
+                }
+            }
         }
 
         // параметры страницы
@@ -128,6 +137,6 @@ class SiteController extends Controller
 	public function actionLogout()
 	{
 		Yii::app()->user->logout();
-		$this->redirect(Yii::app()->homeUrl);
+		$this->redirect(array('site/index'));
 	}
 }
