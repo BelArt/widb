@@ -30,6 +30,10 @@ class SiteController extends Controller
 
     public function actionIndex()
     {
+        if (!Yii::app()->user->isGuest) {
+            $this->redirect(array('collections/index'));
+        }
+
         $this->login('index');
     }
 
@@ -78,7 +82,7 @@ class SiteController extends Controller
      */
     public function actionLogin()
     {
-        $this->login();
+        $this->redirect(array('site/index'));
     }
 
     /**
