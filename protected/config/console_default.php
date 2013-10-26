@@ -6,7 +6,7 @@ return array(
 	'basePath'=>dirname(__FILE__).DIRECTORY_SEPARATOR.'..',
     'name'=>'Web Images Database',
     'language'=>'ru',
-    'homeUrl' => '/',
+    'homeUrl' => array('collections/index'),
 
 	// preloading 'log' component
 	'preload'=>array('log'),

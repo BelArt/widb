@@ -9,7 +9,7 @@ return array(
 	'basePath'=>dirname(__FILE__).DIRECTORY_SEPARATOR.'..',
 	'name'=>'WIDB',
     'language'=>'ru',
-    'homeUrl' => '/',
+    'homeUrl' => array('collections/index'),
 
 	// preloading 'log' component
 	'preload'=>array(
@@ -50,6 +50,7 @@ return array(
 			'urlFormat'=>'path',
             'showScriptName' => false,
 			'rules'=>array(
+                ''=>'site/index',
                 '<controller:\w+>'=>'<controller>/index',
 				'<controller:\w+>/<id:\d+>'=>'<controller>/view',
 				'<controller:\w+>/<action:\w+>/<id:\d+>'=>'<controller>/<action>',
