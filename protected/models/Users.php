@@ -5,6 +5,8 @@
  *
  * The followings are the available columns in table '{{users}}':
  * @property string $id
+ * @property string $email
+ * @property string $password
  * @property string $surname
  * @property string $name
  * @property string $middlename
@@ -15,6 +17,8 @@
  * @property string $date_delete
  * @property string $sort
  * @property integer $deleted
+ *
+ * @todo добавить везде $email и $password
  */
 class Users extends CActiveRecord
 {
