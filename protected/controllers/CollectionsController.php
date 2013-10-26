@@ -122,8 +122,8 @@ class CollectionsController extends Controller
 	 */
 	public function actionIndex()
 	{
+        //xdebug_var_dump(Yii::app()->user->name);exit;
 		$dataProvider=new CActiveDataProvider('Collections');
-        //xdebug_var_dump(Collections::getStructureForTreeViewWidget());exit;
 
         // параметры страницы
         $this->pageTitle = 'Коллекции';
