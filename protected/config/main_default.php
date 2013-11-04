@@ -86,6 +86,9 @@ return array(
         'assetManager' => array(
             'forceCopy' => YII_DEBUG,
         ),
+        'authManager' => array(
+            'class' => 'PhpAuthManager',
+        ),
 	),
 
 	// application-level parameters that can be accessed

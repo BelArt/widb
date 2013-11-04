@@ -17,6 +17,8 @@
  * @property string $date_delete
  * @property string $sort
  * @property integer $deleted
+ *
+ * @todo добавить новые поля
  */
 class Collections extends CActiveRecord
 {
@@ -260,5 +262,13 @@ class Collections extends CActiveRecord
     public function setThumbnailSmall($value)
     {
         $this->_thumbnailSmall = $value;
+    }
+
+    /**
+     * @todo реализовать
+     */
+    public function isAllowedToUser()
+    {
+
     }
 }
