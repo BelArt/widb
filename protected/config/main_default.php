@@ -38,6 +38,7 @@ return array(
 	// application components
 	'components'=>array(
 		'user'=>array(
+            'class' => 'WebUser',
 			// enable cookie-based authentication
 			'allowAutoLogin'=>true,
 		),
@@ -85,6 +86,9 @@ return array(
         ),
         'assetManager' => array(
             'forceCopy' => YII_DEBUG,
+        ),
+        'authManager' => array(
+            'class' => 'PhpAuthManager',
         ),
 	),
 

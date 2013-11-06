@@ -27,9 +27,9 @@ class CollectionsController extends Controller
     public function accessRules()
     {
         return array(
-            array('allow',  // allow all users to perform 'index' and 'view' actions
-                'actions'=>array('index'),
-                'users'=>array('@'),
+            array('allow',
+                'actions' => array('index'),
+                'roles' => array('oCollectionsView'),
             ),
             array('deny',  // deny all users
                 'users'=>array('*'),
