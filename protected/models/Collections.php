@@ -265,10 +265,33 @@ class Collections extends CActiveRecord
     }
 
     /**
-     * @todo реализовать
+     * Проверяет, доступна ли текущая коллекция пользователю.
+     *
+     * Коллекция  доступна пользователя тогда, когда либо список доступных
+     * ему коллекция пуст, либо она есть в этом списке
+     *
+     * @param integer $userId айдишник пользователя
+     * @return bool
      */
-    public function isAllowedToUser()
+    public function isAllowedToUser($userId)
     {
+        $records = UserAllowedCollection::model()->findAll(
+            'user_id = :user_id',
+            array(
+                ':user_id' => $userId,
+            )
+        );
 
+        if (empty($records)) {
+            return true;
+        }
+
+        foreach ($records as $Record) {
+            if ($Record->collection_id == $this->id) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
