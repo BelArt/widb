@@ -12,7 +12,13 @@
     <? Yii::app()->clientScript->registerPackage('defaultLayout'); ?>
     <? Yii::app()->clientScript->registerPackage('boosterFix'); ?>
 
-	<title><?php echo CHtml::encode($this->pageTitle); ?></title>
+	<title>
+        <?php
+            $this->widget('application.widgets.PageTitle',array(
+                'pageTitle' => $this->pageTitle
+            ));
+        ?>
+    </title>
 </head>
 
 <body>

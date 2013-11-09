@@ -31,6 +31,10 @@ class CollectionsController extends Controller
                 'actions' => array('index'),
                 'roles' => array('oCollectionsView'),
             ),
+            array('allow',
+                'actions' => array('create'),
+                'roles' => array('oCollectionCreate'),
+            ),
             array('deny',  // deny all users
                 'users'=>array('*'),
             ),
@@ -86,6 +90,11 @@ class CollectionsController extends Controller
 				$this->redirect(array('view','id'=>$model->id));
 		}
 
+        // параметры страницы
+        $this->pageTitle = array('Создание коллекции');
+        $this->breadcrumbs = array('Создание коллекции');
+        $this->pageName = 'Создание коллекции';
+
 		$this->render('create',array(
 			'model'=>$model,
 		));
@@ -137,7 +146,7 @@ class CollectionsController extends Controller
 		$dataProvider=new CActiveDataProvider('Collections');
 
         // параметры страницы
-        $this->pageTitle = 'Коллекции';
+        $this->pageTitle = array('Коллекции');
         $this->breadcrumbs = array('Коллекции');
 
 		$this->render('index',array(

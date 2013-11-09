@@ -53,3 +53,8 @@
 .navbar .navbarUserInfo {
     margin-top: 10px;
 }
+.pageName {
+    margin: 0px 0px 10px 0px;
+    font-size: 22px;
+    line-height: 22px;
+}

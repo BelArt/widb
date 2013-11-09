@@ -9,7 +9,6 @@
  * @property string $name
  * @property string $description
  * @property string $code
- * @property string $image
  * @property integer $temporary
  * @property integer $has_preview
  * @property string $date_create
@@ -51,11 +50,11 @@ class Collections extends CActiveRecord
 		return array(
 			array('temporary, has_preview, deleted', 'numerical', 'integerOnly'=>true),
 			array('parent_id, sort', 'length', 'max'=>10),
-			array('name, code, image', 'length', 'max'=>150),
+			array('name, code', 'length', 'max'=>150),
 			array('description, date_create, date_modify, date_delete', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, parent_id, name, description, code, image, temporary, has_preview, date_create, date_modify, date_delete, sort, deleted', 'safe', 'on'=>'search'),
+			array('id, parent_id, name, description, code, temporary, has_preview, date_create, date_modify, date_delete, sort, deleted', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -76,19 +75,14 @@ class Collections extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'id' => 'ID',
 			'parent_id' => 'Parent',
-			'name' => 'Name',
-			'description' => 'Description',
-			'code' => 'Code',
-			'image' => 'Image',
-			'temporary' => 'Temporary',
-			'has_preview' => 'Has Preview',
-			'date_create' => 'Date Create',
-			'date_modify' => 'Date Modify',
-			'date_delete' => 'Date Delete',
-			'sort' => 'Sort',
-			'deleted' => 'Deleted',
+			'name' => 'Название',
+			'description' => 'Описание',
+			'code' => 'Код',
+			'temporary' => 'Временная коллекция',
+			'has_preview' => 'Есть превью',
+			'sort' => 'Сортировка',
+            'public' => 'Открытая временная коллекция',
 		);
 	}
 
@@ -115,7 +109,6 @@ class Collections extends CActiveRecord
 		$criteria->compare('name',$this->name,true);
 		$criteria->compare('description',$this->description,true);
 		$criteria->compare('code',$this->code,true);
-		$criteria->compare('image',$this->image,true);
 		$criteria->compare('temporary',$this->temporary);
 		$criteria->compare('has_preview',$this->has_preview);
 		$criteria->compare('date_create',$this->date_create,true);
