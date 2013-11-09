@@ -1,3 +1,6 @@
 .collectionForm_resetButton {
     margin: 0px 0px 0px 15px;
 }
+SPAN.help-inline.error {
+    display: block;
+}

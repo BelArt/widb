@@ -10,8 +10,8 @@
             'type' => 'pills',
             'items' => array(
                 array(
-                    'label' => 'Добавить коллекцию',
-                    'url' => '#',
+                    'label' => 'Создать коллекцию',
+                    'url' => $this->createUrl('collections/create'),
                     'itemOptions' => array('class' => 'active')
                 ),
 

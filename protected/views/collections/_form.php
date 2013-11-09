@@ -5,46 +5,64 @@
 
 Yii::app()->clientScript->registerPackage('collectionForm');
 
+$isTempCollection = $model->temporary;
+
 $form = $this->beginWidget(
     'bootstrap.widgets.TbActiveForm',
     array(
         'id' => 'collections-form',
         'type' => 'horizontal',
+        'inlineErrors' => true,
         'htmlOptions' => array('class' => 'well'), // for inset effect
     )
 );
-
-echo $form->textFieldRow($model,'name', array(
-    'class' => 'input-xxlarge'
-));
-
-echo $form->textAreaRow($model,'description',array(
-    'class' => 'input-xxlarge',
-    'rows' => 5
-));
-
-echo $form->textFieldRow($model,'code', array(
-    'class' => 'input-xlarge'
-));
-
-echo $form->checkBoxRow($model,'has_preview');
 
 echo $form->checkBoxRow($model,'temporary', array(
     'class' => '_collectionForm_tempCollectionCheckbox',
 ));
 
+echo $form->textFieldRow($model,'name', array(
+    'class' => 'input-xxlarge _collectionForm_hideErrorsKeypress'
+));
+
+echo $form->textAreaRow($model,'description',array(
+    'class' => 'input-xxlarge _collectionForm_hideErrorsKeypress',
+    'rows' => 5
+));
+
+echo $form->textFieldRow($model,'code', array(
+    'class' => 'input-xlarge _collectionForm_hideErrorsKeypress'
+));
+
+echo $form->checkBoxRow($model,'has_preview');
+
+echo CHtml::openTag('div', array(
+    'class' => '_collectionForm_parentCollectionBlock',
+    'style' => ' '.($isTempCollection ? 'display:none;' : '')
+));
+echo $form->select2Row($model,'parent_id',
+    array(
+        'asDropDownList' => true,
+        'data' => $model->getArrayOfPossibleParentCollections(),
+        'class' => 'input-xxlarge _collectionForm_parentCollectionSelect',
+        'disabled' => $isTempCollection,
+    )
+);
+echo CHtml::closeTag('div');
+
 echo CHtml::openTag('div', array(
     'class' => '_collectionForm_tempCollectionPublicBlock',
-    'style' => 'display:none;'
+    'style' => ' '.($isTempCollection ? '' : 'display:none;')
 ));
 echo $form->checkBoxRow($model,'public', array(
-    'disabled' => true,
+    'disabled' => !$isTempCollection,
     'class' => '_collectionForm_tempCollectionPublicCheckbox',
 ));
 echo CHtml::closeTag('div');
 
 echo $form->textFieldRow($model,'sort', array(
-    'class' => 'input-small'
+    'class' => 'input-small _collectionForm_hideErrorsKeypress',
+    'value' => empty($model->sort) ? '' : null
 ));
 
 echo CHtml::openTag('div', array(

@@ -13,7 +13,7 @@
  * @property string $sort
  * @property integer $deleted
  */
-class ObjectTypes extends CActiveRecord
+class ObjectTypes extends ActiveRecord
 {
 	/**
 	 * @return string the associated database table name

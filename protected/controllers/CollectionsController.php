@@ -78,7 +78,7 @@ class CollectionsController extends Controller
 	 */
 	public function actionCreate()
 	{
-		$model=new Collections;
+		$model = new Collections;
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
@@ -86,8 +86,9 @@ class CollectionsController extends Controller
 		if(isset($_POST['Collections']))
 		{
 			$model->attributes=$_POST['Collections'];
-			if($model->save())
-				$this->redirect(array('view','id'=>$model->id));
+			if ($model->save()) {
+                $this->redirect(array('index'));
+            }
 		}
 
         // параметры страницы
@@ -96,7 +97,7 @@ class CollectionsController extends Controller
         $this->pageName = 'Создание коллекции';
 
 		$this->render('create',array(
-			'model'=>$model,
+			'model' => $model,
 		));
 	}
 

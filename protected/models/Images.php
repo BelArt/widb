@@ -22,7 +22,7 @@
  * @property string $sort
  * @property integer $deleted
  */
-class Images extends CActiveRecord
+class Images extends ActiveRecord
 {
 	/**
 	 * @return string the associated database table name

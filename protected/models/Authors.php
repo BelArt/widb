@@ -15,7 +15,7 @@
  * @property string $sort
  * @property integer $deleted
  */
-class Authors extends CActiveRecord
+class Authors extends ActiveRecord
 {
 	/**
 	 * @return string the associated database table name

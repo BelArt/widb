@@ -16,7 +16,7 @@
  * @property string $user_modify
  * @property string $user_delete
  */
-class UserAllowedCollection extends CActiveRecord
+class UserAllowedCollection extends ActiveRecord
 {
 	/**
 	 * @return string the associated database table name
