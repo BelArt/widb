@@ -14,6 +14,7 @@
 </div>
 <div class="span-21 last">
 	<div id="content">
+        <h1 class="pageName"><?php echo CHtml::encode($this->pageName) ?></h1>
 		<?php echo $content; ?>
 	</div><!-- content -->
 </div>

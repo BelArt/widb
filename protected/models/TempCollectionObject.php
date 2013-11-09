@@ -13,7 +13,7 @@
  * @property string $sort
  * @property integer $deleted
  */
-class TempCollectionObject extends CActiveRecord
+class TempCollectionObject extends ActiveRecord
 {
 	/**
 	 * @return string the associated database table name

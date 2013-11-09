@@ -2,99 +2,92 @@
 /* @var $this CollectionsController */
 /* @var $model Collections */
 /* @var $form CActiveForm */
-?>
 
-<div class="form">
+Yii::app()->clientScript->registerPackage('collectionForm');
 
-<?php $form=$this->beginWidget('CActiveForm', array(
-	'id'=>'collections-form',
-	// Please note: When you enable ajax validation, make sure the corresponding
-	// controller action is handling ajax validation correctly.
-	// There is a call to performAjaxValidation() commented in generated controller code.
-	// See class documentation of CActiveForm for details on this.
-	'enableAjaxValidation'=>false,
-)); ?>
+$isTempCollection = $model->temporary;
 
-	<p class="note">Fields with <span class="required">*</span> are required.</p>
+$form = $this->beginWidget(
+    'bootstrap.widgets.TbActiveForm',
+    array(
+        'id' => 'collections-form',
+        'type' => 'horizontal',
+        'inlineErrors' => true,
+        'htmlOptions' => array('class' => 'well'), // for inset effect
+    )
+);
 
-	<?php echo $form->errorSummary($model); ?>
+echo $form->checkBoxRow($model,'temporary', array(
+    'class' => '_collectionForm_tempCollectionCheckbox',
+));
 
-	<div class="row">
-		<?php echo $form->labelEx($model,'parent_id'); ?>
-		<?php echo $form->textField($model,'parent_id',array('size'=>10,'maxlength'=>10)); ?>
-		<?php echo $form->error($model,'parent_id'); ?>
-	</div>
+echo $form->textFieldRow($model,'name', array(
+    'class' => 'input-xxlarge _collectionForm_hideErrorsKeypress'
+));
 
-	<div class="row">
-		<?php echo $form->labelEx($model,'name'); ?>
-		<?php echo $form->textField($model,'name',array('size'=>60,'maxlength'=>150)); ?>
-		<?php echo $form->error($model,'name'); ?>
-	</div>
+echo $form->textAreaRow($model,'description',array(
+    'class' => 'input-xxlarge _collectionForm_hideErrorsKeypress',
+    'rows' => 5
+));
 
-	<div class="row">
-		<?php echo $form->labelEx($model,'description'); ?>
-		<?php echo $form->textArea($model,'description',array('rows'=>6, 'cols'=>50)); ?>
-		<?php echo $form->error($model,'description'); ?>
-	</div>
+echo $form->textFieldRow($model,'code', array(
+    'class' => 'input-xlarge _collectionForm_hideErrorsKeypress'
+));
 
-	<div class="row">
-		<?php echo $form->labelEx($model,'code'); ?>
-		<?php echo $form->textField($model,'code',array('size'=>60,'maxlength'=>150)); ?>
-		<?php echo $form->error($model,'code'); ?>
-	</div>
+echo $form->checkBoxRow($model,'has_preview');
 
-	<div class="row">
-		<?php echo $form->labelEx($model,'image'); ?>
-		<?php echo $form->textField($model,'image',array('size'=>60,'maxlength'=>150)); ?>
-		<?php echo $form->error($model,'image'); ?>
-	</div>
+echo CHtml::openTag('div', array(
+    'class' => '_collectionForm_parentCollectionBlock',
+    'style' => ' '.($isTempCollection ? 'display:none;' : '')
+));
+echo $form->select2Row($model,'parent_id',
+    array(
+        'asDropDownList' => true,
+        'data' => $model->getArrayOfPossibleParentCollections(),
+        'class' => 'input-xxlarge _collectionForm_parentCollectionSelect',
+        'disabled' => $isTempCollection,
+    )
+);
+echo CHtml::closeTag('div');
 
-	<div class="row">
-		<?php echo $form->labelEx($model,'temporary'); ?>
-		<?php echo $form->textField($model,'temporary'); ?>
-		<?php echo $form->error($model,'temporary'); ?>
-	</div>
+echo CHtml::openTag('div', array(
+    'class' => '_collectionForm_tempCollectionPublicBlock',
+    'style' => ' '.($isTempCollection ? '' : 'display:none;')
+));
+echo $form->checkBoxRow($model,'public', array(
+    'disabled' => !$isTempCollection,
+    'class' => '_collectionForm_tempCollectionPublicCheckbox',
+));
+echo CHtml::closeTag('div');
 
-	<div class="row">
-		<?php echo $form->labelEx($model,'has_preview'); ?>
-		<?php echo $form->textField($model,'has_preview'); ?>
-		<?php echo $form->error($model,'has_preview'); ?>
-	</div>
+echo $form->textFieldRow($model,'sort', array(
+    'class' => 'input-small _collectionForm_hideErrorsKeypress',
+    'value' => empty($model->sort) ? '' : null
+));
 
-	<div class="row">
-		<?php echo $form->labelEx($model,'date_create'); ?>
-		<?php echo $form->textField($model,'date_create'); ?>
-		<?php echo $form->error($model,'date_create'); ?>
-	</div>
+echo CHtml::openTag('div', array(
+    'class' => 'form-actions',
+));
+$this->widget(
+    'bootstrap.widgets.TbButton',
+    array(
+        'buttonType' => 'submit',
+        'type' => 'primary',
+        'label' => $model->isNewRecord ? 'Создать' : 'Сохранить'
+    )
+);
+$this->widget(
+    'bootstrap.widgets.TbButton',
+    array(
+        'buttonType' => 'reset',
+        'label' => 'Сбросить',
+        'htmlOptions' => array(
+            'class' => 'collectionForm_resetButton _collectionForm_resetButton'
+        )
+    )
+);
+echo CHtml::closeTag('div');
 
-	<div class="row">
-		<?php echo $form->labelEx($model,'date_modify'); ?>
-		<?php echo $form->textField($model,'date_modify'); ?>
-		<?php echo $form->error($model,'date_modify'); ?>
-	</div>
+$this->endWidget();
+unset($form);
 
-	<div class="row">
-		<?php echo $form->labelEx($model,'date_delete'); ?>
-		<?php echo $form->textField($model,'date_delete'); ?>
-		<?php echo $form->error($model,'date_delete'); ?>
-	</div>
-
-	<div class="row">
-		<?php echo $form->labelEx($model,'sort'); ?>
-		<?php echo $form->textField($model,'sort',array('size'=>10,'maxlength'=>10)); ?>
-		<?php echo $form->error($model,'sort'); ?>
-	</div>
-
-	<div class="row">
-		<?php echo $form->labelEx($model,'deleted'); ?>
-		<?php echo $form->textField($model,'deleted'); ?>
-		<?php echo $form->error($model,'deleted'); ?>
-	</div>
-
-	<div class="row buttons">
-		<?php echo CHtml::submitButton($model->isNewRecord ? 'Create' : 'Save'); ?>
-	</div>
-
-<?php $this->endWidget(); ?>
-
-</div><!-- form -->

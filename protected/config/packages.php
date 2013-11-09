@@ -28,4 +28,10 @@ return array(
         'css'=>array('css/collections.css'),
         'depends' => array('boosterFix')
     ),
+    'collectionForm' => array(
+        'basePath'=>'application.assets',
+        'js'=>array('js/collection-form.js'),
+        'css'=>array('css/collection-form.css'),
+        'depends' => array('boosterFix')
+    ),
 );

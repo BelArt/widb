@@ -32,11 +32,11 @@ class Controller extends CController
      */
     public function getPageTitle()
     {
-        if($this->_pageTitle!==null)
+        if($this->_pageTitle !== null)
             return $this->_pageTitle;
         else
         {
-            return $this->_pageTitle = Yii::app()->name;
+            return $this->_pageTitle = array(Yii::app()->name);
         }
     }
 
@@ -45,6 +45,7 @@ class Controller extends CController
      */
     public function setPageTitle($value)
     {
-        $this->_pageTitle = Yii::app()->name.' | '.$value;
+        array_unshift($value, Yii::app()->name);
+        $this->_pageTitle = $value;
     }
 }

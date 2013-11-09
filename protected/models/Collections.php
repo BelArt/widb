@@ -9,7 +9,6 @@
  * @property string $name
  * @property string $description
  * @property string $code
- * @property string $image
  * @property integer $temporary
  * @property integer $has_preview
  * @property string $date_create
@@ -17,10 +16,14 @@
  * @property string $date_delete
  * @property string $sort
  * @property integer $deleted
+ * @property string $user_create
+ * @property string $user_modify
+ * @property string $user_delete
+ * @property integer $public
  *
- * @todo добавить новые поля
+ * @todo разобраться с поиском
  */
-class Collections extends CActiveRecord
+class Collections extends ActiveRecord
 {
     /**
      * @var array массив с моделями-детьми (у кого parent_id = id)
@@ -46,16 +49,17 @@ class Collections extends CActiveRecord
 	 */
 	public function rules()
 	{
-		// NOTE: you should only define rules for those attributes that
-		// will receive user inputs.
 		return array(
-			array('temporary, has_preview, deleted', 'numerical', 'integerOnly'=>true),
-			array('parent_id, sort', 'length', 'max'=>10),
-			array('name, code, image', 'length', 'max'=>150),
-			array('description, date_create, date_modify, date_delete', 'safe'),
+            array('parent_id, public', 'application.components.validators.TempCollectionValidator'),
+            array('name, code, description', 'required'),
+			array('temporary, has_preview, public', 'boolean'),
+            array('parent_id, sort', 'application.components.validators.EmptyOrPositiveIntegerValidator'),
+            array('name, code', 'length', 'max' => 150),
+
+
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, parent_id, name, description, code, image, temporary, has_preview, date_create, date_modify, date_delete, sort, deleted', 'safe', 'on'=>'search'),
+			array('id, parent_id, name, description, code, temporary, has_preview, date_create, date_modify, date_delete, sort, deleted', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -76,19 +80,14 @@ class Collections extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'id' => 'ID',
-			'parent_id' => 'Parent',
-			'name' => 'Name',
-			'description' => 'Description',
-			'code' => 'Code',
-			'image' => 'Image',
-			'temporary' => 'Temporary',
-			'has_preview' => 'Has Preview',
-			'date_create' => 'Date Create',
-			'date_modify' => 'Date Modify',
-			'date_delete' => 'Date Delete',
-			'sort' => 'Sort',
-			'deleted' => 'Deleted',
+			'parent_id' => 'Родительская коллекция',
+			'name' => 'Название',
+			'description' => 'Описание',
+			'code' => 'Код',
+			'temporary' => 'Временная коллекция',
+			'has_preview' => 'Есть превью',
+			'sort' => 'Сортировка',
+            'public' => 'Открытая временная коллекция',
 		);
 	}
 
@@ -115,7 +114,6 @@ class Collections extends CActiveRecord
 		$criteria->compare('name',$this->name,true);
 		$criteria->compare('description',$this->description,true);
 		$criteria->compare('code',$this->code,true);
-		$criteria->compare('image',$this->image,true);
 		$criteria->compare('temporary',$this->temporary);
 		$criteria->compare('has_preview',$this->has_preview);
 		$criteria->compare('date_create',$this->date_create,true);
@@ -293,5 +291,39 @@ class Collections extends CActiveRecord
         }
 
         return false;
+    }
+
+    /**
+     * Получает массив вида id => Название коллекции для
+     * построения селекта Родительская коллекция на форме
+     * создания\редактирования коллекции
+     * @return array
+     */
+    public function getArrayOfPossibleParentCollections()
+    {
+        $Criteria = new CDbCriteria;
+        $Criteria->select = 'id, name';
+
+        if (isset($this->id)) {
+            $Criteria->addCondition('id <> :id');
+            $Criteria->params = array(
+                ':id' => $this->id,
+            );
+        }
+        $Criteria->addCondition('temporary <> 1');
+
+        $collections = self::model()->findAll($Criteria);
+
+        $result = array();
+
+        if (empty($collections)) {
+            return $result;
+        }
+
+        foreach ($collections as $Collection) {
+            $result[$Collection->id] = $Collection->name;
+        }
+
+        return $result;
     }
 }

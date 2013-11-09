@@ -20,7 +20,7 @@
  *
  * @todo добавить везде $email и $password
  */
-class Users extends CActiveRecord
+class Users extends ActiveRecord
 {
 	/**
 	 * @return string the associated database table name

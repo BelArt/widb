@@ -31,6 +31,10 @@ class CollectionsController extends Controller
                 'actions' => array('index'),
                 'roles' => array('oCollectionsView'),
             ),
+            array('allow',
+                'actions' => array('create'),
+                'roles' => array('oCollectionCreate'),
+            ),
             array('deny',  // deny all users
                 'users'=>array('*'),
             ),
@@ -74,7 +78,7 @@ class CollectionsController extends Controller
 	 */
 	public function actionCreate()
 	{
-		$model=new Collections;
+		$model = new Collections;
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
@@ -82,12 +86,18 @@ class CollectionsController extends Controller
 		if(isset($_POST['Collections']))
 		{
 			$model->attributes=$_POST['Collections'];
-			if($model->save())
-				$this->redirect(array('view','id'=>$model->id));
+			if ($model->save()) {
+                $this->redirect(array('index'));
+            }
 		}
 
+        // параметры страницы
+        $this->pageTitle = array('Создание коллекции');
+        $this->breadcrumbs = array('Создание коллекции');
+        $this->pageName = 'Создание коллекции';
+
 		$this->render('create',array(
-			'model'=>$model,
+			'model' => $model,
 		));
 	}
 
@@ -137,7 +147,7 @@ class CollectionsController extends Controller
 		$dataProvider=new CActiveDataProvider('Collections');
 
         // параметры страницы
-        $this->pageTitle = 'Коллекции';
+        $this->pageTitle = array('Коллекции');
         $this->breadcrumbs = array('Коллекции');
 
 		$this->render('index',array(
