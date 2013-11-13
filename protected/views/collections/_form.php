@@ -54,7 +54,7 @@ echo CHtml::openTag('div', array(
     'class' => '_collectionForm_tempCollectionPublicBlock',
     'style' => ' '.($isTempCollection ? '' : 'display:none;')
 ));
-echo $form->checkBoxRow($model,'public', array(
+echo $form->checkBoxRow($model,'temporary_public', array(
     'disabled' => !$isTempCollection,
     'class' => '_collectionForm_tempCollectionPublicCheckbox',
 ));

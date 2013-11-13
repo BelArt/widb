@@ -50,9 +50,9 @@ class Collections extends ActiveRecord
 	public function rules()
 	{
 		return array(
-            array('parent_id, public', 'application.components.validators.TempCollectionValidator'),
+            array('parent_id, temporary_public', 'application.components.validators.TempCollectionValidator'),
             array('name, code, description', 'required'),
-			array('temporary, has_preview, public', 'boolean'),
+			array('temporary, has_preview, temporary_public', 'boolean'),
             array('parent_id, sort', 'application.components.validators.EmptyOrPositiveIntegerValidator'),
             array('name, code', 'length', 'max' => 150),
 
@@ -87,7 +87,7 @@ class Collections extends ActiveRecord
 			'temporary' => 'Временная коллекция',
 			'has_preview' => 'Есть превью',
 			'sort' => 'Сортировка',
-            'public' => 'Открытая временная коллекция',
+            'temporary_public' => 'Открытая временная коллекция',
 		);
 	}
 
@@ -323,6 +323,8 @@ class Collections extends ActiveRecord
         foreach ($collections as $Collection) {
             $result[$Collection->id] = $Collection->name;
         }
+
+        $result[0] = 'Нет родительской коллекции';
 
         return $result;
     }

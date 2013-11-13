@@ -18,7 +18,7 @@ class TempCollectionValidator extends CValidator
                     }
                 }
                 break;
-            case 'public':
+            case 'temporary_public':
                 if (empty($object->temporary)) {
                     if (!empty($object->$attribute)) {
                         $this->addError($object, $attribute, 'Обычная коллекция не может быть открытой!');
