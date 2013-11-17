@@ -32,12 +32,12 @@ class Controller extends CController
      */
     public function getPageTitle()
     {
-        if($this->_pageTitle !== null)
-            return $this->_pageTitle;
-        else
-        {
-            return $this->_pageTitle = array(Yii::app()->name);
+        if (empty($this->_pageTitle)) {
+            $this->_pageTitle = array(Yii::app()->name);
         }
+
+        return $this->_pageTitle;
+
     }
 
     /**

@@ -19,7 +19,7 @@
  * @property string $user_create
  * @property string $user_modify
  * @property string $user_delete
- * @property integer $public
+ * @property integer $temporary_public
  *
  * @todo разобраться с поиском
  */
