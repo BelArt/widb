@@ -12,23 +12,25 @@
                 array(
                     'label' => 'Создать коллекцию',
                     'url' => $this->createUrl('collections/create'),
-                    'itemOptions' => array('class' => 'active')
+                    'itemOptions' => array('class' => 'active small')
                 ),
 
             )
         )
     );
+?>
 
-    echo CHtml::openTag('div', array('class' => 'row-fluid'));
+<div class="gape"></div>
 
+<div class="row-fluid">
+<?
     $this->widget(
         'bootstrap.widgets.TbThumbnails',
         array(
             'dataProvider' => $dataProvider,
             'template' => "{items}\n{pager}",
-            'itemView' => '_view',
+            'itemView' => '_viewNoCheckbox',
         )
     );
-
-    echo CHtml::closeTag('div');
  ?>
+ </div>

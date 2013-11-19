@@ -49,9 +49,58 @@ class CollectionsController extends Controller
 	 * Displays a particular model.
 	 * @param integer $id the ID of the model to be displayed
 	 */
-	public function actionView($id)
+	public function actionView($id, $cv = 'thumbnails', $ov = 'thumbnails')
 	{
         $model = $this->loadModel($id);
+
+        switch ($cv) {
+            case 'thumbnails':
+                $renderViewChildCollections = '_viewChildCollectionsThumbnails';
+                break;
+            case 'list':
+                $renderViewChildCollections = '_viewChildCollectionsList';
+                break;
+            case 'table':
+                $renderViewChildCollections = '_viewChildCollectionsTable';
+                break;
+            default:
+                $renderViewChildCollections = '_viewChildCollectionsThumbnails';
+        }
+
+        switch ($ov) {
+            case 'thumbnails':
+                $renderViewObjects = '_viewObjectsThumbnails';
+                break;
+            case 'list':
+                $renderViewObjects = '_viewObjectsList';
+                break;
+            case 'table':
+                $renderViewObjects = '_viewObjectsTable';
+                break;
+            default:
+                $renderViewObjects = '_viewObjectsThumbnails';
+        }
+
+        $ObjectsDataProvider = new CActiveDataProvider(
+            'Objects',
+            array(
+                'criteria' => array(
+                    'condition' => 't.collection_id = :collection_id AND t.deleted = 0',
+                    'params' => array(':collection_id' => $id),
+                    'with' => array('author')
+                ),
+            )
+        );
+
+        $ChildCollectionsDataProvider = new CActiveDataProvider(
+            'Collections',
+            array(
+                'criteria' => array(
+                    'condition' => 'parent_id = :parent_id AND deleted = 0',
+                    'params' => array(':parent_id' => $id)
+                ),
+            )
+        );
 
         // параметры страницы
         $this->pageTitle = array($model->name);
@@ -60,7 +109,13 @@ class CollectionsController extends Controller
 
 		$this->render(
             'view',
-            array('model' => $model)
+            array(
+                'model' => $model,
+                'ObjectsDataProvider' => $ObjectsDataProvider,
+                'ChildCollectionsDataProvider' => $ChildCollectionsDataProvider,
+                'renderViewChildCollections' => $renderViewChildCollections,
+                'renderViewObjects' => $renderViewObjects,
+            )
         );
 	}
 

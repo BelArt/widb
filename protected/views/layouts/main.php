@@ -11,6 +11,7 @@
 
     <? Yii::app()->clientScript->registerPackage('defaultLayout'); ?>
     <? Yii::app()->clientScript->registerPackage('boosterFix'); ?>
+    <? Yii::app()->clientScript->registerPackage('global'); ?>
 
 	<title>
         <?php

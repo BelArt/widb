@@ -36,4 +36,37 @@ class ImageHelper extends CComponent
     {
         return Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets')).'/img/photo-not-available.jpg';
     }
+
+    /**
+     * Возвращает путь к большой превью для объекта
+     * @todo реализовать, когда будут известны пути хранения
+     * @param Objects $Object модель объекта
+     * @return string путь к большой превью
+     */
+    public static function getBigThumbnailForObject(Objects $Object)
+    {
+        return Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets')).'/img/photo-not-available.jpg';
+    }
+
+    /**
+     * Возвращает путь к средней превью для объекта
+     * @todo реализовать, когда будут известны пути хранения
+     * @param Objects $Object модель объекта
+     * @return string путь к средней превью
+     */
+    public static function getMediumThumbnailForObject(Objects $Object)
+    {
+        return Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets')).'/img/photo-not-available.jpg';
+    }
+
+    /**
+     * Возвращает путь к маленькой превью для объекта
+     * @todo реализовать, когда будут известны пути хранения
+     * @param Objects $Object модель объекта
+     * @return string путь к маленькой превью
+     */
+    public static function getSmallThumbnailForObject(Objects $Object)
+    {
+        return Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets')).'/img/photo-not-available.jpg';
+    }
 }

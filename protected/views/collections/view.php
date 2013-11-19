@@ -1,38 +1,70 @@
 <?php
 /* @var $this CollectionsController */
 /* @var $model Collections */
+/* @var $ObjectsDataProvider CActiveDataProvider */
+/* @var $ChildCollectionsDataProvider CActiveDataProvider */
+/* @var $renderViewChildCollections string */
+/* @var $renderViewObjects string */
 
-$this->breadcrumbs=array(
-	'Collections'=>array('index'),
-	$model->name,
-);
+Yii::app()->clientScript->registerPackage('collectionView');
+?>
 
-$this->menu=array(
-	array('label'=>'List Collections', 'url'=>array('index')),
-	array('label'=>'Create Collections', 'url'=>array('create')),
-	array('label'=>'Update Collections', 'url'=>array('update', 'id'=>$model->id)),
-	array('label'=>'Delete Collections', 'url'=>'#', 'linkOptions'=>array('submit'=>array('delete','id'=>$model->id),'confirm'=>'Are you sure you want to delete this item?')),
-	array('label'=>'Manage Collections', 'url'=>array('admin')),
+<?php $this->renderPartial('_viewDescription', array('model' => $model)); ?>
+
+<div class="gape"></div>
+
+<?php
+$this->widget(
+    'bootstrap.widgets.TbMenu',
+    array(
+        'type' => 'pills',
+        'items' => array(
+            array(
+                'label' => 'Редактировать коллекцию',
+                'url' => $this->createUrl('collections/update', array('id' => $model->id)),
+                'itemOptions' => array('class' => 'active small')
+            ),
+            array(
+                'label' => 'Удалить коллекцию',
+                'url' => $this->createUrl('collections/delete', array('id' => $model->id)),
+                'itemOptions' => array('class' => 'active small')
+            ),
+            array(
+                'label' => 'Добавить объект в коллекцию',
+                'url' => '#',
+                'itemOptions' => array('class' => 'active small')
+            ),
+        )
+    )
 );
 ?>
 
-<h1>View Collections #<?php echo $model->id; ?></h1>
+<div class="gape"></div>
 
-<?php $this->widget('zii.widgets.CDetailView', array(
-	'data'=>$model,
-	'attributes'=>array(
-		'id',
-		'parent_id',
-		'name',
-		'description',
-		'code',
-		'image',
-		'temporary',
-		'has_preview',
-		'date_create',
-		'date_modify',
-		'date_delete',
-		'sort',
-		'deleted',
-	),
-)); ?>
+<?php
+$this->widget(
+    'bootstrap.widgets.TbTabs',
+    array(
+        'type' => 'tabs', // 'tabs' or 'pills'
+        'tabs' => array(
+            array(
+                'label' => 'Дочерние коллекции',
+                'content' => $this->renderPartial(
+                    $renderViewChildCollections,
+                    array(
+                        'ChildCollectionsDataProvider' => $ChildCollectionsDataProvider,
+                        'model' => $model
+                    ),
+                    true
+                ),
+                'active' => true
+            ),
+            array(
+                'label' => 'Объекты в коллекции',
+                'content' => $this->renderPartial($renderViewObjects, array('ObjectsDataProvider' => $ObjectsDataProvider, 'model' => $model), true),
+            ),
+        ),
+    )
+);
+?>
+

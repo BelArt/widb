@@ -1,0 +1,48 @@
+.pageName {
+    margin: 0px 0px 10px 0px;
+    font-size: 22px;
+    line-height: 22px;
+}
+.itemThumbnailBig {
+    width: 180px;
+    margin: 0px 15px 15px 0px !important;
+}
+.itemThumbnailMedium {
+    margin: 0px 15px 15px 0px !important;
+}
+.itemThumbnailSmall {
+    margin: 0px 15px 15px 0px !important;
+}
+.itemThumbnailName {
+    margin: 0px;
+    padding: 0px 5px 0px 5px;
+}
+.itemThumbnailAuthor {
+    margin: 0px;
+    padding: 0px 5px 0px 5px;
+    color: #999999;
+}
+.gape {
+    height: 20px;
+    display: block;
+}
+.gapeSmall {
+    height: 10px;
+    display: block;
+}
+.itemThumbnailDescriptionBlock {
+    width: 100%;
+}
+.itemThumbnailCheckboxBlock {
+    width: 20px;
+    padding: 0px;
+    vertical-align: middle;
+}
+.itemThumbnailCheckboxBlock INPUT[type='checkbox'] {
+    margin: 0 auto;
+    display: block;
+}
+.itemThumbnailTextBlock {
+    padding: 0px 5px 0px 0px;
+    vertical-align: middle;
+}

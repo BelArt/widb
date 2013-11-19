@@ -24,9 +24,16 @@
  * @property string $date_delete
  * @property string $sort
  * @property integer $deleted
+ * @property string $user_create
+ * @property string $user_modify
+ * @property string $user_delete
  */
 class Objects extends ActiveRecord
 {
+    private $thumbnailBig;
+    private $thumbnailMedium;
+    private $thumbnailSmall;
+
 	/**
 	 * @return string the associated database table name
 	 */
@@ -60,9 +67,8 @@ class Objects extends ActiveRecord
 	 */
 	public function relations()
 	{
-		// NOTE: you may need to adjust the relation name and the related
-		// class name for the relations automatically generated below.
 		return array(
+            'author' => array(self::BELONGS_TO, 'Authors', 'author_id'),
 		);
 	}
 
@@ -149,4 +155,52 @@ class Objects extends ActiveRecord
 	{
 		return parent::model($className);
 	}
+
+    protected function afterFind()
+    {
+        parent::afterFind();
+
+        // формируем набор превью
+        $this->setThumbnails();
+    }
+
+    /**
+     * Формирует набор превью
+     */
+    protected function setThumbnails()
+    {
+        $this->thumbnailBig = ImageHelper::getBigThumbnailForObject($this);
+        $this->thumbnailMedium = ImageHelper::getMediumThumbnailForObject($this);
+        $this->thumbnailSmall = ImageHelper::getSmallThumbnailForObject($this);
+    }
+
+    public function getThumbnailBig()
+    {
+        return $this->thumbnailBig;
+    }
+
+    public function setThumbnailBig($value)
+    {
+        $this->thumbnailBig = $value;
+    }
+
+    public function getThumbnailMedium()
+    {
+        return $this->thumbnailMedium;
+    }
+
+    public function setThumbnailMedium($value)
+    {
+        $this->thumbnailMedium = $value;
+    }
+
+    public function getThumbnailSmall()
+    {
+        return $this->thumbnailSmall;
+    }
+
+    public function setThumbnailSmall($value)
+    {
+        $this->thumbnailSmall = $value;
+    }
 }

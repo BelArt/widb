@@ -53,8 +53,34 @@
 .navbar .navbarUserInfo {
     margin-top: 10px;
 }
-.pageName {
-    margin: 0px 0px 10px 0px;
-    font-size: 22px;
-    line-height: 22px;
+.nav-pills>li {
+    margin-right: 10px;
+}
+.nav-pills>li.small {
+    margin-right: 3px;
+}
+.nav-pills>li.small.active {
+    margin-right: 7px;
+}
+.nav-pills>li.small>a {
+    padding: 4px 8px 4px 8px;
+    margin: 0;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+.nav-pills {
+    margin-bottom: 0px;
+}
+.small {
+    margin-bottom: 0px;
+}
+.list-view {
+    padding-top: 0px;
+}
+.nav-tabs>.active>a, .nav-tabs>.active>a:hover, .nav-tabs>.active>a:focus {
+    background-color: #F5F5F5;
+}
+.thumbnail {
+    margin-bottom: 5px;
 }
