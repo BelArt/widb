@@ -85,7 +85,7 @@ class CollectionsController extends Controller
             'Objects',
             array(
                 'criteria' => array(
-                    'condition' => 't.collection_id = :collection_id AND t.deleted = 0',
+                    'condition' => 't.collection_id = :collection_id',
                     'params' => array(':collection_id' => $id),
                     'with' => array('author')
                 ),
@@ -96,7 +96,7 @@ class CollectionsController extends Controller
             'Collections',
             array(
                 'criteria' => array(
-                    'condition' => 'parent_id = :parent_id AND deleted = 0',
+                    'condition' => 'parent_id = :parent_id',
                     'params' => array(':parent_id' => $id)
                 ),
             )

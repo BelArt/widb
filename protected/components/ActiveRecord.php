@@ -6,6 +6,10 @@ class ActiveRecord extends CActiveRecord
 {
     public function beforeSave()
     {
+        if (!parent::beforeSave()) {
+            return false;
+        }
+
         /*
          * Обрабатываем запись в поля date_... и user_...
          */
@@ -30,8 +34,21 @@ class ActiveRecord extends CActiveRecord
                 $this->user_delete = $userId;
                 $this->user_modify = $userId;
                 break;
+            default:
+                throw new CException('Установлен неизвестный сценарий!');
         }
 
-        return parent::beforeSave();
+        return true;
+    }
+
+    /**
+     * Выбираем только неудаленные записи
+     * @return array
+     */
+    public function defaultScope()
+    {
+        return array(
+            'condition' => $this->getTableAlias(false, false).'.deleted = 0',
+        );
     }
 } 
