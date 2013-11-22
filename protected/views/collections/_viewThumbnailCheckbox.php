@@ -5,7 +5,7 @@
 $itemUrl = $this->createUrl('collections/view', array('id' => $data->id));
 ?>
 
-<li class="itemThumbnailBig">
+<li class="itemThumbnail">
     <a href="<?= CHtml::encode($itemUrl) ?>" class="thumbnail" title="<?= CHtml::encode($data->name) ?>">
         <img src="<?= CHtml::encode($data->thumbnailBig) ?>" alt="<?= CHtml::encode($data->name) ?>" title="<?= CHtml::encode($data->name) ?>" />
     </a>

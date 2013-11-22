@@ -29,7 +29,7 @@
         array(
             'dataProvider' => $dataProvider,
             'template' => "{items}\n{pager}",
-            'itemView' => '_viewNoCheckbox',
+            'itemView' => '_viewThumbnailNoCheckbox',
         )
     );
  ?>
