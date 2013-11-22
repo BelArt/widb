@@ -46,6 +46,7 @@ $this->widget(
     'bootstrap.widgets.TbTabs',
     array(
         'type' => 'tabs', // 'tabs' or 'pills'
+        //'placement' => 'below',
         'tabs' => array(
             array(
                 'label' => 'Дочерние коллекции',
@@ -57,11 +58,12 @@ $this->widget(
                     ),
                     true
                 ),
-                'active' => true
+                'active' => (empty($_GET['tb']) || $_GET['tb'] == 'cc' || (!empty($_GET['tb']) && $_GET['tb'] != 'ob' && $_GET['tb'] != 'cc'))
             ),
             array(
                 'label' => 'Объекты в коллекции',
                 'content' => $this->renderPartial($renderViewObjects, array('ObjectsDataProvider' => $ObjectsDataProvider, 'model' => $model), true),
+                'active' => (!empty($_GET['tb']) && $_GET['tb'] == 'ob')
             ),
         ),
     )

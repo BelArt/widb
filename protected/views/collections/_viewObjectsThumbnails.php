@@ -35,6 +35,11 @@ $this->widget(
 <div class="gapeSmall"></div>
 
 <?php
+
+$classThumbnails = (empty($_GET['ov']) || $_GET['ov'] == 'th') ? 'selected' : '';
+$classList = (!empty($_GET['ov']) && $_GET['ov'] == 'ls') ? 'selected' : '';
+$classTable = (!empty($_GET['ov']) && $_GET['ov'] == 'tb') ? 'selected' : '';
+
 $this->widget(
     'bootstrap.widgets.TbMenu',
     array(
@@ -46,18 +51,18 @@ $this->widget(
             ),
             array(
                 'label' => 'Картинками',
-                'url' => $this->createUrl('collections/view', array('id' => $model->id, 'ov' => 'thumbnails', 'cv' => (!empty($_GET['cv']) ? $_GET['cv'] : ''))),
-                'itemOptions' => array('class' => 'small')
+                'url' => $this->createUrl('collections/view', array('id' => $model->id, 'ov' => 'th', 'cv' => (!empty($_GET['cv']) ? $_GET['cv'] : ''), 'tb' => 'ob')),
+                'itemOptions' => array('class' => 'small '.$classThumbnails)
             ),
             array(
                 'label' => 'Списком',
-                'url' => $this->createUrl('collections/view', array('id' => $model->id, 'ov' => 'list', 'cv' => (!empty($_GET['cv']) ? $_GET['cv'] : ''))),
-                'itemOptions' => array('class' => 'small')
+                'url' => $this->createUrl('collections/view', array('id' => $model->id, 'ov' => 'ls', 'cv' => (!empty($_GET['cv']) ? $_GET['cv'] : ''), 'tb' => 'ob')),
+                'itemOptions' => array('class' => 'small '.$classList)
             ),
             array(
                 'label' => 'Таблицей',
-                'url' => $this->createUrl('collections/view', array('id' => $model->id, 'ov' => 'table', 'cv' => (!empty($_GET['cv']) ? $_GET['cv'] : ''))),
-                'itemOptions' => array('class' => 'small')
+                'url' => $this->createUrl('collections/view', array('id' => $model->id, 'ov' => 'tb', 'cv' => (!empty($_GET['cv']) ? $_GET['cv'] : ''), 'tb' => 'ob')),
+                'itemOptions' => array('class' => 'small '.$classTable)
             ),
         )
     )

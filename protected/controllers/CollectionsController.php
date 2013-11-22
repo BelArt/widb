@@ -49,48 +49,46 @@ class CollectionsController extends Controller
 	 * Displays a particular model.
 	 * @param integer $id the ID of the model to be displayed
 	 */
-	public function actionView($id, $cv = 'thumbnails', $ov = 'thumbnails')
+	public function actionView($id, $cv = 'th', $ov = 'th', $tb = 'cc')
 	{
         $model = $this->loadModel($id);
 
+        // как отображать дочерние коллекции
         switch ($cv) {
-            case 'thumbnails':
+            case 'th': // картинками
                 $renderViewChildCollections = '_viewChildCollectionsThumbnails';
                 break;
-            case 'list':
+            case 'ls': // списком
                 $renderViewChildCollections = '_viewChildCollectionsList';
                 break;
-            case 'table':
+            case 'tb': // таблицей
                 $renderViewChildCollections = '_viewChildCollectionsTable';
                 break;
-            default:
+            default: // картинками
                 $renderViewChildCollections = '_viewChildCollectionsThumbnails';
         }
 
+        // как отображать объекты в коллекции
         switch ($ov) {
-            case 'thumbnails':
+            case 'th': // картинками
                 $renderViewObjects = '_viewObjectsThumbnails';
                 break;
-            case 'list':
+            case 'ls': // списком
                 $renderViewObjects = '_viewObjectsList';
                 break;
-            case 'table':
+            case 'tb': // таблицей
                 $renderViewObjects = '_viewObjectsTable';
                 break;
-            default:
+            default: // картинками
                 $renderViewObjects = '_viewObjectsThumbnails';
         }
 
-        $ObjectsDataProvider = new CActiveDataProvider(
-            'Objects',
-            array(
-                'criteria' => array(
-                    'condition' => 't.collection_id = :collection_id',
-                    'params' => array(':collection_id' => $id),
-                    'with' => array('author')
-                ),
-            )
-        );
+        $ObjectsCriteria = new CDbCriteria();
+        $ObjectsCriteria->condition = 't.collection_id = :collection_id';
+        $ObjectsCriteria->params = array(':collection_id' => $id);
+        $ObjectsCriteria->with = array('author');
+
+        $ObjectsDataProvider = new CActiveDataProvider('Objects', array('criteria' => $ObjectsCriteria));
 
         $ChildCollectionsDataProvider = new CActiveDataProvider(
             'Collections',
