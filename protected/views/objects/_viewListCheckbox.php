@@ -2,7 +2,7 @@
 /* @var $this CollectionsController */
 /* @var $data Collections */
 
-$itemUrl = $this->createUrl('collections/view', array('id' => $data->id));
+$itemUrl = $this->createUrl('objects/view', array('id' => $data->id));
 ?>
 
 <table class="itemList">
@@ -15,6 +15,9 @@ $itemUrl = $this->createUrl('collections/view', array('id' => $data->id));
         </td>
         <td class="itemListDescriptionBlock">
             <p class="itemListName"><a href='<?= CHtml::encode($itemUrl) ?>'><?= CHtml::encode($data->name) ?></a></p>
+            <?php if(!empty($data->author->initials)): ?>
+                <p class='itemListAuthor'><?= CHtml::encode($data->author->initials) ?></p>
+            <?php endif; ?>
         </td>
     </tr>
 </table>

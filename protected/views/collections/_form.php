@@ -13,7 +13,7 @@ $form = $this->beginWidget(
         'id' => 'collections-form',
         'type' => 'horizontal',
         'inlineErrors' => true,
-        'htmlOptions' => array('class' => 'well'), // for inset effect
+        'htmlOptions' => array('class' => 'collectionForm_form'), // for inset effect
     )
 );
 

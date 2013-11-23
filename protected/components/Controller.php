@@ -24,6 +24,10 @@ class Controller extends CController
      * @var string название страницы. Будет доступно в лэйауте через $this->pageName
      */
     public $pageName = '';
+    /**
+     * @var array меню раздела. Массив данных для поля items виджета bootstrap.widgets.TbMenu
+     */
+    public $pageMenu = array();
 
     private $_pageTitle;
 
@@ -40,9 +44,6 @@ class Controller extends CController
 
     }
 
-    /**
-     * @param string $value the page title.
-     */
     public function setPageTitle($value)
     {
         if (!is_array($value)) {

@@ -11,6 +11,8 @@
     $this->widget('zii.widgets.CListView', array(
         'dataProvider' => $ChildCollectionsDataProvider,
         'itemView'=>'_viewListCheckbox',
+        'template' => '{items}',
+        'emptyText' => ''
     ));
     ?>
 </div>

@@ -1,22 +1,26 @@
 <?php
 /*
- * Сначала подключается defaultLayout, потом все пакеты booster'а, потом boosterFix
- * Для остальных пакетов надо указывать зависимость от boosterFix'а,чтобы они подключались после него
+ * Сначала подключается defaultLayout, потом стили всех виджетов booster'а, потом layoutFix, потом global.
+ * Для остальных пакетов надо указывать зависимость от global'а,чтобы они подключались после него.
+ * В layoutFix - правки стилей виджетов booster'а и defaultLayout.
+ * В global - стили общих элементов проекта.
+ * Для каждого раздела, если там свои стили, которые нигде больше не используются, можно создать свой пакет,
+ * который подключить во view этого раздела.
  */
 return array(
     'defaultLayout' => array(
         'basePath'=>'application.assets',
         'css'=>array('css/screen.css', 'css/main.css'),
     ),
-    'boosterFix' => array(
+    'layoutFix' => array(
         'basePath'=>'application.assets',
-        'css'=>array('css/booster-fix.css'),
-        'depends' => array('bootstrap.css', 'bootstrap.js') // подключится после всех виджетов booster'а
+        'css'=>array('css/layout-fix.css'),
+        'depends' => array('bootstrap.css', 'bootstrap.js')
     ),
     'global' => array(
         'basePath'=>'application.assets',
         'css'=>array('css/global.css'),
-        'depends' => array('boosterFix')
+        'depends' => array('layoutFix')
     ),
     'emptyLayout' => array(
         'basePath'=>'application.assets',

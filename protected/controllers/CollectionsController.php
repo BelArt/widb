@@ -104,6 +104,23 @@ class CollectionsController extends Controller
         $this->pageTitle = array($model->name);
         $this->breadcrumbs = array($model->name);
         $this->pageName = $model->name;
+        $this->pageMenu = array(
+            array(
+                'label' => 'Редактировать коллекцию',
+                'url' => '#',
+                //'itemOptions' => array('class' => 'small')
+            ),
+            array(
+                'label' => 'Удалить коллекцию',
+                'url' => '#',
+                //'itemOptions' => array('class' => 'small')
+            ),
+            array(
+                'label' => 'Добавить объект в коллекцию',
+                'url' => '#',
+                //'itemOptions' => array('class' => 'small')
+            ),
+        );
 
 		$this->render(
             'view',
@@ -194,6 +211,12 @@ class CollectionsController extends Controller
         // параметры страницы
         $this->pageTitle = array('Коллекции');
         $this->breadcrumbs = array('Коллекции');
+        $this->pageMenu = array(
+            array(
+                'label' => 'Создать коллекцию',
+                'url' => $this->createUrl('collections/create'),
+            ),
+        );
 
 		$this->render('index',array(
 			'dataProvider'=>$dataProvider,

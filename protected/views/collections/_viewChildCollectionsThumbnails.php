@@ -12,8 +12,9 @@ $this->widget(
     'bootstrap.widgets.TbThumbnails',
     array(
         'dataProvider' => $ChildCollectionsDataProvider,
-        'template' => "{items}\n{pager}",
+        'template' => "{items}",
         'itemView' => '_viewThumbnailCheckbox',
+        'emptyText' => ''
     )
 );
 ?>

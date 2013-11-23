@@ -12,8 +12,8 @@ $itemUrl = $this->createUrl('collections/view', array('id' => $data->id));
 
     <table class="itemThumbnailDescriptionBlock">
         <tr>
-            <td class="itemThumbnailTextBlock"><p class='itemThumbnailName'><a href="<?= CHtml::encode($itemUrl) ?>" title="<?= CHtml::encode($data->name) ?>"><?= CHtml::encode($data->name) ?></a></p></td>
             <td class="itemThumbnailCheckboxBlock"><input type="checkbox" /></td>
+            <td class="itemThumbnailTextBlock"><p class='itemThumbnailName'><a href="<?= CHtml::encode($itemUrl) ?>" title="<?= CHtml::encode($data->name) ?>"><?= CHtml::encode($data->name) ?></a></p></td>
         </tr>
     </table>
 </li>
