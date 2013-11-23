@@ -44,10 +44,17 @@ class SiteController extends Controller
 	{
 		if($error=Yii::app()->errorHandler->error)
 		{
-			if(Yii::app()->request->isAjaxRequest)
+			if (Yii::app()->request->isAjaxRequest) {
 				echo $error['message'];
-			else
+            } else {
+
+                // параметры страницы
+                //$this->pageTitle = array($error['message']);
+                //$this->breadcrumbs = array();
+                //$this->pageName = $error['message'];
+
 				$this->render('error', $error);
+            }
 		}
 	}
 

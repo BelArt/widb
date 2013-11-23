@@ -3,32 +3,18 @@
 /* @var $dataProvider CActiveDataProvider */
 
     Yii::app()->clientScript->registerPackage('collections');
+?>
 
-    $this->widget(
-        'bootstrap.widgets.TbMenu',
-        array(
-            'type' => 'pills',
-            'items' => array(
-                array(
-                    'label' => 'Создать коллекцию',
-                    'url' => $this->createUrl('collections/create'),
-                    'itemOptions' => array('class' => 'active')
-                ),
-
-            )
-        )
-    );
-
-    echo CHtml::openTag('div', array('class' => 'row-fluid'));
-
+<div class="row-fluid">
+<?
     $this->widget(
         'bootstrap.widgets.TbThumbnails',
         array(
             'dataProvider' => $dataProvider,
             'template' => "{items}\n{pager}",
-            'itemView' => '_view',
+            'itemView' => '_viewThumbnailNoCheckbox',
+            //'htmlOptions' => array('class' => 'collections_thumbnails')
         )
     );
-
-    echo CHtml::closeTag('div');
  ?>
+ </div>

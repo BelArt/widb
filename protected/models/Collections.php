@@ -19,7 +19,7 @@
  * @property string $user_create
  * @property string $user_modify
  * @property string $user_delete
- * @property integer $public
+ * @property integer $temporary_public
  *
  * @todo разобраться с поиском
  */
@@ -204,7 +204,7 @@ class Collections extends ActiveRecord
         $CollectionsTree = self::getTree();
         foreach ($CollectionsTree as $Collection) {
             $result[] = array(
-                'text' => '<a href="#">'.$Collection->name.'</a>',
+                'text' => '<a href="'.Yii::app()->urlManager->createUrl('collections/view', array('id' => $Collection->id)).'">'.$Collection->name.'</a>',
                 'children' => self::getChildrenStructure($Collection),
             );
         }
@@ -223,7 +223,7 @@ class Collections extends ActiveRecord
 
         foreach ($Collection->children as $ChildCollection) {
             $result[] = array(
-                'text' => '<a href="#">'.$ChildCollection->name.'</a>',
+                'text' => '<a href="'.Yii::app()->urlManager->createUrl('collections/view', array('id' => $ChildCollection->id)).'">'.$ChildCollection->name.'</a>',
                 'children' => self::getChildrenStructure($ChildCollection),
             );
         }

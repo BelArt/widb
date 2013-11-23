@@ -1,13 +1,7 @@
-.cls_collectionName {
-    margin: 5px 0px 0px 0px;
-    padding: 0px 0px 0px 5px;
+/*.collections_thumbnails {
+    width: 720px;
+    margin: 0 auto;
 }
-.cls_thumbnailMedium {
-    /*width: 100px;*/
-}
-.thumbnail {
-    /*width: 100px;*/
-}
-.list-view {
-    padding-top: 0px;
-}
+.collections_thumbnails UL.thumbnails {
+    width: 100%;
+}*/

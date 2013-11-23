@@ -24,6 +24,10 @@ class Controller extends CController
      * @var string название страницы. Будет доступно в лэйауте через $this->pageName
      */
     public $pageName = '';
+    /**
+     * @var array меню раздела. Массив данных для поля items виджета bootstrap.widgets.TbMenu
+     */
+    public $pageMenu = array();
 
     private $_pageTitle;
 
@@ -32,19 +36,20 @@ class Controller extends CController
      */
     public function getPageTitle()
     {
-        if($this->_pageTitle !== null)
-            return $this->_pageTitle;
-        else
-        {
-            return $this->_pageTitle = array(Yii::app()->name);
+        if (empty($this->_pageTitle)) {
+            $this->_pageTitle = array(Yii::app()->name);
         }
+
+        return $this->_pageTitle;
+
     }
 
-    /**
-     * @param string $value the page title.
-     */
     public function setPageTitle($value)
     {
+        if (!is_array($value)) {
+            throw new CException('В качестве pageTitle передан не массив!');
+        }
+
         array_unshift($value, Yii::app()->name);
         $this->_pageTitle = $value;
     }

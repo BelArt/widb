@@ -35,41 +35,103 @@ class CollectionsController extends Controller
                 'actions' => array('create'),
                 'roles' => array('oCollectionCreate'),
             ),
+            array('allow',
+                'actions' => array('view'),
+                //'roles' => array('oCollectionView'), // @todo эта проверка должна работать
+            ),
             array('deny',  // deny all users
                 'users'=>array('*'),
             ),
         );
     }
-	/*public function accessRules()
-	{
-		return array(
-			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','view'),
-				'users'=>array('*'),
-			),
-			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('create','update'),
-				'users'=>array('@'),
-			),
-			array('allow', // allow admin user to perform 'admin' and 'delete' actions
-				'actions'=>array('admin','delete'),
-				'users'=>array('admin'),
-			),
-			array('deny',  // deny all users
-				'users'=>array('*'),
-			),
-		);
-	}*/
 
 	/**
 	 * Displays a particular model.
 	 * @param integer $id the ID of the model to be displayed
 	 */
-	public function actionView($id)
+	public function actionView($id, $cv = 'th', $ov = 'th', $tb = 'cc')
 	{
-		$this->render('view',array(
-			'model'=>$this->loadModel($id),
-		));
+        $model = $this->loadModel($id);
+
+        // как отображать дочерние коллекции
+        switch ($cv) {
+            case 'th': // картинками
+                $renderViewChildCollections = '_viewChildCollectionsThumbnails';
+                break;
+            case 'ls': // списком
+                $renderViewChildCollections = '_viewChildCollectionsList';
+                break;
+            case 'tb': // таблицей
+                $renderViewChildCollections = '_viewChildCollectionsTable';
+                break;
+            default: // картинками
+                $renderViewChildCollections = '_viewChildCollectionsThumbnails';
+        }
+
+        // как отображать объекты в коллекции
+        switch ($ov) {
+            case 'th': // картинками
+                $renderViewObjects = '_viewObjectsThumbnails';
+                break;
+            case 'ls': // списком
+                $renderViewObjects = '_viewObjectsList';
+                break;
+            case 'tb': // таблицей
+                $renderViewObjects = '_viewObjectsTable';
+                break;
+            default: // картинками
+                $renderViewObjects = '_viewObjectsThumbnails';
+        }
+
+        $ObjectsCriteria = new CDbCriteria();
+        $ObjectsCriteria->condition = 't.collection_id = :collection_id';
+        $ObjectsCriteria->params = array(':collection_id' => $id);
+        $ObjectsCriteria->with = array('author');
+
+        $ObjectsDataProvider = new CActiveDataProvider('Objects', array('criteria' => $ObjectsCriteria));
+
+        $ChildCollectionsDataProvider = new CActiveDataProvider(
+            'Collections',
+            array(
+                'criteria' => array(
+                    'condition' => 'parent_id = :parent_id',
+                    'params' => array(':parent_id' => $id)
+                ),
+            )
+        );
+
+        // параметры страницы
+        $this->pageTitle = array($model->name);
+        $this->breadcrumbs = array($model->name);
+        $this->pageName = $model->name;
+        $this->pageMenu = array(
+            array(
+                'label' => 'Редактировать коллекцию',
+                'url' => '#',
+                //'itemOptions' => array('class' => 'small')
+            ),
+            array(
+                'label' => 'Удалить коллекцию',
+                'url' => '#',
+                //'itemOptions' => array('class' => 'small')
+            ),
+            array(
+                'label' => 'Добавить объект в коллекцию',
+                'url' => '#',
+                //'itemOptions' => array('class' => 'small')
+            ),
+        );
+
+		$this->render(
+            'view',
+            array(
+                'model' => $model,
+                'ObjectsDataProvider' => $ObjectsDataProvider,
+                'ChildCollectionsDataProvider' => $ChildCollectionsDataProvider,
+                'renderViewChildCollections' => $renderViewChildCollections,
+                'renderViewObjects' => $renderViewObjects,
+            )
+        );
 	}
 
 	/**
@@ -149,6 +211,12 @@ class CollectionsController extends Controller
         // параметры страницы
         $this->pageTitle = array('Коллекции');
         $this->breadcrumbs = array('Коллекции');
+        $this->pageMenu = array(
+            array(
+                'label' => 'Создать коллекцию',
+                'url' => $this->createUrl('collections/create'),
+            ),
+        );
 
 		$this->render('index',array(
 			'dataProvider'=>$dataProvider,

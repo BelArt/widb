@@ -10,7 +10,8 @@
 	<meta name="language" content="ru" />
 
     <? Yii::app()->clientScript->registerPackage('defaultLayout'); ?>
-    <? Yii::app()->clientScript->registerPackage('boosterFix'); ?>
+    <? Yii::app()->clientScript->registerPackage('layoutFix'); ?>
+    <? Yii::app()->clientScript->registerPackage('global'); ?>
 
 	<title>
         <?php
@@ -24,10 +25,6 @@
 <body>
 
 <div class="container" id="page">
-
-	<!--<div id="header">
-		<div id="logo"><?php echo CHtml::encode($this->pageName); ?></div>
-	</div>--><!-- header -->
 
 	<div id="mainmenu">
         <?php
