@@ -14,35 +14,6 @@ Yii::app()->clientScript->registerPackage('collectionView');
 <div class="gape"></div>
 
 <?php
-/*$this->widget(
-    'bootstrap.widgets.TbMenu',
-    array(
-        'type' => 'pills',
-        //'stacked' => true,
-        'items' => array(
-            array(
-                'label' => 'Редактировать коллекцию',
-                'url' => '#',
-                'itemOptions' => array('class' => 'small')
-            ),
-            array(
-                'label' => 'Удалить коллекцию',
-                'url' => '#',
-                'itemOptions' => array('class' => 'small')
-            ),
-            array(
-                'label' => 'Добавить объект в коллекцию',
-                'url' => '#',
-                'itemOptions' => array('class' => 'small')
-            ),
-        ),
-    )
-);*/
-?>
-
-<!--<div class="gape"></div>-->
-
-<?php
 $this->widget(
     'bootstrap.widgets.TbTabs',
     array(

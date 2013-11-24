@@ -42,13 +42,14 @@ class ActiveRecord extends CActiveRecord
     }
 
     /**
-     * Выбираем только неудаленные записи
+     * Выбираем только неудаленные записи и сортируем в соответствии с полем sort
      * @return array
      */
     public function defaultScope()
     {
         return array(
             'condition' => $this->getTableAlias(false, false).'.deleted = 0',
+            'order' => $this->getTableAlias(false, false).'.sort ASC, '.$this->getTableAlias(false, false).'.name ASC',
         );
     }
 } 
