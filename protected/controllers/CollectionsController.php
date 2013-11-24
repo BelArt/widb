@@ -45,11 +45,15 @@ class CollectionsController extends Controller
         );
     }
 
-	/**
-	 * Displays a particular model.
-	 * @param integer $id the ID of the model to be displayed
-	 */
-	public function actionView($id, $cv = 'th', $ov = 'th', $tb = 'cc')
+
+    /**
+     * Просмотр коллекции
+     * @param string $id айди коллекции
+     * @param string $cv как отображать дочерние коллекции: th - картинками, ls - списком, tb - таблицей
+     * @param string $ov как отображать объекты в коллекции: th - картинками, ls - списком, tb - таблицей
+     * @param string $tb какая вкладка открыта (параметр используется уже во view): cc - дочерние коллекции, ob - объекты
+     */
+    public function actionView($id, $cv = 'th', $ov = 'th', $tb = 'cc')
 	{
         $model = $this->loadModel($id);
 
