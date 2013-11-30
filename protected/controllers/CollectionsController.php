@@ -19,6 +19,8 @@ class CollectionsController extends Controller
 		);
 	}
 
+    private $model;
+
 	/**
 	 * Specifies the access control rules.
 	 * This method is used by the 'accessControl' filter.
@@ -37,7 +39,11 @@ class CollectionsController extends Controller
             ),
             array('allow',
                 'actions' => array('view'),
-                //'roles' => array('oCollectionView'), // @todo эта проверка должна работать
+                'roles' => array(
+                    'oCollectionView' => array(
+                        'Collection' => $this->loadModel(Yii::app()->request->getQuery('id'))
+                    )
+                ),
             ),
             array('deny',  // deny all users
                 'users'=>array('*'),
@@ -251,10 +257,17 @@ class CollectionsController extends Controller
 	 */
 	public function loadModel($id)
 	{
-		$model=Collections::model()->findByPk($id);
-		if($model===null)
-			throw new CHttpException(404,'The requested page does not exist.');
-		return $model;
+        if (!empty($id)) {
+            if (empty($this->model)) {
+                $this->model = Collections::model()->findByPk($id);
+
+                if (empty($this->model)) {
+                    throw new CHttpException(404,'The requested page does not exist.');
+                }
+            }
+
+            return $this->model;
+        }
 	}
 
 	/**
