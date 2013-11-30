@@ -328,4 +328,138 @@ class Collections extends ActiveRecord
 
         return $result;
     }
+
+    /**
+     * Возвращает массив с айди коллекций, доступных пользователю
+     * Админу и контент-менеджеру доступны все коллекции
+     * @param $userId айди пользователя
+     * @return array массив с айди коллекций, доступных пользователю
+     */
+    public static function getIdsOfCollectionsAllowedToUser($userId)
+    {
+        $User = Users::model()->findByPk(
+            $userId,
+            array(
+                'select' => 'role'
+            )
+        );
+
+        $collections = Collections::model()->findAll(
+            array(
+                'select' => 'id'
+            )
+        );
+
+        $allCollectionIds = array();
+
+        foreach ($collections as $Collection) {
+            $allCollectionIds[] = $Collection->id;
+        }
+
+        // если пользователь - админ или контент-менеджер, то ему доступны все коллекции
+        if ($User->role == 'administrator' || $User->role == 'contentManager') {
+
+            return $allCollectionIds;
+        }
+
+        $result = array();
+
+        $records = UserAllowedCollection::model()->findAll(
+            'user_id = :user_id',
+            array(
+                ':user_id' => $userId,
+            )
+        );
+
+        foreach ($records as $Record) {
+            $result[] = $Record->collection_id;
+        }
+
+        // если нет перечня доступных коллекций, то доступны все коллекции
+        if (empty($result)) {
+            $result = $allCollectionIds;
+        }
+
+        return $result;
+    }
+
+    /**
+     * Возвращает CDbCriteria для подстановки в DataProvider для получения доступных пользователю коллекций
+     * @param $userId айди пользователя
+     * @return CDbCriteria для подстановки в DataProvider
+     */
+    public static function getAllowedCollectionsCriteria($userId)
+    {
+        $Criteria = new CDbCriteria();
+
+        $User = Users::model()->findByPk(
+            $userId,
+            array(
+                'select' => 'role'
+            )
+        );
+
+        // если пользователь - админ или контент-менеджер, то ему доступны все коллекции
+        if ($User->role == 'administrator' || $User->role == 'contentManager') {
+            return $Criteria;
+        }
+
+        $records = UserAllowedCollection::model()->findAll(
+            array(
+                'select' => 'collection_id',
+                'condition' => 'user_id = :user_id',
+                'params' => array(':user_id' => $userId)
+            )
+        );
+
+        $allowedCollectionsIds = array();
+
+        // если есть перечень доступных пользователю Коллекций, то ему доступны только эти коллекции и их потомки
+        if (!empty($records)) {
+            foreach ($records as $Record) {
+                $allowedCollectionsIds = array_unique(array_merge($allowedCollectionsIds, self::getDescendantCollectionsIds($Record->collection_id)));
+            }
+            $Criteria->addInCondition('id', $allowedCollectionsIds);
+            return $Criteria;
+        }
+
+        // перечень доступных коллекций пуст - значит, доступны все обчынче коллекции и публичные временные
+        $collections = self::model()->findAll(
+            array(
+                'select' => 'id',
+                'condition' => 'temporary = 0 OR (temporary = 1 AND temporary_public = 1)'
+            )
+        );
+
+        foreach ($collections as $Collection) {
+            $allowedCollectionsIds[] = $Collection->id;
+        }
+
+        $Criteria->addInCondition('id', $allowedCollectionsIds);
+
+        return $Criteria;
+    }
+
+    /**
+     * Возвращает массив с айди коллекций-потомков. Сама коллекция включается с массив.
+     * @param string $collectionId айди коллекции
+     * @return array массив с айди коллекций-потомков
+     */
+    public static function getDescendantCollectionsIds($collectionId)
+    {
+        $result = array($collectionId);
+
+        $Criteria = new CDbCriteria;
+        $Criteria->select = 'id';
+        $Criteria->addCondition('parent_id = :parent_id');
+        $Criteria->params = array(':parent_id' => $collectionId);
+
+        $collections = self::model()->findAll($Criteria);
+
+        foreach ($collections as $Collection) {
+            $result = array_unique(array_merge($result, self::getDescendantCollectionsIds($Collection->id)));
+        }
+
+        return $result;
+    }
 }
