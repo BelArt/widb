@@ -212,11 +212,16 @@ class CollectionsController extends Controller
 	}
 
 	/**
-	 * Lists all models.
+	 * Выводт список всех доступных пользователю коллекций
 	 */
 	public function actionIndex()
 	{
-		$dataProvider=new CActiveDataProvider('Collections');
+        $allowedCollectionsCriteria = Collections::getAllowedCollectionsCriteria(Yii::app()->user->id);
+
+		$dataProvider=new CActiveDataProvider(
+            'Collections',
+            array('criteria' => $allowedCollectionsCriteria)
+        );
 
         // параметры страницы
         $this->pageTitle = array('Коллекции');
