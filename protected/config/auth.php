@@ -160,12 +160,12 @@ return array(
         'data' => null
     ),
     // Временные коллекции
-    'oTempCollectionView' => array(
+    /*'oTempCollectionView' => array(
         'type' => CAuthItem::TYPE_OPERATION,
         'description' => 'Просмотр Временной коллекции',
         'bizRule' => null,
         'data' => null
-    ),
+    ),*/
     'oTempCollectionCreate' => array(
         'type' => CAuthItem::TYPE_OPERATION,
         'description' => 'Создание Временной коллекции',
@@ -205,22 +205,12 @@ return array(
         'bizRule' => 'return $params["Collection"]->isAllowedToUser(Yii::app()->user->id);',
         'data' => null,
         'children' => array(
-            'tTempCollectionIsOpen',
             'tTempCollectionIsOwn',
             'oObjectToTempCollectionAdd',
             'oObjectFromTempCollectionDelete',
             'oCollectionView',
             'oObjectView',
             'oImageView',
-        ),
-    ),
-    'tTempCollectionIsOpen' => array(
-        'type' => CAuthItem::TYPE_TASK,
-        'description' => 'Открытая Временная коллекция',
-        'bizRule' => 'return $params["Collection"]->temporary && $params["Collection"]->public;',
-        'data' => null,
-        'children' => array(
-            'oTempCollectionView',
         ),
     ),
     'tTempCollectionIsOwn' => array(
@@ -283,7 +273,7 @@ return array(
             'oCollectionEdit',
             'oCollectionDelete',
             // Временные коллекции
-            'oTempCollectionView',
+            //'oTempCollectionView',
             'oTempCollectionCreate',
             'oTempCollectionEdit',
             'oTempCollectionDelete',

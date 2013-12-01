@@ -18,7 +18,7 @@
     <div id="sidebar">
         <?php
             $this->widget('CTreeView', array(
-                'data' => Collections::getStructureForTreeViewWidget(),
+                'data' => Collections::getTree(),
                 'htmlOptions' => array(
                     'class' => 'filetree'
                 )
