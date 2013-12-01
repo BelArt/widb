@@ -30,7 +30,7 @@ class Collections extends ActiveRecord
      * Сделан не через геттер\сеттер из-за того, что  иначе возникает
      * indirect modification of overloaded property has no effect
      */
-    public $children;
+    public $children = array();
 
     private $_thumbnailBig;
     private $_thumbnailMedium;
@@ -157,62 +157,6 @@ class Collections extends ActiveRecord
     }
 
     /**
-     * Возвращает дерево моделей. Дочерние модели у каждой модели хранятся в
-     * поле {@link children}. Дочерние модели определяются по parent_id
-     * @return array массив с моделями
-     */
-    public static function getTree()
-    {
-        $Criteria = new CDbCriteria;
-        $Criteria->addCondition('parent_id = 0');
-        $Criteria->addCondition('deleted = 0');
-
-        $tree = self::model()->findAll($Criteria);
-
-        foreach ($tree as $Collection) {
-            self::getChildrenCollections($Collection);
-        }
-
-        return $tree;
-    }
-
-    /**
-     * Для переданной модели находит дочерние модели и кладет их в поле {@link children}
-     * самой модели. Дочерние модели определяются по parent_id
-     * @param Collections $Collection модель
-     */
-    private static function getChildrenCollections(Collections $Collection)
-    {
-        $Criteria = new CDbCriteria;
-        $Criteria->addCondition('parent_id = '.$Collection->id);
-
-        $Collection->children = self::model()->findAll($Criteria);
-
-        foreach ($Collection->children as $ChildCollection) {
-            self::getChildrenCollections($ChildCollection);
-        }
-    }
-
-    /**
-     * Возвращает структуру для передачи в виджет TreeView
-     * @return array
-     */
-    public static function getStructureForTreeViewWidget()
-    {
-        $result = array();
-
-        $CollectionsTree = self::getTree();
-        foreach ($CollectionsTree as $Collection) {
-            $result[] = array(
-                'text' => '<a href="'.Yii::app()->urlManager->createUrl('collections/view', array('id' => $Collection->id)).'">'.$Collection->name.'</a>',
-                'children' => self::getChildrenStructure($Collection),
-            );
-        }
-
-        return $result;
-    }
-
-    /**
      * Для переданной модели возвращает структуру ее детей для виджета TreeView
      * @param Collections $Collection модель
      * @return array
@@ -230,7 +174,6 @@ class Collections extends ActiveRecord
 
         return $result;
     }
-
 
     public function getThumbnailBig()
     {
@@ -264,33 +207,23 @@ class Collections extends ActiveRecord
 
     /**
      * Проверяет, доступна ли текущая коллекция пользователю.
-     *
-     * Коллекция  доступна пользователя тогда, когда либо список доступных
-     * ему коллекция пуст, либо она есть в этом списке
-     *
      * @param integer $userId айдишник пользователя
      * @return bool
      */
     public function isAllowedToUser($userId)
     {
-        $records = UserAllowedCollection::model()->findAll(
-            'user_id = :user_id',
-            array(
-                ':user_id' => $userId,
-            )
-        );
+        return self::getCollectionIsAllowedToUser($this->id, $userId);
+    }
 
-        if (empty($records)) {
-            return true;
-        }
-
-        foreach ($records as $Record) {
-            if ($Record->collection_id == $this->id) {
-                return true;
-            }
-        }
-
-        return false;
+    /**
+     * Проверяет, доступна ли коллекция пользователю.
+     * @param integer $collectionId айди коллекции
+     * @param integer $userId айди пользователя
+     * @return bool
+     */
+    public static function getCollectionIsAllowedToUser($collectionId, $userId)
+    {
+        return in_array($collectionId, self::getIdsOfCollectionsAllowedToUser($userId));
     }
 
     /**
@@ -331,67 +264,13 @@ class Collections extends ActiveRecord
 
     /**
      * Возвращает массив с айди коллекций, доступных пользователю
-     * Админу и контент-менеджеру доступны все коллекции
-     * @param $userId айди пользователя
+     * @param integer $userId айди пользователя
      * @return array массив с айди коллекций, доступных пользователю
      */
     public static function getIdsOfCollectionsAllowedToUser($userId)
     {
-        $User = Users::model()->findByPk(
-            $userId,
-            array(
-                'select' => 'role'
-            )
-        );
-
-        $collections = Collections::model()->findAll(
-            array(
-                'select' => 'id'
-            )
-        );
-
-        $allCollectionIds = array();
-
-        foreach ($collections as $Collection) {
-            $allCollectionIds[] = $Collection->id;
-        }
-
-        // если пользователь - админ или контент-менеджер, то ему доступны все коллекции
-        if ($User->role == 'administrator' || $User->role == 'contentManager') {
-
-            return $allCollectionIds;
-        }
-
         $result = array();
 
-        $records = UserAllowedCollection::model()->findAll(
-            'user_id = :user_id',
-            array(
-                ':user_id' => $userId,
-            )
-        );
-
-        foreach ($records as $Record) {
-            $result[] = $Record->collection_id;
-        }
-
-        // если нет перечня доступных коллекций, то доступны все коллекции
-        if (empty($result)) {
-            $result = $allCollectionIds;
-        }
-
-        return $result;
-    }
-
-    /**
-     * Возвращает CDbCriteria для подстановки в DataProvider для получения доступных пользователю коллекций
-     * @param $userId айди пользователя
-     * @return CDbCriteria для подстановки в DataProvider
-     */
-    public static function getAllowedCollectionsCriteria($userId)
-    {
-        $Criteria = new CDbCriteria();
-
         $User = Users::model()->findByPk(
             $userId,
             array(
@@ -399,9 +278,18 @@ class Collections extends ActiveRecord
             )
         );
 
+        $collections = self::model()->findAll(
+            array(
+                'select' => 'id',
+            )
+        );
+
         // если пользователь - админ или контент-менеджер, то ему доступны все коллекции
         if ($User->role == 'administrator' || $User->role == 'contentManager') {
-            return $Criteria;
+            foreach ($collections as $Collection) {
+                $result[] = $Collection->id;
+            }
+            return $result;
         }
 
         $records = UserAllowedCollection::model()->findAll(
@@ -412,15 +300,12 @@ class Collections extends ActiveRecord
             )
         );
 
-        $allowedCollectionsIds = array();
-
         // если есть перечень доступных пользователю Коллекций, то ему доступны только эти коллекции и их потомки
         if (!empty($records)) {
             foreach ($records as $Record) {
-                $allowedCollectionsIds = array_unique(array_merge($allowedCollectionsIds, self::getDescendantCollectionsIds($Record->collection_id)));
+                $result = array_unique(array_merge($result, self::getDescendantCollectionsIds($Record->collection_id)));
             }
-            $Criteria->addInCondition('id', $allowedCollectionsIds);
-            return $Criteria;
+            return $result;
         }
 
         // перечень доступных коллекций пуст - значит, доступны все обчынче коллекции и публичные временные
@@ -432,17 +317,65 @@ class Collections extends ActiveRecord
         );
 
         foreach ($collections as $Collection) {
-            $allowedCollectionsIds[] = $Collection->id;
+            $result[] = $Collection->id;
         }
 
-        $Criteria->addInCondition('id', $allowedCollectionsIds);
+        return $result;
+    }
+
+    /**
+     * Возвращает массив со структурой дерева коллекций, доступных пользователю, для передачи в виджет CTreeView
+     * @return array
+     */
+    public static function getTree()
+    {
+        $idsOfCollectionsAllowedToUser = self::getIdsOfCollectionsAllowedToUser(Yii::app()->user->id);
+
+        $Criteria = self::getAllowedCollectionsCriteria(Yii::app()->user->id);
+
+        $allowedCollections = Collections::model()->findAll($Criteria);
+
+        $rootCollections = array();
+
+        foreach ($allowedCollections as $Collection) {
+            foreach ($allowedCollections as $CollectionChild) {
+                if ($CollectionChild->parent_id == $Collection->id) {
+                    $Collection->children[] = $CollectionChild;
+                }
+            }
+            if (empty($Collection->parent_id) || !in_array($Collection->parent_id, $idsOfCollectionsAllowedToUser)) {
+                $rootCollections[] = $Collection;
+            }
+        }
+
+        $result = array();
+
+        foreach ($rootCollections as $Collection) {
+            $result[] = array(
+                'text' => '<a href="'.Yii::app()->urlManager->createUrl('collections/view', array('id' => $Collection->id)).'">'.$Collection->name.'</a>',
+                'children' => self::getChildrenStructure($Collection),
+            );
+        }
+
+        return $result;
+    }
+
+    /**
+     * Возвращает CDbCriteria для получения доступных пользователю коллекций
+     * @param integer $userId айди пользователя
+     * @return CDbCriteria для подстановки в DataProvider
+     */
+    public static function getAllowedCollectionsCriteria($userId)
+    {
+        $Criteria = new CDbCriteria();
+        $Criteria->addInCondition('id', self::getIdsOfCollectionsAllowedToUser($userId));
 
         return $Criteria;
     }
 
     /**
      * Возвращает массив с айди коллекций-потомков. Сама коллекция включается с массив.
-     * @param string $collectionId айди коллекции
+     * @param integer $collectionId айди коллекции
      * @return array массив с айди коллекций-потомков
      */
     public static function getDescendantCollectionsIds($collectionId)
