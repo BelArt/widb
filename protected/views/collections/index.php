@@ -6,9 +6,9 @@
 ?>
 <?php
 
-$classThumbnails = (empty($_GET['v']) || $_GET['v'] == 'th') ? 'selected' : '';
-$classList = (!empty($_GET['v']) && $_GET['v'] == 'ls') ? 'selected' : '';
-$classTable = (!empty($_GET['v']) && $_GET['v'] == 'tb') ? 'selected' : '';
+$classThumbnails = (empty($_GET['cv']) || $_GET['cv'] == 'th') ? 'selected' : '';
+$classList = (!empty($_GET['cv']) && $_GET['cv'] == 'ls') ? 'selected' : '';
+$classTable = (!empty($_GET['cv']) && $_GET['cv'] == 'tb') ? 'selected' : '';
 
 $this->widget(
     'bootstrap.widgets.TbMenu',
@@ -21,17 +21,17 @@ $this->widget(
             ),
             array(
                 'label' => 'Картинками',
-                'url' => $this->createUrl('collections/index', array('v' => 'th')),
+                'url' => $this->createUrl('collections/index', array('cv' => 'th')),
                 'itemOptions' => array('class' => 'small '.$classThumbnails)
             ),
             array(
                 'label' => 'Списком',
-                'url' => $this->createUrl('collections/index', array('v' => 'ls')),
+                'url' => $this->createUrl('collections/index', array('cv' => 'ls')),
                 'itemOptions' => array('class' => 'small '.$classList)
             ),
             array(
                 'label' => 'Таблицей',
-                'url' => $this->createUrl('collections/index', array('v' => 'tb')),
+                'url' => $this->createUrl('collections/index', array('cv' => 'tb')),
                 'itemOptions' => array('class' => 'small '.$classTable)
             ),
         )
@@ -41,7 +41,7 @@ $this->widget(
 <div class="gape"></div>
 <div class="row-fluid">
 <?
-    $view = !empty($_GET['v']) ? $_GET['v'] : '';
+    $view = !empty($_GET['cv']) ? $_GET['cv'] : '';
     switch ($view) {
         case 'th':
             $this->widget(

@@ -114,23 +114,29 @@ class CollectionsController extends Controller
         $this->pageTitle = array($model->name);
         $this->breadcrumbs = array($model->name);
         $this->pageName = $model->name;
-        $this->pageMenu = array(
-            array(
+        $pageMenu = array();
+        if (Yii::app()->user->checkAccess('oCollectionEdit')) {
+            $pageMenu[] = array(
                 'label' => 'Редактировать коллекцию',
                 'url' => '#',
                 //'itemOptions' => array('class' => 'small')
-            ),
-            array(
+            );
+        }
+        if (Yii::app()->user->checkAccess('oCollectionDelete')) {
+            $pageMenu[] = array(
                 'label' => 'Удалить коллекцию',
                 'url' => '#',
                 //'itemOptions' => array('class' => 'small')
-            ),
-            array(
-                'label' => 'Добавить объект в коллекцию',
+            );
+        }
+        if (Yii::app()->user->checkAccess('oObjectCreate')) {
+            $pageMenu[] = array(
+                'label' => 'Создать объект в коллекции',
                 'url' => '#',
                 //'itemOptions' => array('class' => 'small')
-            ),
-        );
+            );
+        }
+        $this->pageMenu = $pageMenu;
 
 		$this->render(
             'view',
@@ -214,9 +220,9 @@ class CollectionsController extends Controller
 
     /**
      * Страница со списком всех коллекций, главная страница
-     * @param string $v как отображать коллекции: th - картинками, ls - списком, tb - таблицей
+     * @param string $cv как отображать коллекции: th - картинками, ls - списком, tb - таблицей
      */
-    public function actionIndex($v = 'th')
+    public function actionIndex($cv = 'th')
 	{
         $allowedCollectionsCriteria = Collections::getAllowedCollectionsCriteria(Yii::app()->user->id);
 
@@ -228,12 +234,14 @@ class CollectionsController extends Controller
         // параметры страницы
         $this->pageTitle = array('Коллекции');
         $this->breadcrumbs = array('Коллекции');
-        $this->pageMenu = array(
-            array(
+        $pageMenu = array();
+        if (Yii::app()->user->checkAccess('oCollectionsView')) {
+            $pageMenu[] = array(
                 'label' => 'Создать коллекцию',
                 'url' => $this->createUrl('collections/create'),
-            ),
-        );
+            );
+        }
+        $this->pageMenu = $pageMenu;
 
 		$this->render('index',array(
 			'dataProvider' => $dataProvider,
