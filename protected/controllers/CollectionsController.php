@@ -211,10 +211,12 @@ class CollectionsController extends Controller
 			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
 	}
 
-	/**
-	 * Выводт список всех доступных пользователю коллекций
-	 */
-	public function actionIndex()
+
+    /**
+     * Страница со списком всех коллекций, главная страница
+     * @param string $v как отображать коллекции: th - картинками, ls - списком, tb - таблицей
+     */
+    public function actionIndex($v = 'th')
 	{
         $allowedCollectionsCriteria = Collections::getAllowedCollectionsCriteria(Yii::app()->user->id);
 
@@ -234,7 +236,7 @@ class CollectionsController extends Controller
         );
 
 		$this->render('index',array(
-			'dataProvider'=>$dataProvider,
+			'dataProvider' => $dataProvider,
 		));
 	}
 
