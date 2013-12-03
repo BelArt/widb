@@ -45,6 +45,26 @@ class CollectionsController extends Controller
                     )
                 ),
             ),
+            array('allow',
+                'actions' => array('viewTemp'),
+                'roles' => array(
+                    'oTempCollectionView' => array(
+                        'Collection' => $this->loadModel(Yii::app()->request->getQuery('id'))
+                    )
+                ),
+            ),
+            array('allow',
+                'actions' => array('update'),
+                'roles' => array('oCollectionEdit'),
+            ),
+            array('allow',
+                'actions' => array('updateTemp'),
+                'roles' => array(
+                    'oTempCollectionEdit' => array(
+                        'Collection' => $this->loadModel(Yii::app()->request->getQuery('id'))
+                    )
+                ),
+            ),
             array('deny',  // deny all users
                 'users'=>array('*'),
             ),
@@ -53,15 +73,20 @@ class CollectionsController extends Controller
 
 
     /**
-     * Просмотр коллекции
+     * Просмотр обычной коллекции
      * @param string $id айди коллекции
      * @param string $cv как отображать дочерние коллекции: th - картинками, ls - списком, tb - таблицей
      * @param string $ov как отображать объекты в коллекции: th - картинками, ls - списком, tb - таблицей
      * @param string $tb какая вкладка открыта (параметр используется уже во view): cc - дочерние коллекции, ob - объекты
+     * @throws CHttpException
      */
     public function actionView($id, $cv = 'th', $ov = 'th', $tb = 'cc')
 	{
         $model = $this->loadModel($id);
+
+        if ($model->temporary) {
+            throw new CHttpException(404,'Такой коллекции не существует!');
+        }
 
         // как отображать дочерние коллекции
         switch ($cv) {
@@ -118,20 +143,16 @@ class CollectionsController extends Controller
         if (Yii::app()->user->checkAccess('oCollectionEdit')) {
             $pageMenu[] = array(
                 'label' => 'Редактировать коллекцию',
-                'url' => '#',
+                'url' => $this->createUrl(
+                    'collections/update',
+                    array('id' => $id)
+                ),
                 //'itemOptions' => array('class' => 'small')
             );
         }
         if (Yii::app()->user->checkAccess('oCollectionDelete')) {
             $pageMenu[] = array(
                 'label' => 'Удалить коллекцию',
-                'url' => '#',
-                //'itemOptions' => array('class' => 'small')
-            );
-        }
-        if (Yii::app()->user->checkAccess('oObjectCreate')) {
-            $pageMenu[] = array(
-                'label' => 'Создать объект в коллекции',
                 'url' => '#',
                 //'itemOptions' => array('class' => 'small')
             );
@@ -149,6 +170,117 @@ class CollectionsController extends Controller
             )
         );
 	}
+
+    /**
+     * Просмотр временной коллекции
+     * @param string $id айди коллекции
+     * @param string $cv как отображать дочерние коллекции: th - картинками, ls - списком, tb - таблицей
+     * @param string $ov как отображать объекты в коллекции: th - картинками, ls - списком, tb - таблицей
+     * @param string $tb какая вкладка открыта (параметр используется уже во view): cc - дочерние коллекции, ob - объекты
+     * @throws CHttpException
+     */
+    public function actionViewTemp($id, $cv = 'th', $ov = 'th', $tb = 'cc')
+    {
+        $model = $this->loadModel($id);
+
+        if (!$model->temporary) {
+            throw new CHttpException(404,'Такой коллекции не существует!');
+        }
+
+        // как отображать дочерние коллекции
+        switch ($cv) {
+            case 'th': // картинками
+                $renderViewChildCollections = '_viewChildCollectionsThumbnails';
+                break;
+            case 'ls': // списком
+                $renderViewChildCollections = '_viewChildCollectionsList';
+                break;
+            case 'tb': // таблицей
+                $renderViewChildCollections = '_viewChildCollectionsTable';
+                break;
+            default: // картинками
+                $renderViewChildCollections = '_viewChildCollectionsThumbnails';
+        }
+
+        // как отображать объекты в коллекции
+        switch ($ov) {
+            case 'th': // картинками
+                $renderViewObjects = '_viewObjectsThumbnails';
+                break;
+            case 'ls': // списком
+                $renderViewObjects = '_viewObjectsList';
+                break;
+            case 'tb': // таблицей
+                $renderViewObjects = '_viewObjectsTable';
+                break;
+            default: // картинками
+                $renderViewObjects = '_viewObjectsThumbnails';
+        }
+
+        $ObjectsCriteria = new CDbCriteria();
+        $ObjectsCriteria->condition = 't.collection_id = :collection_id';
+        $ObjectsCriteria->params = array(':collection_id' => $id);
+        $ObjectsCriteria->with = array('author');
+
+        $ObjectsDataProvider = new CActiveDataProvider('Objects', array('criteria' => $ObjectsCriteria));
+
+        $ChildCollectionsDataProvider = new CActiveDataProvider(
+            'Collections',
+            array(
+                'criteria' => array(
+                    'condition' => 'parent_id = :parent_id',
+                    'params' => array(':parent_id' => $id)
+                ),
+            )
+        );
+
+        // параметры страницы
+        $this->pageTitle = array($model->name);
+        $this->breadcrumbs = array($model->name);
+        $this->pageName = $model->name;
+        $pageMenu = array();
+        if (Yii::app()->user->checkAccess(
+                'oTempCollectionEdit',
+                array(
+                    'Collection' => $model
+                )
+            )
+        ) {
+            $pageMenu[] = array(
+                'label' => 'Редактировать временную коллекцию',
+                'url' => $this->createUrl(
+                        'collections/updateTemp',
+                        array('id' => $id)
+                    ),
+                //'itemOptions' => array('class' => 'small')
+            );
+        }
+        if (Yii::app()->user->checkAccess(
+                'oTempCollectionDelete',
+                array(
+                    'Collection' => $model
+                )
+            )
+        ) {
+            $pageMenu[] = array(
+                'label' => 'Удалить временную коллекцию',
+                'url' => '#',
+                //'itemOptions' => array('class' => 'small')
+            );
+        }
+        $this->pageMenu = $pageMenu;
+
+        $this->render(
+            'view',
+            array(
+                'model' => $model,
+                'ObjectsDataProvider' => $ObjectsDataProvider,
+                'ChildCollectionsDataProvider' => $ChildCollectionsDataProvider,
+                'renderViewChildCollections' => $renderViewChildCollections,
+                'renderViewObjects' => $renderViewObjects,
+            )
+        );
+    }
 
 	/**
 	 * Creates a new model.
@@ -183,10 +315,17 @@ class CollectionsController extends Controller
 	 * Updates a particular model.
 	 * If update is successful, the browser will be redirected to the 'view' page.
 	 * @param integer $id the ID of the model to be updated
+     * @throws CHttpException
 	 */
 	public function actionUpdate($id)
 	{
-		$model=$this->loadModel($id);
+		$model = $this->loadModel($id);
+
+        if ($model->temporary) {
+            throw new CHttpException(404,'Такой коллекции не существует!');
+        }
+
+        $view = '_formNormalCollection';
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
@@ -198,10 +337,53 @@ class CollectionsController extends Controller
 				$this->redirect(array('view','id'=>$model->id));
 		}
 
+        // параметры страницы
+        $this->pageTitle = array($model->name,'Редактирование');
+        $this->breadcrumbs = array($model->name => array('collections/view', 'id' => $id), 'Редактирование');
+        $this->pageName = $model->name;
+
 		$this->render('update',array(
-			'model'=>$model,
+			'model' => $model,
+            'view' => $view
 		));
 	}
+
+    /**
+     * Updates a particular model.
+     * If update is successful, the browser will be redirected to the 'view' page.
+     * @param integer $id the ID of the model to be updated
+     * @throws CHttpException
+     */
+    public function actionUpdateTemp($id)
+    {
+        $model = $this->loadModel($id);
+
+        if (!$model->temporary) {
+            throw new CHttpException(404,'Такой коллекции не существует!');
+        }
+
+        $view = '_formTempCollection';
+
+        // Uncomment the following line if AJAX validation is needed
+        // $this->performAjaxValidation($model);
+
+        if(isset($_POST['Collections']))
+        {
+            $model->attributes=$_POST['Collections'];
+            if($model->save())
+                $this->redirect(array('view','id'=>$model->id));
+        }
+
+        // параметры страницы
+        $this->pageTitle = array($model->name,'Редактирование временной коллекции');
+        $this->breadcrumbs = array($model->name => array('collections/viewTemp', 'id' => $id), 'Редактирование временной коллекции');
+        $this->pageName = $model->name;
+
+        $this->render('update',array(
+            'model' => $model,
+            'view' => $view
+        ));
+    }
 
 	/**
 	 * Deletes a particular model.
@@ -277,7 +459,7 @@ class CollectionsController extends Controller
                 $this->model = Collections::model()->findByPk($id);
 
                 if (empty($this->model)) {
-                    throw new CHttpException(404,'The requested page does not exist.');
+                    throw new CHttpException(404,'Такой коллекции не существует!');
                 }
             }
 

@@ -160,12 +160,12 @@ return array(
         'data' => null
     ),
     // Временные коллекции
-    /*'oTempCollectionView' => array(
+    'oTempCollectionView' => array(
         'type' => CAuthItem::TYPE_OPERATION,
         'description' => 'Просмотр Временной коллекции',
         'bizRule' => null,
         'data' => null
-    ),*/
+    ),
     'oTempCollectionCreate' => array(
         'type' => CAuthItem::TYPE_OPERATION,
         'description' => 'Создание Временной коллекции',
@@ -206,6 +206,7 @@ return array(
         'data' => null,
         'children' => array(
             'tTempCollectionIsOwn',
+            'oTempCollectionView',
             'oObjectToTempCollectionAdd',
             'oObjectFromTempCollectionDelete',
             'oCollectionView',
@@ -273,7 +274,7 @@ return array(
             'oCollectionEdit',
             'oCollectionDelete',
             // Временные коллекции
-            //'oTempCollectionView',
+            'oTempCollectionView',
             'oTempCollectionCreate',
             'oTempCollectionEdit',
             'oTempCollectionDelete',
