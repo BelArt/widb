@@ -79,14 +79,14 @@ $this->widget(
                         array(
                             'class' => 'CLinkColumn',
                             'labelExpression' => '$data->name',
-                            'urlExpression' => 'Yii::app()->urlManager->createUrl("collections/view", array("id" => $data->id))',
+                            'urlExpression' => '$data->temporary ? Yii::app()->urlManager->createUrl("collections/viewTemp", array("id" => $data->id)) : Yii::app()->urlManager->createUrl("collections/view", array("id" => $data->id))',
                             'header'=>'Название',
                         ),
                         array(
                             'header'=>'Действия',
                             'htmlOptions' => array('nowrap'=>'nowrap'),
                             'class'=>'bootstrap.widgets.TbButtonColumn',
-                            'viewButtonUrl' => 'Yii::app()->urlManager->createUrl("collections/view", array("id" => $data->id));',
+                            'viewButtonUrl' => '$data->temporary ? Yii::app()->urlManager->createUrl("collections/viewTemp", array("id" => $data->id)) : Yii::app()->urlManager->createUrl("collections/view", array("id" => $data->id))',
                             'updateButtonUrl'=> null,
                             'deleteButtonUrl' => null,
                             /*'buttons' => array(

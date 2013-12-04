@@ -351,8 +351,9 @@ class Collections extends ActiveRecord
         $result = array();
 
         foreach ($rootCollections as $Collection) {
+            $itemUrl = $Collection->temporary ? Yii::app()->urlManager->createUrl('collections/viewTemp', array('id' => $Collection->id)) : Yii::app()->urlManager->createUrl('collections/view', array('id' => $Collection->id));
             $result[] = array(
-                'text' => '<a href="'.Yii::app()->urlManager->createUrl('collections/view', array('id' => $Collection->id)).'">'.$Collection->name.'</a>',
+                'text' => '<a href="'.$itemUrl.'">'.$Collection->name.'</a>',
                 'children' => self::getChildrenStructure($Collection),
             );
         }

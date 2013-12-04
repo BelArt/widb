@@ -2,7 +2,7 @@
 /* @var $this CollectionsController */
 /* @var $data Collections */
 
-$itemUrl = $this->createUrl('collections/view', array('id' => $data->id));
+$itemUrl = $data->temporary ? $this->createUrl('collections/viewTemp', array('id' => $data->id)) : $this->createUrl('collections/view', array('id' => $data->id));
 ?>
 
 <li class="itemThumbnail">
