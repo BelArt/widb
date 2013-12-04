@@ -2,11 +2,6 @@
 
 class CollectionsController extends Controller
 {
-	/**
-	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
-	 * using two-column layout. See 'protected/views/layouts/column2.php'.
-	 */
-	public $layout='//layouts/column2';
 
 	/**
 	 * @return array action filters
@@ -36,6 +31,10 @@ class CollectionsController extends Controller
             array('allow',
                 'actions' => array('create'),
                 'roles' => array('oCollectionCreate'),
+            ),
+            array('allow',
+                'actions' => array('createTemp'),
+                'roles' => array('oTempCollectionCreate'),
             ),
             array('allow',
                 'actions' => array('view'),
@@ -283,12 +282,14 @@ class CollectionsController extends Controller
     }
 
 	/**
-	 * Creates a new model.
-	 * If creation is successful, the browser will be redirected to the 'view' page.
+     * Создание обычной коллекции
 	 */
 	public function actionCreate()
 	{
 		$model = new Collections;
+
+        $model->temporary = 0;
+        $view = '_formNormalCollection';
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
@@ -308,13 +309,45 @@ class CollectionsController extends Controller
 
 		$this->render('create',array(
 			'model' => $model,
+            'view' => $view
 		));
 	}
 
+    /**
+     * Создание временной коллекции
+     */
+    public function actionCreateTemp()
+    {
+        $model = new Collections;
+
+        $model->temporary = 1;
+        $view = '_formTempCollection';
+
+        // Uncomment the following line if AJAX validation is needed
+        // $this->performAjaxValidation($model);
+
+        if(isset($_POST['Collections']))
+        {
+            $model->attributes=$_POST['Collections'];
+            if ($model->save()) {
+                $this->redirect(array('index'));
+            }
+        }
+
+        // параметры страницы
+        $this->pageTitle = array('Создание временной коллекции');
+        $this->breadcrumbs = array('Создание временной коллекции');
+        $this->pageName = 'Создание временной коллекции';
+
+        $this->render('create',array(
+            'model' => $model,
+            'view' => $view
+        ));
+    }
+
 	/**
-	 * Updates a particular model.
-	 * If update is successful, the browser will be redirected to the 'view' page.
-	 * @param integer $id the ID of the model to be updated
+     * Редактирование обычной коллекции
+	 * @param integer $id айди коллекции
      * @throws CHttpException
 	 */
 	public function actionUpdate($id)
@@ -349,9 +382,8 @@ class CollectionsController extends Controller
 	}
 
     /**
-     * Updates a particular model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id the ID of the model to be updated
+     * Редактирование временной коллекции
+     * @param integer $id айди коллекции
      * @throws CHttpException
      */
     public function actionUpdateTemp($id)
@@ -371,7 +403,7 @@ class CollectionsController extends Controller
         {
             $model->attributes=$_POST['Collections'];
             if($model->save())
-                $this->redirect(array('view','id'=>$model->id));
+                $this->redirect(array('viewTemp','id'=>$model->id));
         }
 
         // параметры страницы
@@ -417,10 +449,16 @@ class CollectionsController extends Controller
         $this->pageTitle = array('Коллекции');
         $this->breadcrumbs = array('Коллекции');
         $pageMenu = array();
-        if (Yii::app()->user->checkAccess('oCollectionsView')) {
+        if (Yii::app()->user->checkAccess('oCollectionCreate')) {
             $pageMenu[] = array(
                 'label' => 'Создать коллекцию',
                 'url' => $this->createUrl('collections/create'),
+            );
+        }
+        if (Yii::app()->user->checkAccess('oTempCollectionCreate')) {
+            $pageMenu[] = array(
+                'label' => 'Создать временную коллекцию',
+                'url' => $this->createUrl('collections/createTemp'),
             );
         }
         $this->pageMenu = $pageMenu;
@@ -464,6 +502,8 @@ class CollectionsController extends Controller
             }
 
             return $this->model;
+        } else {
+            return null;
         }
 	}
 

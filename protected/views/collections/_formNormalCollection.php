@@ -5,8 +5,6 @@
 
 Yii::app()->clientScript->registerPackage('collectionForm');
 
-//$isTempCollection = $model->temporary;
-
 $form = $this->beginWidget(
     'bootstrap.widgets.TbActiveForm',
     array(
@@ -16,10 +14,6 @@ $form = $this->beginWidget(
         'htmlOptions' => array('class' => 'collectionForm_form'), // for inset effect
     )
 );
-
-/*echo $form->checkBoxRow($model,'temporary', array(
-    'class' => '_collectionForm_tempCollectionCheckbox',
-));*/
 
 echo $form->textFieldRow($model,'name', array(
     'class' => 'input-xxlarge _collectionForm_hideErrorsKeypress'
@@ -49,16 +43,6 @@ echo $form->select2Row($model,'parent_id',
     )
 );
 echo CHtml::closeTag('div');
-
-/*echo CHtml::openTag('div', array(
-    'class' => '_collectionForm_tempCollectionPublicBlock',
-    'style' => ' '.($isTempCollection ? '' : 'display:none;')
-));
-echo $form->checkBoxRow($model,'temporary_public', array(
-    'disabled' => !$isTempCollection,
-    'class' => '_collectionForm_tempCollectionPublicCheckbox',
-));
-echo CHtml::closeTag('div');*/
 
 echo $form->textFieldRow($model,'sort', array(
     'class' => 'input-small _collectionForm_hideErrorsKeypress',

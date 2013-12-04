@@ -1,7 +1,7 @@
 $(function(){
 
     // Отметка,что коллекция временная
-    $('._collectionForm_tempCollectionCheckbox').change(function(){
+    /*$('._collectionForm_tempCollectionCheckbox').change(function(){
         // временная
         if ($(this).is(':checked')) {
 
@@ -23,7 +23,7 @@ $(function(){
             $('._collectionForm_parentCollectionSelect').attr({'disabled':false});
             $('._collectionForm_parentCollectionBlock').show('fast');
         }
-    });
+    });*/
 
     // Сброс формы
     $('._collectionForm_resetButton').click(function(event){
@@ -31,12 +31,12 @@ $(function(){
         event.preventDefault();
 
         // скрываем поле Открытая временная коллекция
-        $('._collectionForm_tempCollectionPublicBlock').hide('fast');
+        /*$('._collectionForm_tempCollectionPublicBlock').hide('fast');
         $('._collectionForm_tempCollectionPublicCheckbox').attr({'disabled': true, 'checked':true});
 
         // показываем поле Родительская коллекция
         $('._collectionForm_parentCollectionSelect').attr({'disabled':false});
-        $('._collectionForm_parentCollectionBlock').show('fast');
+        $('._collectionForm_parentCollectionBlock').show('fast');*/
 
         // сбрасываем форму
         $(this).closest('form').get(0).reset();
