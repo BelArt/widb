@@ -57,7 +57,7 @@ $this->widget(
         case 'ls':
             $this->widget('zii.widgets.CListView', array(
                 'dataProvider' => $dataProvider,
-                'itemView'=>'_viewListCheckbox',
+                'itemView'=>'_viewListNoCheckbox',
                 'template' => '{items}',
                 'emptyText' => ''
             ));
@@ -70,12 +70,12 @@ $this->widget(
                     'dataProvider' => $dataProvider,
                     'template' => "{items}",
                     'columns' => array(
-                        array(
+                        /*array(
                             'class' => 'CCheckBoxColumn',
                             'value' => 'return null;',
                             'checked' => 'return null;',
                             'selectableRows' => 2,
-                        ),
+                        ),*/
                         array(
                             'class' => 'CLinkColumn',
                             'labelExpression' => '$data->name',
