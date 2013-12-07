@@ -7,16 +7,16 @@ $this->widget(
         'type' => 'pills',
         'items' => array(
             array(
-                'label' => 'С отмеченными',
+                'label' => Yii::t('common', 'С отмеченными'),
                 'itemOptions' => array('class' => 'nav-header')
             ),
             array(
-                'label' => 'Переместить',
+                'label' => Yii::t('common', 'Переместить'),
                 'url' => '#',
                 'itemOptions' => array('class' => 'small')
             ),
             array(
-                'label' => 'Удалить',
+                'label' => Yii::t('common', 'Удалить'),
                 'url' => '#',
                 'itemOptions' => array('class' => 'small')
             ),
@@ -39,21 +39,21 @@ $this->widget(
         'type' => 'pills',
         'items' => array(
             array(
-                'label' => 'Отображение',
+                'label' => Yii::t('common', 'Отображение'),
                 'itemOptions' => array('class' => 'nav-header')
             ),
             array(
-                'label' => 'Картинками',
+                'label' => Yii::t('common', 'Картинками'),
                 'url' => $this->createUrl('collections/view', array('id' => $model->id, 'cv' => 'th', 'ov' => (!empty($_GET['ov']) ? $_GET['ov'] : ''), 'tb' => 'cc')),
                 'itemOptions' => array('class' => 'small '.$classThumbnails)
             ),
             array(
-                'label' => 'Списком',
+                'label' => Yii::t('common', 'Списком'),
                 'url' => $this->createUrl('collections/view', array('id' => $model->id, 'cv' => 'ls', 'ov' => (!empty($_GET['ov']) ? $_GET['ov'] : ''), 'tb' => 'cc')),
                 'itemOptions' => array('class' => 'small '.$classList)
             ),
             array(
-                'label' => 'Таблицей',
+                'label' => Yii::t('common', 'Таблицей'),
                 'url' => $this->createUrl('collections/view', array('id' => $model->id, 'cv' => 'tb', 'ov' => (!empty($_GET['ov']) ? $_GET['ov'] : ''), 'tb' => 'cc')),
                 'itemOptions' => array('class' => 'small '.$classTable)
             ),

@@ -35,7 +35,7 @@ class ActiveRecord extends CActiveRecord
                 $this->user_modify = $userId;
                 break;
             default:
-                throw new CException('Установлен неизвестный сценарий!');
+                throw new CException(Yii::t('common', 'Установлен неизвестный сценарий!'));
         }
 
         return true;

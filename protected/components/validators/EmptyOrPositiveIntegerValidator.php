@@ -17,7 +17,7 @@ class EmptyOrPositiveIntegerValidator extends CValidator
         $condition = is_numeric($object->$attribute) && (intval($object->$attribute) > 0);
         if(!$condition)
         {
-            $this->addError($object, $attribute, 'Значение должно быть целым положительным числом!');
+            $this->addError($object, $attribute, Yii::t('common', 'Значение должно быть целым положительным числом!'));
         }
     }
 } 

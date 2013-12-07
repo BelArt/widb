@@ -12,7 +12,7 @@ class TempCollectionValidator extends CValidator
     {
         if (empty($object->temporary)) {
             if (!empty($object->$attribute)) {
-                $this->addError($object, $attribute, 'Обычная коллекция не может быть открытой!');
+                $this->addError($object, $attribute, Yii::t('collections', 'Обычная коллекция не может быть открытой!'));
             }
         }
     }

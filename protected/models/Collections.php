@@ -80,14 +80,14 @@ class Collections extends ActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'parent_id' => 'Родительская коллекция',
-			'name' => 'Название',
-			'description' => 'Описание',
-			'code' => 'Код',
-			'temporary' => 'Временная коллекция',
-			'has_preview' => 'Есть превью',
-			'sort' => 'Сортировка',
-            'temporary_public' => 'Открытая временная коллекция',
+			'parent_id' => Yii::t('collections', 'Родительская коллекция'),
+			'name' => Yii::t('common', 'Название'),
+			'description' => Yii::t('common', 'Описание'),
+			'code' => Yii::t('common', 'Код'),
+			'temporary' => Yii::t('collections', 'Временная коллекция'),
+			'has_preview' => Yii::t('common', 'Есть превью'),
+			'sort' => Yii::t('common', 'Сортировка'),
+            'temporary_public' => Yii::t('collections', 'Открытая временная коллекция'),
 		);
 	}
 
@@ -247,7 +247,7 @@ class Collections extends ActiveRecord
         $collections = self::model()->findAll($Criteria);
 
         $result = array(
-            0 => 'Нет родительской коллекции'
+            0 => Yii::t('collections', 'Нет родительской коллекции')
         );
 
         if (empty($collections)) {
@@ -281,7 +281,7 @@ class Collections extends ActiveRecord
         $collections = self::model()->findAll($Criteria);
 
         $result = array(
-            0 => 'Нет родительской коллекции'
+            0 => Yii::t('collections', 'Нет родительской коллекции')
         );
 
         if (empty($collections)) {
