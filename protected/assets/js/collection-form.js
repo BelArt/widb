@@ -5,11 +5,14 @@ $(function(){
 
         event.preventDefault();
 
+        var $form = $(this).parents('._collectionForm_form');
+
         // сбрасываем форму
-        $(this).closest('form').get(0).reset();
+        $form.get(0).reset();
 
         // сбрасываем ошибки
-        $('._collectionForm_hideErrorsKeypress').trigger('keypress');
+        $form.children('._collectionForm_hideErrorsKeypress').trigger('keypress');
+        $form.children('._collectionForm_hideErrorsChange').trigger('change');
     });
 
     // Сбрасывает ошибки поля в случае ввода данных в поле

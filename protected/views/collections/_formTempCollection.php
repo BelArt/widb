@@ -11,7 +11,7 @@ $form = $this->beginWidget(
         'id' => 'collections-form',
         'type' => 'horizontal',
         'inlineErrors' => true,
-        'htmlOptions' => array('class' => 'collectionForm_form'), // for inset effect
+        'htmlOptions' => array('class' => 'collectionForm_form _collectionForm_form'), // for inset effect
     )
 );
 
@@ -50,24 +50,42 @@ if (Yii::app()->user->checkAccess('oCollectionEdit')) {
 echo CHtml::openTag('div', array(
     'class' => 'form-actions',
 ));
+
 $this->widget(
     'bootstrap.widgets.TbButton',
     array(
         'buttonType' => 'submit',
         'type' => 'primary',
-        'label' => $model->isNewRecord ? 'Создать' : 'Сохранить'
+        'label' => $model->isNewRecord ? 'Создать' : 'Сохранить',
+        'htmlOptions' => array(
+            'class' => 'formButton'
+        )
     )
 );
+
 $this->widget(
     'bootstrap.widgets.TbButton',
     array(
         'buttonType' => 'reset',
         'label' => 'Сбросить',
         'htmlOptions' => array(
-            'class' => 'collectionForm_resetButton _collectionForm_resetButton'
+            'class' => '_collectionForm_resetButton formButton'
         )
     )
 );
+
+$this->widget(
+    'bootstrap.widgets.TbButton',
+    array(
+        'buttonType' => 'link',
+        'url' => Yii::app()->request->urlReferrer,
+        'label' => 'Отмена',
+        'htmlOptions' => array(
+            'class' => 'formButton'
+        )
+    )
+);
+
 echo CHtml::closeTag('div');
 
 $this->endWidget();

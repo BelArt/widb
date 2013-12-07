@@ -240,7 +240,7 @@ class Collections extends ActiveRecord
         $Criteria->addCondition('temporary = 0');
 
         // если редактируем - то не показываем саму коллекцию и ее дочерние коллекции
-        if ($this->scenario == 'update') {
+        if (!$this->isNewRecord) {
             $Criteria->addNotInCondition('id', self::getDescendantCollectionsIds($this->id));
         }
 
@@ -274,7 +274,7 @@ class Collections extends ActiveRecord
         $Criteria->addCondition('temporary = 1');
 
         // если редактируем - то не показываем саму коллекцию и ее дочерние коллекции
-        if ($this->scenario == 'update') {
+        if (!$this->isNewRecord) {
             $Criteria->addNotInCondition('id', self::getDescendantCollectionsIds($this->id));
         }
 
