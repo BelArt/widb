@@ -47,7 +47,7 @@ class Controller extends CController
     public function setPageTitle($value)
     {
         if (!is_array($value)) {
-            throw new CException('В качестве pageTitle передан не массив!');
+            throw new CException(Yii::t('common', 'В качестве pageTitle передан не массив!'));
         }
 
         array_unshift($value, Yii::app()->name);

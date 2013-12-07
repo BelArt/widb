@@ -84,7 +84,7 @@ class CollectionsController extends Controller
         $model = $this->loadModel($id);
 
         if ($model->temporary) {
-            throw new CHttpException(404,'Такой коллекции не существует!');
+            throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
         }
 
         // как отображать дочерние коллекции
@@ -141,7 +141,7 @@ class CollectionsController extends Controller
         $pageMenu = array();
         if (Yii::app()->user->checkAccess('oCollectionEdit')) {
             $pageMenu[] = array(
-                'label' => 'Редактировать коллекцию',
+                'label' => Yii::t('collections', 'Редактировать коллекцию'),
                 'url' => $this->createUrl(
                     'collections/update',
                     array('id' => $id)
@@ -151,7 +151,7 @@ class CollectionsController extends Controller
         }
         if (Yii::app()->user->checkAccess('oCollectionDelete')) {
             $pageMenu[] = array(
-                'label' => 'Удалить коллекцию',
+                'label' => Yii::t('collections', 'Удалить коллекцию'),
                 'url' => '#',
                 //'itemOptions' => array('class' => 'small')
             );
@@ -183,7 +183,7 @@ class CollectionsController extends Controller
         $model = $this->loadModel($id);
 
         if (!$model->temporary) {
-            throw new CHttpException(404,'Такой коллекции не существует!');
+            throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
         }
 
         // как отображать дочерние коллекции
@@ -246,7 +246,7 @@ class CollectionsController extends Controller
             )
         ) {
             $pageMenu[] = array(
-                'label' => 'Редактировать временную коллекцию',
+                'label' => Yii::t('collections', 'Редактировать временную коллекцию'),
                 'url' => $this->createUrl(
                         'collections/updateTemp',
                         array('id' => $id)
@@ -262,7 +262,7 @@ class CollectionsController extends Controller
             )
         ) {
             $pageMenu[] = array(
-                'label' => 'Удалить временную коллекцию',
+                'label' => Yii::t('collections', 'Удалить временную коллекцию'),
                 'url' => '#',
                 //'itemOptions' => array('class' => 'small')
             );
@@ -303,9 +303,9 @@ class CollectionsController extends Controller
 		}
 
         // параметры страницы
-        $this->pageTitle = array('Создание коллекции');
-        $this->breadcrumbs = array('Создание коллекции');
-        $this->pageName = 'Создание коллекции';
+        $this->pageTitle = array(Yii::t('collections', 'Создание коллекции'));
+        $this->breadcrumbs = array(Yii::t('collections', 'Создание коллекции'));
+        $this->pageName = Yii::t('collections', 'Создание коллекции');
 
 		$this->render('create',array(
 			'model' => $model,
@@ -335,9 +335,9 @@ class CollectionsController extends Controller
         }
 
         // параметры страницы
-        $this->pageTitle = array('Создание временной коллекции');
-        $this->breadcrumbs = array('Создание временной коллекции');
-        $this->pageName = 'Создание временной коллекции';
+        $this->pageTitle = array(Yii::t('collections', 'Создание временной коллекции'));
+        $this->breadcrumbs = array(Yii::t('collections', 'Создание временной коллекции'));
+        $this->pageName = Yii::t('collections', 'Создание временной коллекции');
 
         $this->render('create',array(
             'model' => $model,
@@ -355,7 +355,7 @@ class CollectionsController extends Controller
 		$model = $this->loadModel($id);
 
         if ($model->temporary) {
-            throw new CHttpException(404,'Такой коллекции не существует!');
+            throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
         }
 
         $view = '_formNormalCollection';
@@ -371,8 +371,8 @@ class CollectionsController extends Controller
 		}
 
         // параметры страницы
-        $this->pageTitle = array($model->name,'Редактирование');
-        $this->breadcrumbs = array($model->name => array('collections/view', 'id' => $id), 'Редактирование');
+        $this->pageTitle = array($model->name, Yii::t('collections', 'Редактирование коллекции'));
+        $this->breadcrumbs = array($model->name => array('collections/view', 'id' => $id), Yii::t('collections', 'Редактирование коллекции'));
         $this->pageName = $model->name;
 
 		$this->render('update',array(
@@ -391,7 +391,7 @@ class CollectionsController extends Controller
         $model = $this->loadModel($id);
 
         if (!$model->temporary) {
-            throw new CHttpException(404,'Такой коллекции не существует!');
+            throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
         }
 
         $view = '_formTempCollection';
@@ -407,8 +407,8 @@ class CollectionsController extends Controller
         }
 
         // параметры страницы
-        $this->pageTitle = array($model->name,'Редактирование временной коллекции');
-        $this->breadcrumbs = array($model->name => array('collections/viewTemp', 'id' => $id), 'Редактирование временной коллекции');
+        $this->pageTitle = array($model->name, Yii::t('collections', 'Редактирование временной коллекции'));
+        $this->breadcrumbs = array($model->name => array('collections/viewTemp', 'id' => $id), Yii::t('collections', 'Редактирование временной коллекции'));
         $this->pageName = $model->name;
 
         $this->render('update',array(
@@ -446,18 +446,18 @@ class CollectionsController extends Controller
         );
 
         // параметры страницы
-        $this->pageTitle = array('Коллекции');
-        $this->breadcrumbs = array('Коллекции');
+        $this->pageTitle = array(Yii::t('collections', 'Коллекции'));
+        $this->breadcrumbs = array(Yii::t('collections', 'Коллекции'));
         $pageMenu = array();
         if (Yii::app()->user->checkAccess('oCollectionCreate')) {
             $pageMenu[] = array(
-                'label' => 'Создать коллекцию',
+                'label' => Yii::t('collections', 'Создать коллекцию'),
                 'url' => $this->createUrl('collections/create'),
             );
         }
         if (Yii::app()->user->checkAccess('oTempCollectionCreate')) {
             $pageMenu[] = array(
-                'label' => 'Создать временную коллекцию',
+                'label' => Yii::t('collections', 'Создать временную коллекцию'),
                 'url' => $this->createUrl('collections/createTemp'),
             );
         }
@@ -497,7 +497,7 @@ class CollectionsController extends Controller
                 $this->model = Collections::model()->findByPk($id);
 
                 if (empty($this->model)) {
-                    throw new CHttpException(404,'Такой коллекции не существует!');
+                    throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
                 }
             }
 

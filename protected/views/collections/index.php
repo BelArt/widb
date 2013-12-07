@@ -16,21 +16,21 @@ $this->widget(
         'type' => 'pills',
         'items' => array(
             array(
-                'label' => 'Отображение',
+                'label' => Yii::t('common', 'Отображение'),
                 'itemOptions' => array('class' => 'nav-header')
             ),
             array(
-                'label' => 'Картинками',
+                'label' => Yii::t('common', 'Картинками'),
                 'url' => $this->createUrl('collections/index', array('cv' => 'th')),
                 'itemOptions' => array('class' => 'small '.$classThumbnails)
             ),
             array(
-                'label' => 'Списком',
+                'label' => Yii::t('common', 'Списком'),
                 'url' => $this->createUrl('collections/index', array('cv' => 'ls')),
                 'itemOptions' => array('class' => 'small '.$classList)
             ),
             array(
-                'label' => 'Таблицей',
+                'label' => Yii::t('common', 'Таблицей'),
                 'url' => $this->createUrl('collections/index', array('cv' => 'tb')),
                 'itemOptions' => array('class' => 'small '.$classTable)
             ),

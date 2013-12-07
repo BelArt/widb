@@ -21,7 +21,7 @@ $this->widget(
         //'placement' => 'below',
         'tabs' => array(
             array(
-                'label' => 'Дочерние коллекции',
+                'label' => Yii::t('collections', 'Дочерние коллекции'),
                 'content' => $this->renderPartial(
                     $renderViewChildCollections,
                     array(
@@ -33,7 +33,7 @@ $this->widget(
                 'active' => (empty($_GET['tb']) || $_GET['tb'] == 'cc' || (!empty($_GET['tb']) && $_GET['tb'] != 'ob' && $_GET['tb'] != 'cc'))
             ),
             array(
-                'label' => 'Объекты в коллекции',
+                'label' => Yii::t('collections', 'Объекты в коллекции'),
                 'content' => $this->renderPartial($renderViewObjects, array('ObjectsDataProvider' => $ObjectsDataProvider, 'model' => $model), true),
                 'active' => (!empty($_GET['tb']) && $_GET['tb'] == 'ob')
             ),

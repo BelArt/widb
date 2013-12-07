@@ -56,7 +56,7 @@ $this->widget(
     array(
         'buttonType' => 'submit',
         'type' => 'primary',
-        'label' => $model->isNewRecord ? 'Создать' : 'Сохранить',
+        'label' => $model->isNewRecord ? Yii::t('common', 'Создать') : Yii::t('common', 'Сохранить'),
         'htmlOptions' => array(
             'class' => 'formButton'
         )

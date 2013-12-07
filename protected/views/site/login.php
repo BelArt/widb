@@ -29,7 +29,7 @@ $this->widget(
     'bootstrap.widgets.TbButton',
     array(
         'buttonType' => 'submit',
-        'label' => 'Войти'
+        'label' => Yii::t('common', 'Войти')
     )
 );
 
