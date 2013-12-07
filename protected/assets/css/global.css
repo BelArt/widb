@@ -31,7 +31,7 @@
 .itemThumbnail .itemThumbnailDescriptionBlock {
     width: 100%;
     vertical-align: middle;
-    margin-top: 5px;
+    margin: 5px 0px 0px 0px;
 }
 .itemThumbnail .itemThumbnailCheckboxBlock {
     width: 15px;

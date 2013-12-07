@@ -119,3 +119,6 @@
 thead th {
     background: #eeeeee;
 }
+ul.thumbnails {
+    margin-bottom: 0px;
+}
