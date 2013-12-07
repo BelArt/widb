@@ -37,7 +37,7 @@ echo CHtml::openTag('div', array(
 echo $form->select2Row($model,'parent_id',
     array(
         'asDropDownList' => true,
-        'data' => $model->getArrayOfPossibleParentCollections(),
+        'data' => $model->getArrayOfPossibleTempParentCollections(),
         'class' => 'input-xxlarge _collectionForm_parentCollectionSelect',
     )
 );
