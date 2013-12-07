@@ -50,7 +50,7 @@ class Collections extends ActiveRecord
 	public function rules()
 	{
 		return array(
-            array('parent_id, temporary_public', 'application.components.validators.TempCollectionValidator'),
+            array('temporary_public', 'application.components.validators.TempCollectionValidator'),
             array('name, code, description', 'required'),
 			array('temporary, has_preview, temporary_public', 'boolean'),
             array('parent_id, sort', 'application.components.validators.EmptyOrPositiveIntegerValidator'),
@@ -166,8 +166,9 @@ class Collections extends ActiveRecord
         $result = array();
 
         foreach ($Collection->children as $ChildCollection) {
+            $itemUrl = $ChildCollection->temporary ? Yii::app()->urlManager->createUrl('collections/viewTemp', array('id' => $ChildCollection->id)) : Yii::app()->urlManager->createUrl('collections/view', array('id' => $ChildCollection->id));
             $result[] = array(
-                'text' => '<a href="'.Yii::app()->urlManager->createUrl('collections/view', array('id' => $ChildCollection->id)).'">'.$ChildCollection->name.'</a>',
+                'text' => '<a href="'.$itemUrl.'">'.$ChildCollection->name.'</a>',
                 'children' => self::getChildrenStructure($ChildCollection),
             );
         }
@@ -229,25 +230,25 @@ class Collections extends ActiveRecord
     /**
      * Получает массив вида id => Название коллекции для
      * построения селекта Родительская коллекция на форме
-     * создания\редактирования коллекции
+     * создания\редактирования обычной коллекции.
      * @return array
      */
-    public function getArrayOfPossibleParentCollections()
+    public function getArrayOfPossibleNormalParentCollections()
     {
         $Criteria = new CDbCriteria;
         $Criteria->select = 'id, name';
+        $Criteria->addCondition('temporary = 0');
 
-        if (isset($this->id)) {
-            $Criteria->addCondition('id <> :id');
-            $Criteria->params = array(
-                ':id' => $this->id,
-            );
+        // если редактируем - то не показываем саму коллекцию и ее дочерние коллекции
+        if ($this->scenario == 'update') {
+            $Criteria->addNotInCondition('id', self::getDescendantCollectionsIds($this->id));
         }
-        $Criteria->addCondition('temporary <> 1');
 
         $collections = self::model()->findAll($Criteria);
 
-        $result = array();
+        $result = array(
+            0 => 'Нет родительской коллекции'
+        );
 
         if (empty($collections)) {
             return $result;
@@ -257,7 +258,39 @@ class Collections extends ActiveRecord
             $result[$Collection->id] = $Collection->name;
         }
 
-        $result[0] = 'Нет родительской коллекции';
+        return $result;
+    }
+
+    /**
+     * Получает массив вида id => Название коллекции для
+     * построения селекта Родительская коллекция на форме
+     * создания\редактирования временной коллекции
+     * @return array
+     */
+    public function getArrayOfPossibleTempParentCollections()
+    {
+        $Criteria = new CDbCriteria;
+        $Criteria->select = 'id, name';
+        $Criteria->addCondition('temporary = 1');
+
+        // если редактируем - то не показываем саму коллекцию и ее дочерние коллекции
+        if ($this->scenario == 'update') {
+            $Criteria->addNotInCondition('id', self::getDescendantCollectionsIds($this->id));
+        }
+
+        $collections = self::model()->findAll($Criteria);
+
+        $result = array(
+            0 => 'Нет родительской коллекции'
+        );
+
+        if (empty($collections)) {
+            return $result;
+        }
+
+        foreach ($collections as $Collection) {
+            $result[$Collection->id] = $Collection->name;
+        }
 
         return $result;
     }
