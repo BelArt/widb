@@ -28,21 +28,15 @@ echo $form->textFieldRow($model,'code', array(
     'class' => 'input-xlarge _collectionForm_hideErrorsKeypress'
 ));
 
-echo $form->checkBoxRow($model,'has_preview');
+echo $form->checkBoxRow($model,'has_preview', array('class' => '_collectionForm_hideErrorsChange'));
 
-echo CHtml::openTag('div', array(
-    'class' => '_collectionForm_parentCollectionBlock',
-    //'style' => ' '.($isTempCollection ? 'display:none;' : '')
-));
 echo $form->select2Row($model,'parent_id',
     array(
         'asDropDownList' => true,
         'data' => $model->getArrayOfPossibleNormalParentCollections(),
-        'class' => 'input-xxlarge _collectionForm_parentCollectionSelect',
-        //'disabled' => $isTempCollection,
+        'class' => 'input-xxlarge _collectionForm_hideErrorsChange',
     )
 );
-echo CHtml::closeTag('div');
 
 echo $form->textFieldRow($model,'sort', array(
     'class' => 'input-small _collectionForm_hideErrorsKeypress',
