@@ -28,28 +28,17 @@ echo $form->textFieldRow($model,'code', array(
     'class' => 'input-xlarge _collectionForm_hideErrorsKeypress'
 ));
 
-echo $form->checkBoxRow($model,'has_preview');
+echo $form->checkBoxRow($model,'has_preview', array('class' => '_collectionForm_hideErrorsChange'));
 
-echo CHtml::openTag('div', array(
-    'class' => '_collectionForm_parentCollectionBlock',
-    //'style' => ' '.($isTempCollection ? 'display:none;' : '')
-));
 echo $form->select2Row($model,'parent_id',
     array(
         'asDropDownList' => true,
         'data' => $model->getArrayOfPossibleTempParentCollections(),
-        'class' => 'input-xxlarge _collectionForm_parentCollectionSelect',
+        'class' => 'input-xxlarge _collectionForm_hideErrorsChange',
     )
 );
-echo CHtml::closeTag('div');
 
-echo CHtml::openTag('div', array(
-    'class' => '_collectionForm_tempCollectionPublicBlock',
-));
-echo $form->checkBoxRow($model,'temporary_public', array(
-    'class' => '_collectionForm_tempCollectionPublicCheckbox',
-));
-echo CHtml::closeTag('div');
+echo $form->checkBoxRow($model,'temporary_public');
 
 if (Yii::app()->user->checkAccess('oCollectionEdit')) {
     echo $form->textFieldRow($model,'sort', array(
