@@ -11,9 +11,16 @@ class ImageHelper extends CComponent
      * @return string путь к большой превью
      */
     public static function getBigThumbnailForCollection(Collections $Collection)
-   {
-       return Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets')).'/img/photo-not-available.jpg';
-   }
+    {
+        if ($Collection->has_preview) {
+            // @todo реализовать
+            $previewUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets')).'/img/photo-not-available.jpg';
+        } else {
+            $previewUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets')).'/img/photo-not-available.jpg';
+        }
+
+        return $previewUrl;
+    }
 
     /**
      * Возвращает путь к средней превью для коллекции
@@ -23,7 +30,14 @@ class ImageHelper extends CComponent
      */
     public static function getMediumThumbnailForCollection(Collections $Collection)
     {
-        return Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets')).'/img/photo-not-available.jpg';
+        if ($Collection->has_preview) {
+            // @todo реализовать
+            $previewUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets')).'/img/photo-not-available.jpg';
+        } else {
+            $previewUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets')).'/img/photo-not-available.jpg';
+        }
+
+        return $previewUrl;
     }
 
     /**
@@ -34,7 +48,14 @@ class ImageHelper extends CComponent
      */
     public static function getSmallThumbnailForCollection(Collections $Collection)
     {
-        return Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets')).'/img/photo-not-available.jpg';
+        if ($Collection->has_preview) {
+            // @todo реализовать
+            $previewUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets')).'/img/photo-not-available.jpg';
+        } else {
+            $previewUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets')).'/img/photo-not-available.jpg';
+        }
+
+        return $previewUrl;
     }
 
     /**
@@ -45,7 +66,14 @@ class ImageHelper extends CComponent
      */
     public static function getBigThumbnailForObject(Objects $Object)
     {
-        return Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets')).'/img/photo-not-available.jpg';
+        if ($Object->has_preview) {
+            // @todo реализовать
+            $previewUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets')).'/img/photo-not-available.jpg';
+        } else {
+            $previewUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets')).'/img/photo-not-available.jpg';
+        }
+
+        return $previewUrl;
     }
 
     /**
@@ -56,7 +84,14 @@ class ImageHelper extends CComponent
      */
     public static function getMediumThumbnailForObject(Objects $Object)
     {
-        return Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets')).'/img/photo-not-available.jpg';
+        if ($Object->has_preview) {
+            // @todo реализовать
+            $previewUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets')).'/img/photo-not-available.jpg';
+        } else {
+            $previewUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets')).'/img/photo-not-available.jpg';
+        }
+
+        return $previewUrl;
     }
 
     /**
@@ -67,6 +102,13 @@ class ImageHelper extends CComponent
      */
     public static function getSmallThumbnailForObject(Objects $Object)
     {
-        return Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets')).'/img/photo-not-available.jpg';
+        if ($Object->has_preview) {
+            // @todo реализовать
+            $previewUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets')).'/img/photo-not-available.jpg';
+        } else {
+            $previewUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets')).'/img/photo-not-available.jpg';
+        }
+
+        return $previewUrl;
     }
 }
