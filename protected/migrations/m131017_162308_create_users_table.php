@@ -16,7 +16,7 @@ class m131017_162308_create_users_table extends CDbMigration
             'date_delete' => 'datetime not null default 0',
             'sort' => 'int unsigned not null default 0',
             'deleted' => 'boolean not null default 0',
-        ));
+        ), 'ENGINE=InnoDB DEFAULT CHARSET=utf8');
 
         $this->createIndex('IX_tbl_users_sort', 'tbl_users', 'sort', false);
         $this->createIndex('IX_tbl_users_deleted', 'tbl_users', 'deleted', false);

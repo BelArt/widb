@@ -22,7 +22,7 @@ class m131017_161658_create_images_table extends CDbMigration
             'date_delete' => 'datetime not null default 0',
             'sort' => 'int unsigned not null default 0',
             'deleted' => 'boolean not null default 0',
-        ));
+        ), 'ENGINE=InnoDB DEFAULT CHARSET=utf8');
 
         $this->createIndex('IX_tbl_images_object_id', 'tbl_images', 'object_id', false);
         $this->createIndex('IX_tbl_images_photo_type_id', 'tbl_images', 'photo_type_id', false);

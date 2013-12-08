@@ -13,7 +13,7 @@ class m131017_162801_create_object_types_table extends CDbMigration
             'date_delete' => 'datetime not null default 0',
             'sort' => 'int unsigned not null default 0',
             'deleted' => 'boolean not null default 0',
-        ));
+        ), 'ENGINE=InnoDB DEFAULT CHARSET=utf8');
 
         $this->createIndex('IX_tbl_object_types_sort', 'tbl_object_types', 'sort', false);
         $this->createIndex('IX_tbl_object_types_deleted', 'tbl_object_types', 'deleted', false);
