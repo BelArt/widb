@@ -10,10 +10,21 @@ class TempCollectionValidator extends CValidator
      */
     protected function validateAttribute($object, $attribute)
     {
-        if (empty($object->temporary)) {
-            if (!empty($object->$attribute)) {
-                $this->addError($object, $attribute, Yii::t('collections', 'Обычная коллекция не может быть открытой!'));
-            }
+        switch ($attribute) {
+            case 'parent_id':
+                if (!empty($object->temporary)) {
+                    if (!empty($object->$attribute)) {
+                        $this->addError($object, $attribute, Yii::t('collections', 'У временной коллекции не может быть родительской коллекции!'));
+                    }
+                }
+                break;
+            case 'temporary_public':
+                if (empty($object->temporary)) {
+                    if (!empty($object->$attribute)) {
+                        $this->addError($object, $attribute, Yii::t('collections', 'Обычная коллекция не может быть открытой!'));
+                    }
+                }
+                break;
         }
     }
 } 

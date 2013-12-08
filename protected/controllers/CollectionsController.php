@@ -178,7 +178,7 @@ class CollectionsController extends Controller
      * @param string $tb какая вкладка открыта (параметр используется уже во view): cc - дочерние коллекции, ob - объекты
      * @throws CHttpException
      */
-    public function actionViewTemp($id, $cv = 'th', $ov = 'th', $tb = 'cc')
+    public function actionViewTemp($id, /*$cv = 'th',*/ $ov = 'th'/*, $tb = 'cc'*/)
     {
         $model = $this->loadModel($id);
 
@@ -187,7 +187,7 @@ class CollectionsController extends Controller
         }
 
         // как отображать дочерние коллекции
-        switch ($cv) {
+        /*switch ($cv) {
             case 'th': // картинками
                 $renderViewChildCollections = '_viewChildCollectionsThumbnails';
                 break;
@@ -199,7 +199,7 @@ class CollectionsController extends Controller
                 break;
             default: // картинками
                 $renderViewChildCollections = '_viewChildCollectionsThumbnails';
-        }
+        }*/
 
         // как отображать объекты в коллекции
         switch ($ov) {
@@ -216,14 +216,25 @@ class CollectionsController extends Controller
                 $renderViewObjects = '_viewObjectsThumbnails';
         }
 
+        $TempCollectionObjectsCriteria = new CDbCriteria();
+        $TempCollectionObjectsCriteria->select = 'object_id';
+        $TempCollectionObjectsCriteria->condition = 'collection_id = :collection_id';
+        $TempCollectionObjectsCriteria->params = array(':collection_id' => $id);
+        $tempCollectionObjects = TempCollectionObject::model()->findAll($TempCollectionObjectsCriteria);
+
+        $objectIds = array();
+
+        foreach ($tempCollectionObjects as $Record) {
+            $objectIds[] = $Record->object_id;
+        }
+
         $ObjectsCriteria = new CDbCriteria();
-        $ObjectsCriteria->condition = 't.collection_id = :collection_id';
-        $ObjectsCriteria->params = array(':collection_id' => $id);
+        $ObjectsCriteria->addInCondition('t.id', $objectIds);
         $ObjectsCriteria->with = array('author');
 
         $ObjectsDataProvider = new CActiveDataProvider('Objects', array('criteria' => $ObjectsCriteria));
 
-        $ChildCollectionsDataProvider = new CActiveDataProvider(
+        /*$ChildCollectionsDataProvider = new CActiveDataProvider(
             'Collections',
             array(
                 'criteria' => array(
@@ -231,7 +242,7 @@ class CollectionsController extends Controller
                     'params' => array(':parent_id' => $id)
                 ),
             )
-        );
+        );*/
 
         // параметры страницы
         $this->pageTitle = array($model->name);
@@ -270,12 +281,12 @@ class CollectionsController extends Controller
         $this->pageMenu = $pageMenu;
 
         $this->render(
-            'view',
+            'viewTemp',
             array(
                 'model' => $model,
                 'ObjectsDataProvider' => $ObjectsDataProvider,
-                'ChildCollectionsDataProvider' => $ChildCollectionsDataProvider,
-                'renderViewChildCollections' => $renderViewChildCollections,
+                //'ChildCollectionsDataProvider' => $ChildCollectionsDataProvider,
+                //'renderViewChildCollections' => $renderViewChildCollections,
                 'renderViewObjects' => $renderViewObjects,
             )
         );
@@ -447,7 +458,8 @@ class CollectionsController extends Controller
 
         // параметры страницы
         $this->pageTitle = array(Yii::t('collections', 'Коллекции'));
-        $this->breadcrumbs = array(Yii::t('collections', 'Коллекции'));
+        //$this->breadcrumbs = array(Yii::t('collections', 'Коллекции'));
+        $this->breadcrumbs = array();
         $pageMenu = array();
         if (Yii::app()->user->checkAccess('oCollectionCreate')) {
             $pageMenu[] = array(

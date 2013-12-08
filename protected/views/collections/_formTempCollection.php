@@ -30,13 +30,13 @@ echo $form->textFieldRow($model,'code', array(
 
 echo $form->checkBoxRow($model,'has_preview', array('class' => '_collectionForm_hideErrorsChange'));
 
-echo $form->select2Row($model,'parent_id',
+/*echo $form->select2Row($model,'parent_id',
     array(
         'asDropDownList' => true,
         'data' => $model->getArrayOfPossibleTempParentCollections(),
         'class' => 'input-xxlarge _collectionForm_hideErrorsChange',
     )
-);
+);*/
 
 echo $form->checkBoxRow($model,'temporary_public');
 

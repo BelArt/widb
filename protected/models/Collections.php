@@ -50,7 +50,7 @@ class Collections extends ActiveRecord
 	public function rules()
 	{
 		return array(
-            array('temporary_public', 'application.components.validators.TempCollectionValidator'),
+            array('temporary_public, parent_id', 'application.components.validators.TempCollectionValidator'),
             array('name, code, description', 'required'),
 			array('temporary, has_preview, temporary_public', 'boolean'),
             array('parent_id, sort', 'application.components.validators.EmptyOrPositiveIntegerValidator'),
@@ -267,7 +267,7 @@ class Collections extends ActiveRecord
      * создания\редактирования временной коллекции
      * @return array
      */
-    public function getArrayOfPossibleTempParentCollections()
+    /*public function getArrayOfPossibleTempParentCollections()
     {
         $Criteria = new CDbCriteria;
         $Criteria->select = 'id, name';
@@ -293,7 +293,7 @@ class Collections extends ActiveRecord
         }
 
         return $result;
-    }
+    }*/
 
     /**
      * Возвращает массив с айди коллекций, доступных пользователю
