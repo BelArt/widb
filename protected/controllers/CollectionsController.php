@@ -10,7 +10,7 @@ class CollectionsController extends Controller
 	{
 		return array(
 			'accessControl', // perform access control for CRUD operations
-			'postOnly + delete', // we only allow deletion via POST request
+			//'postOnly + delete', // we only allow deletion via POST request
 		);
 	}
 
@@ -60,6 +60,18 @@ class CollectionsController extends Controller
                 'actions' => array('updateTemp'),
                 'roles' => array(
                     'oTempCollectionEdit' => array(
+                        'Collection' => $this->loadModel(Yii::app()->request->getQuery('id'))
+                    )
+                ),
+            ),
+            array('allow',
+                'actions' => array('delete'),
+                'roles' => array('oCollectionDelete'),
+            ),
+            array('allow',
+                'actions' => array('deleteTemp'),
+                'roles' => array(
+                    'oTempCollectionDelete' => array(
                         'Collection' => $this->loadModel(Yii::app()->request->getQuery('id'))
                     )
                 ),
@@ -152,14 +164,14 @@ class CollectionsController extends Controller
         if (Yii::app()->user->checkAccess('oCollectionDelete')) {
             $pageMenu[] = array(
                 'label' => Yii::t('collections', 'Удалить коллекцию'),
-                'url' => '#',
+                'url' => $this->createUrl('collections/delete', array('id' => $id)),
                 //'itemOptions' => array('class' => 'small')
             );
         }
         $this->pageMenu = $pageMenu;
 
 		$this->render(
-            'view',
+            'viewNormal',
             array(
                 'model' => $model,
                 'ObjectsDataProvider' => $ObjectsDataProvider,
@@ -178,7 +190,7 @@ class CollectionsController extends Controller
      * @param string $tb какая вкладка открыта (параметр используется уже во view): cc - дочерние коллекции, ob - объекты
      * @throws CHttpException
      */
-    public function actionViewTemp($id, $cv = 'th', $ov = 'th', $tb = 'cc')
+    public function actionViewTemp($id, /*$cv = 'th',*/ $ov = 'th'/*, $tb = 'cc'*/)
     {
         $model = $this->loadModel($id);
 
@@ -187,7 +199,7 @@ class CollectionsController extends Controller
         }
 
         // как отображать дочерние коллекции
-        switch ($cv) {
+        /*switch ($cv) {
             case 'th': // картинками
                 $renderViewChildCollections = '_viewChildCollectionsThumbnails';
                 break;
@@ -199,7 +211,7 @@ class CollectionsController extends Controller
                 break;
             default: // картинками
                 $renderViewChildCollections = '_viewChildCollectionsThumbnails';
-        }
+        }*/
 
         // как отображать объекты в коллекции
         switch ($ov) {
@@ -216,14 +228,25 @@ class CollectionsController extends Controller
                 $renderViewObjects = '_viewObjectsThumbnails';
         }
 
+        $TempCollectionObjectsCriteria = new CDbCriteria();
+        $TempCollectionObjectsCriteria->select = 'object_id';
+        $TempCollectionObjectsCriteria->condition = 'collection_id = :collection_id';
+        $TempCollectionObjectsCriteria->params = array(':collection_id' => $id);
+        $tempCollectionObjects = TempCollectionObject::model()->findAll($TempCollectionObjectsCriteria);
+
+        $objectIds = array();
+
+        foreach ($tempCollectionObjects as $Record) {
+            $objectIds[] = $Record->object_id;
+        }
+
         $ObjectsCriteria = new CDbCriteria();
-        $ObjectsCriteria->condition = 't.collection_id = :collection_id';
-        $ObjectsCriteria->params = array(':collection_id' => $id);
+        $ObjectsCriteria->addInCondition('t.id', $objectIds);
         $ObjectsCriteria->with = array('author');
 
         $ObjectsDataProvider = new CActiveDataProvider('Objects', array('criteria' => $ObjectsCriteria));
 
-        $ChildCollectionsDataProvider = new CActiveDataProvider(
+        /*$ChildCollectionsDataProvider = new CActiveDataProvider(
             'Collections',
             array(
                 'criteria' => array(
@@ -231,7 +254,7 @@ class CollectionsController extends Controller
                     'params' => array(':parent_id' => $id)
                 ),
             )
-        );
+        );*/
 
         // параметры страницы
         $this->pageTitle = array($model->name);
@@ -263,19 +286,19 @@ class CollectionsController extends Controller
         ) {
             $pageMenu[] = array(
                 'label' => Yii::t('collections', 'Удалить временную коллекцию'),
-                'url' => '#',
+                'url' => $this->createUrl('collections/deleteTemp', array('id' => $id)),
                 //'itemOptions' => array('class' => 'small')
             );
         }
         $this->pageMenu = $pageMenu;
 
         $this->render(
-            'view',
+            'viewTemp',
             array(
                 'model' => $model,
                 'ObjectsDataProvider' => $ObjectsDataProvider,
-                'ChildCollectionsDataProvider' => $ChildCollectionsDataProvider,
-                'renderViewChildCollections' => $renderViewChildCollections,
+                //'ChildCollectionsDataProvider' => $ChildCollectionsDataProvider,
+                //'renderViewChildCollections' => $renderViewChildCollections,
                 'renderViewObjects' => $renderViewObjects,
             )
         );
@@ -418,18 +441,66 @@ class CollectionsController extends Controller
     }
 
 	/**
-	 * Deletes a particular model.
-	 * If deletion is successful, the browser will be redirected to the 'admin' page.
-	 * @param integer $id the ID of the model to be deleted
+	 * Удаляет коллекцию
+	 * @param integer $id айди коллекции
 	 */
 	public function actionDelete($id)
 	{
-		$this->loadModel($id)->delete();
+		$Collection = $this->loadModel($id);
+
+        if ($Collection->isReadyToBeDeleted()) {
+            if ($Collection->deleteNormalCollection()) {
+                Yii::app()->user->setFlash(
+                    'success',
+                    Yii::t('collections', 'Коллекция удалена')
+                );
+                $this->redirect(array('index'));
+            } else {
+                Yii::app()->user->setFlash(
+                    'error',
+                    Yii::t('collections', 'Коллекция не удалена')
+                );
+                $this->redirect(Yii::app()->request->urlReferrer);
+            }
+        } else {
+            Yii::app()->user->setFlash(
+                'error',
+                Yii::t('collections', 'Коллекция не удалена. У коллекции не должно быть дочерних коллекций и относящихся к ней объектов, чтобы ее можно было удалить')
+            );
+            $this->redirect(Yii::app()->request->urlReferrer);
+        }
 
 		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-		if(!isset($_GET['ajax']))
-			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+		/*if(!isset($_GET['ajax']))
+			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));*/
 	}
+
+    /**
+     * Удаляет временную коллекцию
+     * @param integer $id айди временной коллекции
+     */
+    public function actionDeleteTemp($id)
+    {
+        $Collection = $this->loadModel($id);
+
+        if ($Collection->deleteTempCollection()) {
+            Yii::app()->user->setFlash(
+                'success',
+                Yii::t('collections', 'Временная коллекция удалена')
+            );
+            $this->redirect(array('index'));
+        } else {
+            Yii::app()->user->setFlash(
+                'error',
+                Yii::t('collections', 'Временная коллекция не удалена')
+            );
+            $this->redirect(Yii::app()->request->urlReferrer);
+        }
+
+        // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
+        /*if(!isset($_GET['ajax']))
+            $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));*/
+    }
 
 
     /**
@@ -448,6 +519,7 @@ class CollectionsController extends Controller
         // параметры страницы
         $this->pageTitle = array(Yii::t('collections', 'Коллекции'));
         $this->breadcrumbs = array(Yii::t('collections', 'Коллекции'));
+        //$this->breadcrumbs = array();
         $pageMenu = array();
         if (Yii::app()->user->checkAccess('oCollectionCreate')) {
             $pageMenu[] = array(

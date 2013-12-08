@@ -82,6 +82,23 @@
         ?>
 	<?php endif?>
 
+    <?php
+        $this->widget('bootstrap.widgets.TbAlert', array(
+            'block' => false,
+            'fade' => true,
+            'closeText' => '&times;',
+            'events' => array(),
+            'htmlOptions' => array(),
+            'userComponentId' => 'user',
+            'alerts' => array(
+                'success',
+                'info',
+                'warning',
+                'error'
+            ),
+        ));
+    ?>
+
 	<?php echo $content; ?>
 
 	<div class="clear"></div>

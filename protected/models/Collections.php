@@ -50,7 +50,7 @@ class Collections extends ActiveRecord
 	public function rules()
 	{
 		return array(
-            array('temporary_public', 'application.components.validators.TempCollectionValidator'),
+            array('temporary_public, parent_id', 'application.components.validators.TempCollectionValidator'),
             array('name, code, description', 'required'),
 			array('temporary, has_preview, temporary_public', 'boolean'),
             array('parent_id, sort', 'application.components.validators.EmptyOrPositiveIntegerValidator'),
@@ -267,7 +267,7 @@ class Collections extends ActiveRecord
      * создания\редактирования временной коллекции
      * @return array
      */
-    public function getArrayOfPossibleTempParentCollections()
+    /*public function getArrayOfPossibleTempParentCollections()
     {
         $Criteria = new CDbCriteria;
         $Criteria->select = 'id, name';
@@ -293,7 +293,7 @@ class Collections extends ActiveRecord
         }
 
         return $result;
-    }
+    }*/
 
     /**
      * Возвращает массив с айди коллекций, доступных пользователю
@@ -428,5 +428,109 @@ class Collections extends ActiveRecord
         }
 
         return $result;
+    }
+
+    /**
+     * Проверяет, можно ли удалить коллекцию
+     * @return bool
+     */
+    public function isReadyToBeDeleted()
+    {
+        if ($this->temporary) {
+            return true;
+        }
+
+        $Criteria = new CDbCriteria;
+        $Criteria->select = 'id';
+        $Criteria->addCondition('parent_id = :parent_id');
+        $Criteria->params = array(':parent_id' => $this->id);
+
+        $childCollections = self::model()->findAll($Criteria);
+
+        if (!empty($childCollections)) {
+            return false;
+        }
+
+        $Criteria = new CDbCriteria;
+        $Criteria->select = 'id';
+        $Criteria->addCondition('collection_id = :collection_id');
+        $Criteria->params = array(':collection_id' => $this->id);
+
+        $objects = Objects::model()->findAll($Criteria);
+
+        if (!empty($objects)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Удаляет обычную коллекцию
+     * @return bool
+     */
+    public function deleteNormalCollection()
+    {
+        if ($this->deleteRecord()) {
+
+            // удаляем коллекцию из списка доступных коллекций у всех пользователей
+            $Criteria = new CDbCriteria;
+            $Criteria->select = 'id';
+            $Criteria->addCondition('collection_id = :collection_id');
+            $Criteria->params = array(':collection_id' => $this->id);
+
+            $records = UserAllowedCollection::model()->findAll($Criteria);
+
+            foreach ($records as $Record) {
+                if (!$Record->deleteRecord()) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Удаляет временную коллекцию
+     * @return bool
+     */
+    public function deleteTempCollection()
+    {
+        if ($this->deleteRecord()) {
+
+            // удаляем коллекцию из списка доступных коллекций у всех пользователей
+            $Criteria = new CDbCriteria;
+            $Criteria->select = 'id';
+            $Criteria->addCondition('collection_id = :collection_id');
+            $Criteria->params = array(':collection_id' => $this->id);
+
+            $records = UserAllowedCollection::model()->findAll($Criteria);
+
+            foreach ($records as $Record) {
+                if (!$Record->deleteRecord()) {
+                    return false;
+                }
+            }
+
+            // удаляем объекты из этой временной коллекции
+            $Criteria = new CDbCriteria;
+            $Criteria->select = 'id';
+            $Criteria->addCondition('collection_id = :collection_id');
+            $Criteria->params = array(':collection_id' => $this->id);
+
+            $records = TempCollectionObject::model()->findAll($Criteria);
+
+            foreach ($records as $Record) {
+                if (!$Record->deleteRecord()) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+        return false;
     }
 }
