@@ -25,7 +25,7 @@ class m131017_160540_create_objects_table extends CDbMigration
             'date_delete' => 'datetime not null default 0',
             'sort' => 'int unsigned not null default 0',
             'deleted' => 'boolean not null default 0',
-        ));
+        ), 'ENGINE=InnoDB DEFAULT CHARSET=utf8');
 
         $this->createIndex('IX_tbl_objects_author_id', 'tbl_objects', 'author_id', false);
         $this->createIndex('IX_tbl_objects_type_id', 'tbl_objects', 'type_id', false);

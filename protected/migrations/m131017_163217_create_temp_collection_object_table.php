@@ -13,7 +13,7 @@ class m131017_163217_create_temp_collection_object_table extends CDbMigration
             'date_delete' => 'datetime not null default 0',
             'sort' => 'int unsigned not null default 0',
             'deleted' => 'boolean not null default 0',
-        ));
+        ), 'ENGINE=InnoDB DEFAULT CHARSET=utf8');
 
         $this->createIndex('IX_tbl_temp_collection_object_collection_id', 'tbl_temp_collection_object', 'collection_id', false);
         $this->createIndex('IX_tbl_temp_collection_object_object_id', 'tbl_temp_collection_object', 'object_id', false);
