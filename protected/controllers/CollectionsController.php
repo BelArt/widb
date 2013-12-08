@@ -159,7 +159,7 @@ class CollectionsController extends Controller
         $this->pageMenu = $pageMenu;
 
 		$this->render(
-            'view',
+            'viewNormal',
             array(
                 'model' => $model,
                 'ObjectsDataProvider' => $ObjectsDataProvider,

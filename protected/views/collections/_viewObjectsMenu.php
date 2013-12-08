@@ -1,36 +1,41 @@
 <?php
 /* @var $model Collections */
 
-$this->widget(
-    'bootstrap.widgets.TbMenu',
-    array(
-        'type' => 'pills',
-        'items' => array(
-            array(
-                'label' => Yii::t('common', 'С отмеченными'),
-                'itemOptions' => array('class' => 'nav-header')
-            ),
-            array(
-                'label' => Yii::t('collections', 'Добавить во временную коллекцию'),
-                'url' => '#',
-                'itemOptions' => array('class' => 'small')
-            ),
-            array(
-                'label' => Yii::t('common', 'Переместить'),
-                'url' => '#',
-                'itemOptions' => array('class' => 'small')
-            ),
-            array(
-                'label' => Yii::t('common', 'Удалить'),
-                'url' => '#',
-                'itemOptions' => array('class' => 'small')
-            ),
+if (!$model->temporary) {
+    $this->widget(
+        'bootstrap.widgets.TbMenu',
+        array(
+            'type' => 'pills',
+            'items' => array(
+                array(
+                    'label' => Yii::t('common', 'С отмеченными'),
+                    'itemOptions' => array('class' => 'nav-header')
+                ),
+                array(
+                    'label' => Yii::t('collections', 'Добавить во временную коллекцию'),
+                    'url' => '#',
+                    'itemOptions' => array('class' => 'small')
+                ),
+                array(
+                    'label' => Yii::t('common', 'Переместить'),
+                    'url' => '#',
+                    'itemOptions' => array('class' => 'small')
+                ),
+                array(
+                    'label' => Yii::t('common', 'Удалить'),
+                    'url' => '#',
+                    'itemOptions' => array('class' => 'small')
+                ),
+            )
         )
-    )
-);
-?>
+    );
 
-<div class="gapeSmall"></div>
+    echo CHtml::openTag('div', array(
+        'class' => 'gapeSmall',
+    ));
+    echo CHtml::closeTag('div');
+}
+?>
 
 <?php
 
