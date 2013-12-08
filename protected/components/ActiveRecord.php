@@ -53,4 +53,19 @@ class ActiveRecord extends CActiveRecord
             //'order' => $this->getTableAlias(false, false).'.sort ASC, '.$this->getTableAlias(false, false).'.name ASC',
         );
     }
+
+    /**
+     * Удаляет запись в таблицах проекта.
+     * Т.е. ставит в ней флаг, что запись удалена, но не удаляет ее из таблицы
+     * @return bool
+     */
+    public function deleteRecord()
+    {
+        $this->scenario = 'delete';
+        $this->deleted = 1;
+        if ($this->save()) {
+            return true;
+        }
+        return false;
+    }
 } 
