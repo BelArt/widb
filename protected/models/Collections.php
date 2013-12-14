@@ -32,9 +32,9 @@ class Collections extends ActiveRecord
      */
     public $children = array();
 
-    private $_thumbnailBig;
-    private $_thumbnailMedium;
-    private $_thumbnailSmall;
+    protected $thumbnailBig;
+    protected $thumbnailMedium;
+    protected $thumbnailSmall;
 
 	/**
 	 * @return string the associated database table name
@@ -148,9 +148,14 @@ class Collections extends ActiveRecord
 
     /**
      * Формирует набор превью
+     * @throws CException
      */
     protected function setThumbnails()
     {
+        if ($this->isNewRecord) {
+            throw new CException(Yii::t('collections', 'Метод "{method}" не может вызываться для вновь создаваемой коллекции', array('{method}' => __METHOD__)));
+        }
+
         $this->thumbnailBig = ImageHelper::getBigThumbnailForCollection($this);
         $this->thumbnailMedium = ImageHelper::getMediumThumbnailForCollection($this);
         $this->thumbnailSmall = ImageHelper::getSmallThumbnailForCollection($this);
@@ -178,41 +183,43 @@ class Collections extends ActiveRecord
 
     public function getThumbnailBig()
     {
-        return $this->_thumbnailBig;
-    }
+        if ($this->isNewRecord) {
+            throw new CException(Yii::t('collections', 'Метод "{method}" не может вызываться для вновь создаваемой коллекции', array('{method}' => __METHOD__)));
+        }
 
-    public function setThumbnailBig($value)
-    {
-        $this->_thumbnailBig = $value;
+        return $this->thumbnailBig;
     }
 
     public function getThumbnailMedium()
     {
-        return $this->_thumbnailMedium;
-    }
+        if ($this->isNewRecord) {
+            throw new CException(Yii::t('collections', 'Метод "{method}" не может вызываться для вновь создаваемой коллекции', array('{method}' => __METHOD__)));
+        }
 
-    public function setThumbnailMedium($value)
-    {
-        $this->_thumbnailMedium = $value;
+        return $this->thumbnailMedium;
     }
 
     public function getThumbnailSmall()
     {
-        return $this->_thumbnailSmall;
-    }
+        if ($this->isNewRecord) {
+            throw new CException(Yii::t('collections', 'Метод "{method}" не может вызываться для вновь создаваемой коллекции', array('{method}' => __METHOD__)));
+        }
 
-    public function setThumbnailSmall($value)
-    {
-        $this->_thumbnailSmall = $value;
+        return $this->thumbnailSmall;
     }
 
     /**
      * Проверяет, доступна ли текущая коллекция пользователю.
      * @param integer $userId айдишник пользователя
+     * @throws CException
      * @return bool
      */
     public function isAllowedToUser($userId)
     {
+        if ($this->isNewRecord) {
+            throw new CException(Yii::t('collections', 'Метод "{method}" не может вызываться для вновь создаваемой коллекции', array('{method}' => __METHOD__)));
+        }
+
         return self::getCollectionIsAllowedToUser($this->id, $userId);
     }
 
@@ -432,10 +439,15 @@ class Collections extends ActiveRecord
 
     /**
      * Проверяет, можно ли удалить коллекцию
+     * @throws CException
      * @return bool
      */
     public function isReadyToBeDeleted()
     {
+        if ($this->isNewRecord) {
+            throw new CException(Yii::t('collections', 'Метод "{method}" не может вызываться для вновь создаваемой коллекции', array('{method}' => __METHOD__)));
+        }
+
         if ($this->temporary) {
             return true;
         }
@@ -467,10 +479,15 @@ class Collections extends ActiveRecord
 
     /**
      * Удаляет обычную коллекцию
+     * @throws CException
      * @return bool
      */
     public function deleteNormalCollection()
     {
+        if ($this->isNewRecord) {
+            throw new CException(Yii::t('collections', 'Метод "{method}" не может вызываться для вновь создаваемой коллекции', array('{method}' => __METHOD__)));
+        }
+
         if ($this->deleteRecord()) {
 
             // удаляем коллекцию из списка доступных коллекций у всех пользователей
@@ -495,10 +512,15 @@ class Collections extends ActiveRecord
 
     /**
      * Удаляет временную коллекцию
+     * @throws CException
      * @return bool
      */
     public function deleteTempCollection()
     {
+        if ($this->isNewRecord) {
+            throw new CException(Yii::t('collections', 'Метод "{method}" не может вызываться для вновь создаваемой коллекции', array('{method}' => __METHOD__)));
+        }
+
         if ($this->deleteRecord()) {
 
             // удаляем коллекцию из списка доступных коллекций у всех пользователей
