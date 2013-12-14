@@ -7,9 +7,9 @@
 Yii::app()->clientScript->registerPackage('collectionView');
 ?>
 
-<?php $this->renderPartial('_viewDescription', array('model' => $model)); ?>
+<?php /*$this->renderPartial('_viewDescription', array('model' => $model)); */?>
 
-<div class="gape"></div>
+<!--<div class="gape"></div>-->
 
 <div class="">
     <?php
