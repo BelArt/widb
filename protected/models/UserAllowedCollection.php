@@ -1,4 +1,4 @@
-<?php
+proto<?php
 
 /**
  * This is the model class for table "{{user_allowed_collection}}".
@@ -48,10 +48,14 @@ class UserAllowedCollection extends ActiveRecord
 	 */
 	public function relations()
 	{
-		// NOTE: you may need to adjust the relation name and the related
-		// class name for the relations automatically generated below.
-		return array(
-		);
+        return array(
+            'collection' => array(self::BELONGS_TO, 'Collections', 'collection_id'),
+            'user' => array(self::BELONGS_TO, 'Users', 'user_id'),
+
+            'userCreate' => array(self::BELONGS_TO, 'User', 'user_create'),
+            'userModify' => array(self::BELONGS_TO, 'User', 'user_modify'),
+            'userDelete' => array(self::BELONGS_TO, 'User', 'user_delete'),
+        );
 	}
 
 	/**

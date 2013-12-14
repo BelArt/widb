@@ -509,6 +509,9 @@ class CollectionsController extends Controller
      */
     public function actionIndex($cv = 'th')
 	{
+        /*echo '<pre>';
+        print_r(Collections::getIdsOfNormalCollectionsAllowedToUser(Yii::app()->user->id));
+        exit;*/
         $allowedCollectionsCriteria = Collections::getAllowedCollectionsCriteria(Yii::app()->user->id);
 
 		$dataProvider=new CActiveDataProvider(
@@ -517,8 +520,8 @@ class CollectionsController extends Controller
         );
 
         // параметры страницы
-        $this->pageTitle = array(Yii::t('collections', 'Коллекции'));
-        $this->breadcrumbs = array(Yii::t('collections', 'Коллекции'));
+        //$this->pageTitle = array(Yii::t('collections', 'Коллекции'));
+        //$this->breadcrumbs = array(Yii::t('collections', 'Коллекции'));
         //$this->breadcrumbs = array();
         $pageMenu = array();
         if (Yii::app()->user->checkAccess('oCollectionCreate')) {

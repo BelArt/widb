@@ -57,8 +57,8 @@ class TbBreadcrumbs extends CBreadcrumbs
 	 */
 	public function run()
 	{
-		if (empty($this->links))
-			return;
+		/*if (empty($this->links))
+			return;*/
 
 		echo CHtml::openTag($this->tagName, $this->htmlOptions);
 
