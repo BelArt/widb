@@ -71,16 +71,14 @@
         ?>
 	</div><!-- mainmenu -->
 
-	<?php if(!empty($this->breadcrumbs)):?>
-        <?php
-            $this->widget(
-                'bootstrap.widgets.TbBreadcrumbs',
-                array(
-                    'links' => $this->breadcrumbs,
-                )
-            );
-        ?>
-	<?php endif?>
+    <?php
+        $this->widget(
+            'bootstrap.widgets.TbBreadcrumbs',
+            array(
+                'links' => $this->breadcrumbs,
+            )
+        );
+    ?>
 
     <?php
         $this->widget('bootstrap.widgets.TbAlert', array(

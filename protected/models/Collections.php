@@ -68,10 +68,15 @@ class Collections extends ActiveRecord
 	 */
 	public function relations()
 	{
-		// NOTE: you may need to adjust the relation name and the related
-		// class name for the relations automatically generated below.
-		return array(
-		);
+        return array(
+            'parentCollection' => array(self::BELONGS_TO, 'Collections', 'parent_id'),
+            'childCollections' => array(self::HAS_MANY, 'Collections', 'parent_id'),
+            'userAllowedCollection' => array(self::HAS_MANY, 'UserAllowedCollection', 'collection_id'),
+
+            'userCreate' => array(self::BELONGS_TO, 'User', 'user_create'),
+            'userModify' => array(self::BELONGS_TO, 'User', 'user_modify'),
+            'userDelete' => array(self::BELONGS_TO, 'User', 'user_delete'),
+        );
 	}
 
 	/**
@@ -303,7 +308,7 @@ class Collections extends ActiveRecord
     }*/
 
     /**
-     * Возвращает массив с айди коллекций, доступных пользователю
+     * Возвращает массив с айди всех коллекций, доступных пользователю
      * @param integer $userId айди пользователя
      * @return array массив с айди коллекций, доступных пользователю
      */
@@ -341,6 +346,7 @@ class Collections extends ActiveRecord
         );
 
         // если есть перечень доступных пользователю Коллекций, то ему доступны только эти коллекции и их потомки
+        // притом у временных коллекций нет потомков
         if (!empty($records)) {
             foreach ($records as $Record) {
                 $result = array_unique(array_merge($result, self::getDescendantCollectionsIds($Record->collection_id)));
@@ -348,11 +354,130 @@ class Collections extends ActiveRecord
             return $result;
         }
 
-        // перечень доступных коллекций пуст - значит, доступны все обчынче коллекции и публичные временные
+        // перечень доступных коллекций пуст - значит, доступны все обычные коллекции, публичные временные и те временные, которые он сам создал
         $collections = self::model()->findAll(
             array(
                 'select' => 'id',
-                'condition' => 'temporary = 0 OR (temporary = 1 AND temporary_public = 1)'
+                'condition' => 'temporary = 0 OR (temporary = 1 AND temporary_public = 1) OR (temporary = 1 AND user_create = :user_id)',
+                'params' => array(':user_id' => $userId)
+            )
+        );
+
+        foreach ($collections as $Collection) {
+            $result[] = $Collection->id;
+        }
+
+        return $result;
+    }
+
+    /**
+     * Возвращает массив с айди обычных коллекций, доступных пользователю
+     * @param integer $userId айди пользователя
+     * @return array массив с айди коллекций, доступных пользователю
+     */
+    public static function getIdsOfNormalCollectionsAllowedToUser($userId)
+    {
+        $result = array();
+
+        $User = Users::model()->findByPk(
+            $userId,
+            array(
+                'select' => 'role'
+            )
+        );
+
+        // все обычные коллекции
+        $collections = self::model()->findAll(
+            array(
+                'select' => 'id',
+                'condition' => 'temporary = 0'
+            )
+        );
+
+        // перечень доступных пользователю обычных коллекций
+        $records = UserAllowedCollection::model()->findAll(
+            array(
+                'select' => 'collection_id',
+                'condition' => 'user_id = :user_id AND collection.temporary = 0',
+                'params' => array(':user_id' => $userId),
+                'with' => array('collection')
+            )
+        );
+
+        // если пользователь - админ или контент-менеджер, или перечень доступных коллекций пуст - ему доступны все обычные коллекции
+        if ($User->role == 'administrator' || $User->role == 'contentManager' || empty($records)) {
+
+            foreach ($collections as $Collection) {
+                $result[] = $Collection->id;
+            }
+
+        } else {
+            // если есть перечень доступных пользователю Коллекций, то ему доступны только эти коллекции и их потомки
+            foreach ($records as $Record) {
+                $result = array_unique(array_merge($result, self::getDescendantCollectionsIds($Record->collection_id)));
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Возвращает массив с айди временных коллекций, доступных пользователю
+     * @param integer $userId айди пользователя
+     * @return array массив с айди коллекций, доступных пользователю
+     */
+    public static function getIdsOfTempCollectionsAllowedToUser($userId)
+    {
+        $result = array();
+
+        $User = Users::model()->findByPk(
+            $userId,
+            array(
+                'select' => 'role'
+            )
+        );
+
+        // все временные коллекции
+        $collections = self::model()->findAll(
+            array(
+                'select' => 'id',
+                'condition' => 'temporary = 1'
+            )
+        );
+
+        // если пользователь - админ или контент-менеджер - ему доступны все временные коллекции
+        if ($User->role == 'administrator' || $User->role == 'contentManager') {
+            foreach ($collections as $Collection) {
+                $result[] = $Collection->id;
+            }
+            return $result;
+        }
+
+        // перечень доступных пользователю временных коллекций
+        $records = UserAllowedCollection::model()->findAll(
+            array(
+                'select' => 'collection_id',
+                'condition' => 'user_id = :user_id AND collection.temporary = 1',
+                'params' => array(':user_id' => $userId),
+                'with' => array('collection')
+            )
+        );
+
+        // если есть перечень доступных пользователю временных Коллекций, то ему доступны только эти временные коллекции и их потомки
+        // хотя у временных коллекций нет потомков ...
+        if (!empty($records)) {
+            foreach ($records as $Record) {
+                $result = array_unique(array_merge($result, self::getDescendantCollectionsIds($Record->collection_id)));
+            }
+            return $result;
+        }
+
+        // перечень доступных временных коллекций пуст - значит, доступны все публичные временные и те временные, которые он сам создал
+        $collections = self::model()->findAll(
+            array(
+                'select' => 'id',
+                'condition' => '(temporary = 1 AND temporary_public = 1) OR (temporary = 1 AND user_create = :user_id)',
+                'params' => array(':user_id' => $userId)
             )
         );
 
@@ -402,7 +527,7 @@ class Collections extends ActiveRecord
     }
 
     /**
-     * Возвращает CDbCriteria для получения доступных пользователю коллекций
+     * Возвращает CDbCriteria для получения всех доступных пользователю коллекций
      * @param integer $userId айди пользователя
      * @return CDbCriteria для подстановки в DataProvider
      */

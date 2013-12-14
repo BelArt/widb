@@ -53,10 +53,14 @@ class Users extends ActiveRecord
 	 */
 	public function relations()
 	{
-		// NOTE: you may need to adjust the relation name and the related
-		// class name for the relations automatically generated below.
-		return array(
-		);
+        return array(
+            //'parentCollection' => array(self::HAS_ONE, 'Collections', 'parent_id'),
+            'userAllowedCollection' => array(self::HAS_MANY, 'UserAllowedCollection', 'user_id'),
+
+            'userCreate' => array(self::BELONGS_TO, 'User', 'user_create'),
+            'userModify' => array(self::BELONGS_TO, 'User', 'user_modify'),
+            'userDelete' => array(self::BELONGS_TO, 'User', 'user_delete'),
+        );
 	}
 
 	/**
