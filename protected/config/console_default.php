@@ -29,4 +29,8 @@ return array(
 			),
 		),
 	),
+
+    // application-level parameters that can be accessed
+    // using Yii::app()->params['paramName']
+    'params' => require_once('params.php'),
 );
