@@ -25,7 +25,16 @@ class SiteController extends Controller
 			'page'=>array(
 				'class'=>'CViewAction',
 			),
+
+            'upload' => array(
+                'class'=>'xupload.actions.XUploadAction',
+                'path' => Yii::getPathOfAlias('webroot').DIRECTORY_SEPARATOR.Yii::app()->params['tempFilesFolder'],
+                'publicPath' => Yii::app()->baseUrl.DIRECTORY_SEPARATOR.Yii::app()->params['tempFilesFolder'],
+                'secureFileNames' => true
+            ),
 		);
+
+
 	}
 
     public function actionIndex()

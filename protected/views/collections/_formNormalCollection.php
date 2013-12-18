@@ -1,6 +1,7 @@
 <?php
 /* @var $this CollectionsController */
 /* @var $model Collections */
+/* @var $photoUploadModel XUploadForm */
 /* @var $form CActiveForm */
 
 Yii::app()->clientScript->registerPackage('collectionForm');
@@ -11,7 +12,10 @@ $form = $this->beginWidget(
         'id' => 'collections-form',
         'type' => 'horizontal',
         'inlineErrors' => true,
-        'htmlOptions' => array('class' => 'collectionForm_form _collectionForm_form'), // for inset effect
+        'htmlOptions' => array(
+            'class' => 'collectionForm_form _collectionForm_form',
+            'enctype' => 'multipart/form-data'
+        ),
     )
 );
 
@@ -42,6 +46,35 @@ echo $form->textFieldRow($model,'sort', array(
     'class' => 'input-small _collectionForm_hideErrorsKeypress',
     'value' => empty($model->sort) ? '' : null
 ));
+
+?>
+
+<div class="control-group">
+    <?php /*echo $form->labelEx($model,'photos'); */?>
+    <div class="controls">
+    <?php
+        $this->widget(
+            'xupload.XUpload',
+            array(
+                'url' => Yii::app( )->createUrl("site/upload"),
+                //our XUploadForm
+                'model' => $photoUploadModel,
+                //We set this for the widget to be able to target our own form
+                'htmlOptions' => array('id'=>'collections-form'),
+                'attribute' => 'file',
+                'multiple' => false,
+                //Note that we are using a custom view for our widget
+                //Thats becase the default widget includes the 'form'
+                //which we don't want here
+                //'formView' => 'application.views.collections._formUploadFile',
+                'showForm' => false
+            )
+        );
+    ?>
+    </div>
+</div>
+
+<?php
 
 echo CHtml::openTag('div', array(
     'class' => 'form-actions',

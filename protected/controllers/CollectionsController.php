@@ -312,6 +312,10 @@ class CollectionsController extends Controller
 		$model = new Collections;
 
         $model->temporary = 0;
+
+        Yii::import( "xupload.models.XUploadForm" );
+        $PhotoUploadModel = new XUploadForm;
+
         $view = '_formNormalCollection';
 
 		// Uncomment the following line if AJAX validation is needed
@@ -332,6 +336,7 @@ class CollectionsController extends Controller
 
 		$this->render('create',array(
 			'model' => $model,
+            'photoUploadModel' => $PhotoUploadModel,
             'view' => $view
 		));
 	}

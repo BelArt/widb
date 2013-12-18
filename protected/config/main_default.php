@@ -18,10 +18,15 @@ return array(
         'bootstrap'
     ),
 
+    'aliases' => array(
+        'xupload' => 'ext.xupload'
+    ),
+
 	// autoloading model and component classes
-	'import'=>array(
+	'import' => array(
 		'application.models.*',
 		'application.components.*',
+        'application.components.helpers.*',
         'application.widgets.*',
 	),
 
@@ -91,6 +96,13 @@ return array(
         ),
         'authManager' => array(
             'class' => 'PhpAuthManager',
+        ),
+        'image' => array(
+            'class'=>'application.extensions.image.CImageComponent',
+            // GD or ImageMagick
+            'driver'=>'ImageMagick',
+            // ImageMagick setup path
+            //'params'=>array('directory'=>'/opt/local/bin'),
         ),
 	),
 
