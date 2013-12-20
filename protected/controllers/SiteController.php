@@ -2,12 +2,12 @@
 
 class SiteController extends Controller
 {
-    /*public function filters()
+    public function filters()
     {
         return array(
-            array('ext.yiibooster.filters.BootstrapFilter + login')
+            'ajaxOnly + ajax',
         );
-    }*/
+    }
 
 	/**
 	 * Declares class-based actions.
@@ -22,15 +22,19 @@ class SiteController extends Controller
 			),
 			// page action renders "static" pages stored under 'protected/views/site/pages'
 			// They can be accessed via: index.php?r=site/page&view=FileName
+            // @todo убрать
 			'page'=>array(
 				'class'=>'CViewAction',
 			),
 
             'upload' => array(
                 'class'=>'xupload.actions.XUploadAction',
-                'path' => Yii::getPathOfAlias('webroot').DIRECTORY_SEPARATOR.Yii::app()->params['tempFilesFolder'],
-                'publicPath' => Yii::app()->baseUrl.DIRECTORY_SEPARATOR.Yii::app()->params['tempFilesFolder'],
-                'secureFileNames' => true
+                'path' => Yii::getPathOfAlias('webroot').DIRECTORY_SEPARATOR.Yii::app()->params['filesFolder'].DIRECTORY_SEPARATOR.Yii::app()->params['tempFilesFolder'],
+                'publicPath' => Yii::app()->baseUrl.DIRECTORY_SEPARATOR.Yii::app()->params['filesFolder'].DIRECTORY_SEPARATOR.Yii::app()->params['tempFilesFolder'],
+                'secureFileNames' => true,
+                'stateVariable' => Yii::app()->params['xuploadStateName'], // для красоты
+                'subfolderVar' => false, // не надо класть временные файлы в подпапки
+                'formClass' => 'MyXUploadForm' // используем собственное расширение
             ),
 		);
 
@@ -69,6 +73,7 @@ class SiteController extends Controller
 
 	/**
 	 * Displays the contact page
+     * @todo убрать
 	 */
 	public function actionContact()
 	{
@@ -155,4 +160,38 @@ class SiteController extends Controller
 		Yii::app()->user->logout();
 		$this->redirect(array('site/index'));
 	}
+
+    /**
+     * Общая точка входа всех AJAX-запросов
+     */
+    public function actionAjax()
+    {
+        $action = Yii::app()->request->getParam('action');
+
+        switch ($action) {
+
+            case 'clearUserUploads':
+                // удаляем файлы, которые загрузил пользователь
+                $this->clearUserUploads();
+                break;
+        }
+
+    }
+
+    private function clearUserUploads()
+    {
+        if ( Yii::app()->user->hasState(Yii::app()->params['xuploadStateName'])) {
+
+            $userImages = Yii::app()->user->getState(Yii::app()->params['xuploadStateName']);
+
+            foreach ($userImages as $image) {
+                if (is_file($image["path"])) {
+                    unlink($image["path"]);
+                }
+            }
+
+            Yii::app( )->user->setState(Yii::app()->params['xuploadStateName'], null);
+
+        }
+    }
 }

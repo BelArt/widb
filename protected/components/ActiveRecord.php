@@ -4,6 +4,12 @@
  */
 class ActiveRecord extends CActiveRecord
 {
+    /**
+     * @var string сценарий, который устанавливается при сохранении данных о превью, для
+     * исключения рекурсивного вызова afterSave()
+     */
+    const SCENARIO_SAVE_PREVIEWS = 'savePreviews';
+
     public function beforeSave()
     {
         if (!parent::beforeSave()) {
@@ -27,6 +33,8 @@ class ActiveRecord extends CActiveRecord
             case 'update':
                 $this->date_modify = $now;
                 $this->user_modify = $userId;
+                break;
+            case self::SCENARIO_SAVE_PREVIEWS:
                 break;
             case 'delete':
                 $this->date_delete = $now;
@@ -68,4 +76,147 @@ class ActiveRecord extends CActiveRecord
         }
         return false;
     }
+
+
+    /**
+     * Сохраняем превью
+     * @param object $Caller объект, который вызвал этото метод
+     * @throws CException
+     */
+    public function savePreviews($Caller)
+    {
+        $callerClassName = get_class($Caller);
+
+        if (!in_array($callerClassName, array('Collections', 'Objects', 'Images'))) {
+            throw new CException(Yii::t('common', 'Объект не поддерживает вызванный метод'));
+        }
+
+        // предполагается, что в сессии хранится только одна картинка, которую как раз загрузили
+        // в качестве превью при редактировании/создании коллекции/объекта/изображения
+        if (Yii::app()->user->hasState(Yii::app()->params['xuploadStateName'])) {
+
+            $userImages = Yii::app()->user->getState(Yii::app()->params['xuploadStateName']);
+
+            $dir = ImageHelper::getPreviewFolderPath($Caller); //$this->resolvePreviewPath($Caller);
+
+            if (!is_dir($dir)) {
+                if (!mkdir($dir, 0777, true)) {
+                    throw new CException(Yii::t('common', 'Произошла ошибка при сохранении превью'));
+                }
+            } else if (!is_writable($dir)) {
+                if (!chmod($dir, 0777)) {
+                    throw new CException(Yii::t('common', 'Произошла ошибка при сохранении превью'));
+                }
+            }
+
+            foreach ($userImages as $image) {
+                if (is_file($image["path"])) {
+
+                    // генерим превьюхи
+
+                    // маленькая
+                    $Image = Yii::app()->image->load($image["path"]);
+                    $imageExt = pathinfo($image["path"], PATHINFO_EXTENSION);
+                    $Image->resize(ImageHelper::PREVIEW_SMALL_SIZE, ImageHelper::PREVIEW_SMALL_SIZE, Image::AUTO);
+                    if (file_exists($dir.DIRECTORY_SEPARATOR.ImageHelper::PREVIEW_SMALL_NAME.'.'.$imageExt)) {
+                        if (!unlink($dir.DIRECTORY_SEPARATOR.ImageHelper::PREVIEW_SMALL_NAME.'.'.$imageExt)) {
+                            throw new CException(Yii::t('common', 'Произошла ошибка при сохранении превью'));
+                        }
+                    }
+                    $Image->save($dir.DIRECTORY_SEPARATOR.ImageHelper::PREVIEW_SMALL_NAME.'.'.$imageExt);
+                    if (!chmod($dir.DIRECTORY_SEPARATOR.ImageHelper::PREVIEW_SMALL_NAME.'.'.$imageExt, 0777)) {
+                        throw new CException(Yii::t('common', 'Произошла ошибка при сохранении превью'));
+                    }
+
+                    // средняя
+                    $Image = Yii::app()->image->load($image["path"]);
+                    $imageExt = pathinfo($image["path"], PATHINFO_EXTENSION);
+                    $Image->resize(ImageHelper::PREVIEW_MEDIUM_SIZE, ImageHelper::PREVIEW_MEDIUM_SIZE, Image::AUTO);
+                    if (file_exists($dir.DIRECTORY_SEPARATOR.ImageHelper::PREVIEW_MEDIUM_NAME.'.'.$imageExt)) {
+                        if (!unlink($dir.DIRECTORY_SEPARATOR.ImageHelper::PREVIEW_MEDIUM_NAME.'.'.$imageExt)) {
+                            throw new CException(Yii::t('common', 'Произошла ошибка при сохранении превью'));
+                        }
+                    }
+                    $Image->save($dir.DIRECTORY_SEPARATOR.ImageHelper::PREVIEW_MEDIUM_NAME.'.'.$imageExt);
+                    if (!chmod($dir.DIRECTORY_SEPARATOR.ImageHelper::PREVIEW_MEDIUM_NAME.'.'.$imageExt, 0777)) {
+                        throw new CException(Yii::t('common', 'Произошла ошибка при сохранении превью'));
+                    }
+
+                    // большая
+                    $Image = Yii::app()->image->load($image["path"]);
+                    $imageExt = pathinfo($image["path"], PATHINFO_EXTENSION);
+                    $Image->resize(ImageHelper::PREVIEW_BIG_SIZE, ImageHelper::PREVIEW_BIG_SIZE, Image::AUTO);
+                    if (file_exists($dir.DIRECTORY_SEPARATOR.ImageHelper::PREVIEW_BIG_NAME.'.'.$imageExt)) {
+                        if (!unlink($dir.DIRECTORY_SEPARATOR.ImageHelper::PREVIEW_BIG_NAME.'.'.$imageExt)) {
+                            throw new CException(Yii::t('common', 'Произошла ошибка при сохранении превью'));
+                        }
+                    }
+                    $Image->save($dir.DIRECTORY_SEPARATOR.ImageHelper::PREVIEW_BIG_NAME.'.'.$imageExt);
+                    if (!chmod($dir.DIRECTORY_SEPARATOR.ImageHelper::PREVIEW_BIG_NAME.'.'.$imageExt, 0777)) {
+                        throw new CException(Yii::t('common', 'Произошла ошибка при сохранении превью'));
+                    }
+
+                    // перемещаем оригинал
+                    if (file_exists($dir.DIRECTORY_SEPARATOR.ImageHelper::PREVIEW_ORIGINAL_NAME.'.'.$imageExt)) {
+                        if (!unlink($dir.DIRECTORY_SEPARATOR.ImageHelper::PREVIEW_ORIGINAL_NAME.'.'.$imageExt)) {
+                            throw new CException(Yii::t('common', 'Произошла ошибка при сохранении превью'));
+                        }
+                    }
+                    if (!rename($image["path"], $dir.DIRECTORY_SEPARATOR.ImageHelper::PREVIEW_ORIGINAL_NAME.'.'.$imageExt)) {
+                        throw new CException(Yii::t('common', 'Произошла ошибка при сохранении превью'));
+                    }
+                    if (!chmod($dir.DIRECTORY_SEPARATOR.ImageHelper::PREVIEW_ORIGINAL_NAME.'.'.$imageExt, 0777)) {
+                        throw new CException(Yii::t('common', 'Произошла ошибка при сохранении превью'));
+                    }
+
+                    // ставим отметку, что превью есть
+                    $Caller->has_preview = 1;
+
+                    // обязательно для повторного сохранения, иначе при создании yii будет пытаться вставить эту запись еще раз,
+                    // что вызовет ошибку
+                    $Caller->isNewRecord = false;
+
+                    // устанавливаем сценарий для исключения рекурсивного вызова этой функции в afterSave()
+                    $Caller->scenario = self::SCENARIO_SAVE_PREVIEWS;
+
+                    if (!$Caller->save()) {
+                        throw new CException(Yii::t('common', 'Произошла ошибка при сохранении превью'));
+                    }
+                }
+            }
+
+            Yii::app()->user->setState(Yii::app()->params['xuploadStateName'], null);
+        }
+    }
+
+    /**
+     * Возвращает путь к папке, в которую надо класть превью
+     * @param object $Caller объект, который вызвал этото метод
+     * @return string путь к папке, в которую надо класть превью
+     * @throws CException
+     */
+    /*public function resolvePreviewPath($Caller)
+    {
+        $className = get_class($Caller);
+
+        if (!in_array($className, array('Collections', 'Objects', 'Images'))) {
+            throw new CException(Yii::t('common', 'Объект не поддерживает вызванный метод'));
+        }
+
+        $path = '';
+
+        switch ($className) {
+            case 'Collections':
+                $path = Yii::getPathOfAlias('webroot').DIRECTORY_SEPARATOR.Yii::app()->params['filesFolder'].DIRECTORY_SEPARATOR.Yii::app()->params['previewsFolder'].DIRECTORY_SEPARATOR.$Caller->code;
+                break;
+            case 'Objects':
+                throw new CException('Еще не готово');
+                break;
+            case 'Images':
+                throw new CException('Еще не готово');
+                break;
+        }
+
+        return $path;
+    }*/
 } 

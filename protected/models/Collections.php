@@ -680,4 +680,14 @@ class Collections extends ActiveRecord
         }
         return false;
     }
+
+    public function afterSave()
+    {
+        // проверяем на сценарий для исключения рекурсивного вызова этой функции в afterSave() после сохранения данных о превью
+        if ($this->scenario != parent::SCENARIO_SAVE_PREVIEWS) {
+            $this->savePreviews($this);
+        }
+
+        parent::afterSave();
+    }
 }

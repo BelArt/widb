@@ -37,7 +37,7 @@ Thumbs.db
 /protected/config/main.php
 /protected/config/test.php
 /protected/config/console.php
-/files/tmp/
+/files/
 
 # NetBeans #
 nbproject/
@@ -46,3 +46,6 @@ nbproject/
 .idea/
 
 .project
+
+# but track .gitkeep always
+!.gitkeep

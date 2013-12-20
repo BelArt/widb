@@ -1,6 +1,7 @@
 <?php
 /* @var $this CollectionsController */
 /* @var $model Collections */
+/* @var $photoUploadModel XUploadForm */
 /* @var $form CActiveForm */
 
 Yii::app()->clientScript->registerPackage('collectionForm');
@@ -46,6 +47,30 @@ if (Yii::app()->user->checkAccess('oCollectionEdit')) {
         'value' => empty($model->sort) ? '' : null
     ));
 }
+
+?>
+
+<div class="control-group">
+    <?php /*echo $form->labelEx($model,'photos'); */?>
+    <div class="controls">
+        <?php
+        $this->widget(
+            'xupload.XUpload',
+            array(
+                'url' => Yii::app( )->createUrl("site/upload"),
+                'model' => $photoUploadModel,
+                //We set this for the widget to be able to target our own form
+                'htmlOptions' => array('id'=>'collections-form'),
+                'attribute' => 'file',
+                'multiple' => false,
+                'showForm' => false
+            )
+        );
+        ?>
+    </div>
+</div>
+
+<?php
 
 echo CHtml::openTag('div', array(
     'class' => 'form-actions',

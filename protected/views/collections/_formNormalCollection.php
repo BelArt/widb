@@ -5,6 +5,7 @@
 /* @var $form CActiveForm */
 
 Yii::app()->clientScript->registerPackage('collectionForm');
+Yii::app()->clientScript->registerPackage('uploadFiles');
 
 $form = $this->beginWidget(
     'bootstrap.widgets.TbActiveForm',
@@ -57,16 +58,11 @@ echo $form->textFieldRow($model,'sort', array(
             'xupload.XUpload',
             array(
                 'url' => Yii::app( )->createUrl("site/upload"),
-                //our XUploadForm
                 'model' => $photoUploadModel,
                 //We set this for the widget to be able to target our own form
                 'htmlOptions' => array('id'=>'collections-form'),
                 'attribute' => 'file',
                 'multiple' => false,
-                //Note that we are using a custom view for our widget
-                //Thats becase the default widget includes the 'form'
-                //which we don't want here
-                //'formView' => 'application.views.collections._formUploadFile',
                 'showForm' => false
             )
         );

@@ -31,4 +31,9 @@ $(function(){
         $Obj.parent().prev('label.error').removeClass('error');
     });
 
+    // при отправке формы - сбрасываем обработчик onbeforeunload, см. upload-files.js
+    $('._collectionForm_form').submit(function(){
+        window.onbeforeunload = null;
+    });
+
 });

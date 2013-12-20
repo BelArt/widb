@@ -2,12 +2,15 @@
 return array(
     'adminEmail'=>'snigirev.alexey@gmail.com',
 
-    // общая папка для всех загруженных файлов, относительно корня приложения (webroot)
+    // общая папка для пользовательских файлов, относительно корня приложения (webroot)
     'filesFolder' => 'files',
 
-    // папка для превью, относительно корня приложения (webroot)
-    'previewsFolder' => 'files'.DIRECTORY_SEPARATOR.'previews',
+    // папка для превью, относительно папки для пользовательских файлов
+    'previewsFolder' => 'previews',
 
-    // папка для временных файлов, которые надо переместить/обработать, относительно корня приложения (webroot)
-    'tempFilesFolder' => 'files'.DIRECTORY_SEPARATOR.'tmp',
+    // папка для временных файлов, которые надо переместить/обработать, относительно папки для пользовательских файлов
+    'tempFilesFolder' => 'tmp',
+
+    // имя состояния для хранения данных расширения xupload
+    'xuploadStateName' => '__xuploadFiles',
 );
