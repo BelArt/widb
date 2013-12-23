@@ -182,6 +182,8 @@ class ActiveRecord extends CActiveRecord
                     if (!$Caller->save()) {
                         throw new CException(Yii::t('common', 'Произошла ошибка при сохранении превью'));
                     }
+
+                    ImageHelper::incrementPreviewVersion($Caller);
                 }
             }
 
@@ -189,34 +191,4 @@ class ActiveRecord extends CActiveRecord
         }
     }
 
-    /**
-     * Возвращает путь к папке, в которую надо класть превью
-     * @param object $Caller объект, который вызвал этото метод
-     * @return string путь к папке, в которую надо класть превью
-     * @throws CException
-     */
-    /*public function resolvePreviewPath($Caller)
-    {
-        $className = get_class($Caller);
-
-        if (!in_array($className, array('Collections', 'Objects', 'Images'))) {
-            throw new CException(Yii::t('common', 'Объект не поддерживает вызванный метод'));
-        }
-
-        $path = '';
-
-        switch ($className) {
-            case 'Collections':
-                $path = Yii::getPathOfAlias('webroot').DIRECTORY_SEPARATOR.Yii::app()->params['filesFolder'].DIRECTORY_SEPARATOR.Yii::app()->params['previewsFolder'].DIRECTORY_SEPARATOR.$Caller->code;
-                break;
-            case 'Objects':
-                throw new CException('Еще не готово');
-                break;
-            case 'Images':
-                throw new CException('Еще не готово');
-                break;
-        }
-
-        return $path;
-    }*/
 } 

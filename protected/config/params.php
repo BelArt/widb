@@ -13,4 +13,8 @@ return array(
 
     // имя состояния для хранения данных расширения xupload
     'xuploadStateName' => '__xuploadFiles',
+
+    // путь к файлу с данными о версиях превью, внутри protected
+    // @see ImageHelper::getPreviewsVersion(), ImageHelper::setPreviewsVersion()
+    'previewsVersionsFile' => 'runtime'.DIRECTORY_SEPARATOR.'previews_versions.txt',
 );

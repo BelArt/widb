@@ -4,7 +4,7 @@
     line-height: 22px;
 }
 .itemThumbnail {
-    /*width: 160px;*/
+    width: 160px;
     margin: 0px 15px 15px 0px !important;
 }
 .itemThumbnail IMG {
