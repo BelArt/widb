@@ -122,3 +122,11 @@ thead th {
 ul.thumbnails {
     margin-bottom: 0px;
 }
+/* фикс для плагина jquery file upload, чтобы влезал по ширине в форму */
+.files .progress {
+    /*width: 200px;*/
+    display: none;
+}
+.fileupload-buttonbar .progress {
+    display: none;
+}
