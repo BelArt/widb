@@ -1,0 +1,124 @@
+#page {
+    border: 0;
+}
+#mainmenu {
+    background: 0;
+}
+#sidebar {
+    padding: 20px;
+    /*background-color: #F5F5F5;*/
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    behavior: url(PIE.htc);
+    border: 1px solid #ddd;
+}
+#page-menu {
+    padding: 20px;
+    /*background-color: #F5F5F5;*/
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    behavior: url(PIE.htc);
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
+}
+#content {
+    /*background-color: #F5F5F5;*/
+    background-color: transparent;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    behavior: url(PIE.htc);
+}
+.breadcrumb {
+    border: 1px solid #ddd;
+}
+#footer {
+    margin-top: 20px;
+}
+.first {
+    margin-left: 0px;
+    margin-right: 0px;
+}
+.span-25 {
+    width: 830px;
+}
+.navbar .navbarBtnSubmit {
+    margin-top: -5px;
+}
+.navbar .navbarBtn {
+    margin-right: 25px;
+    margin-left: 25px;
+    /*margin-top: 4px;*/
+}
+.navbar .navbarBtnLogout {
+    margin-top: 7px;
+}
+.navbar SELECT {
+    margin-top: -5px;
+}
+.navbar .navbarSelect {
+    width: auto;
+}
+.navbar .navbarItem {
+    margin-right: 0px;
+    margin-left: 25px;
+}
+.navbar .navbarUserInfo {
+    margin-top: 10px;
+}
+.nav-pills>li {
+    margin-right: 10px;
+}
+.nav-pills>li.small {
+    margin-right: 3px;
+}
+.nav-pills>li.small.active {
+    margin-right: 7px;
+}
+.nav-pills>li.small>a {
+    padding: 4px 8px 4px 8px;
+    margin: 0;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+.nav-pills {
+    margin-bottom: 0px;
+}
+.small {
+    margin-bottom: 0px;
+}
+.list-view {
+    padding-top: 0px;
+}
+/*.nav-tabs>.active>a, .nav-tabs>.active>a:hover, .nav-tabs>.active>a:focus {
+    background-color: #F5F5F5;
+}*/
+/*.thumbnail {
+    margin-bottom: 5px;
+}*/
+.nav-pills>.selected>a, .nav-pills>.selected>a:hover, .nav-pills>.selected>a:focus {
+    color: #7f7f7f;
+    background-color: #dbdbdb;
+}
+.form-actions {
+    border: 1px solid #e5e5e5;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+.grid-view {
+    padding-top: 0px;
+}
+.nav-pills.nav-stacked>li {
+    margin-right: 0px;
+}
+thead th {
+    background: #eeeeee;
+}
+ul.thumbnails {
+    margin-bottom: 0px;
+}
