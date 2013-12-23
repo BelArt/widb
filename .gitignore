@@ -33,7 +33,6 @@ Thumbs.db
 # Project #
 /assets/
 /protected/runtime/
-/themes/classic/views/
 /protected/config/main.php
 /protected/config/test.php
 /protected/config/console.php
