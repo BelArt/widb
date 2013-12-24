@@ -333,9 +333,11 @@ class CollectionsController extends Controller
                     $this->redirect(array('index'));
                 } else {
                     $transaction->rollback();
+                    UploadsHelper::clearUserPreviewsUploads();
                 }
             } catch (Exception $e) {
                 $transaction->rollback();
+                UploadsHelper::clearUserPreviewsUploads();
                 throw $e;
             }
         }
@@ -380,9 +382,11 @@ class CollectionsController extends Controller
                     $this->redirect(array('index'));
                 } else {
                     $transaction->rollback();
+                    UploadsHelper::clearUserPreviewsUploads();
                 }
             } catch (Exception $e) {
                 $transaction->rollback();
+                UploadsHelper::clearUserPreviewsUploads();
                 throw $e;
             }
         }
@@ -433,9 +437,11 @@ class CollectionsController extends Controller
                     $this->redirect(array('view','id'=>$model->id));
                 } else {
                     $transaction->rollback();
+                    UploadsHelper::clearUserPreviewsUploads();
                 }
             } catch (Exception $e) {
                 $transaction->rollback();
+                UploadsHelper::clearUserPreviewsUploads();
                 throw $e;
             }
 		}
@@ -486,9 +492,11 @@ class CollectionsController extends Controller
                     $this->redirect(array('viewTemp','id'=>$model->id));
                 } else {
                     $transaction->rollback();
+                    UploadsHelper::clearUserPreviewsUploads();
                 }
             } catch (Exception $e) {
                 $transaction->rollback();
+                UploadsHelper::clearUserPreviewsUploads();
                 throw $e;
             }
         }

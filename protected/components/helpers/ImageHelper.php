@@ -2,7 +2,7 @@
 /**
  * Хелпер для работы с изображениями.
  */
-class ImageHelper extends CComponent
+class ImageHelper extends CApplicationComponent
 {
     /**
      * @var integer размер квадрата маленького превью, в px

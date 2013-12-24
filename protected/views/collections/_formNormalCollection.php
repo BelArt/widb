@@ -50,25 +50,7 @@ echo $form->textFieldRow($model,'sort', array(
 
 ?>
 
-<div class="control-group">
-    <?php /*echo $form->labelEx($model,'photos'); */?>
-    <div class="controls">
-    <?php
-        $this->widget(
-            'xupload.XUpload',
-            array(
-                'url' => Yii::app( )->createUrl("site/upload"),
-                'model' => $photoUploadModel,
-                //We set this for the widget to be able to target our own form
-                'htmlOptions' => array('id'=>'collections-form'),
-                'attribute' => 'file',
-                'multiple' => false,
-                'showForm' => false
-            )
-        );
-    ?>
-    </div>
-</div>
+<?php $this->renderPartial('_uploadPreviewForm', array('model' => $model, 'photoUploadModel' => $photoUploadModel)); ?>
 
 <?php
 

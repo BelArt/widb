@@ -32,7 +32,7 @@ class SiteController extends Controller
                 'path' => Yii::getPathOfAlias('webroot').DIRECTORY_SEPARATOR.Yii::app()->params['filesFolder'].DIRECTORY_SEPARATOR.Yii::app()->params['tempFilesFolder'],
                 'publicPath' => Yii::app()->baseUrl.DIRECTORY_SEPARATOR.Yii::app()->params['filesFolder'].DIRECTORY_SEPARATOR.Yii::app()->params['tempFilesFolder'],
                 'secureFileNames' => true,
-                'stateVariable' => Yii::app()->params['xuploadStateName'], // для красоты
+                'stateVariable' => Yii::app()->params['xuploadStatePreviewsName'], // для красоты
                 'subfolderVar' => false, // не надо класть временные файлы в подпапки
                 'formClass' => 'MyXUploadForm' // используем собственное расширение
             ),
@@ -167,31 +167,19 @@ class SiteController extends Controller
     public function actionAjax()
     {
         $action = Yii::app()->request->getParam('action');
+        $params = Yii::app()->request->getParam('params');
 
         switch ($action) {
-
+            // удаляем не сохраненные превью, которые подгрузил пользователь
             case 'clearUserUploads':
-                // удаляем файлы, которые загрузил пользователь
-                $this->clearUserUploads();
+                UploadsHelper::clearUserPreviewsUploads();
+                break;
+            // удаляем сохраненное превью
+            case 'deletePreview':
+                UploadsHelper::deletePreview($params);
                 break;
         }
 
     }
 
-    private function clearUserUploads()
-    {
-        if ( Yii::app()->user->hasState(Yii::app()->params['xuploadStateName'])) {
-
-            $userImages = Yii::app()->user->getState(Yii::app()->params['xuploadStateName']);
-
-            foreach ($userImages as $image) {
-                if (is_file($image["path"])) {
-                    unlink($image["path"]);
-                }
-            }
-
-            Yii::app( )->user->setState(Yii::app()->params['xuploadStateName'], null);
-
-        }
-    }
 }

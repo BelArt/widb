@@ -5,6 +5,7 @@
 /* @var $form CActiveForm */
 
 Yii::app()->clientScript->registerPackage('collectionForm');
+Yii::app()->clientScript->registerPackage('uploadFiles');
 
 $form = $this->beginWidget(
     'bootstrap.widgets.TbActiveForm',
@@ -50,25 +51,7 @@ if (Yii::app()->user->checkAccess('oCollectionEdit')) {
 
 ?>
 
-<div class="control-group">
-    <?php /*echo $form->labelEx($model,'photos'); */?>
-    <div class="controls">
-        <?php
-        $this->widget(
-            'xupload.XUpload',
-            array(
-                'url' => Yii::app( )->createUrl("site/upload"),
-                'model' => $photoUploadModel,
-                //We set this for the widget to be able to target our own form
-                'htmlOptions' => array('id'=>'collections-form'),
-                'attribute' => 'file',
-                'multiple' => false,
-                'showForm' => false
-            )
-        );
-        ?>
-    </div>
-</div>
+<?php $this->renderPartial('_uploadPreviewForm', array('model' => $model, 'photoUploadModel' => $photoUploadModel)); ?>
 
 <?php
 

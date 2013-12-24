@@ -93,6 +93,8 @@ class Collections extends ActiveRecord
 			'has_preview' => Yii::t('common', 'Есть превью'),
 			'sort' => Yii::t('common', 'Сортировка'),
             'temporary_public' => Yii::t('collections', 'Открытая временная коллекция'),
+            // такого арибута в модели нет, это только для вывода лэйбла на форму
+            'preview' => Yii::t('common', 'Превью'),
 		);
 	}
 
@@ -629,6 +631,9 @@ class Collections extends ActiveRecord
                 }
             }
 
+            // удаляем превью
+            UploadsHelper::deletePreview($this);
+
             return true;
         }
 
@@ -676,6 +681,9 @@ class Collections extends ActiveRecord
                 }
             }
 
+            // удаляем превью
+            UploadsHelper::deletePreview($this);
+
             return true;
         }
         return false;
@@ -684,8 +692,8 @@ class Collections extends ActiveRecord
     public function afterSave()
     {
         // проверяем на сценарий для исключения рекурсивного вызова этой функции в afterSave() после сохранения данных о превью
-        if ($this->scenario != parent::SCENARIO_SAVE_PREVIEWS) {
-            $this->savePreviews($this);
+        if ($this->scenario != UploadsHelper::SCENARIO_SAVE_PREVIEWS) {
+            UploadsHelper::savePreviews($this);
         }
 
         parent::afterSave();
