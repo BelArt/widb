@@ -13,7 +13,7 @@ $itemUrl = $data->temporary ? $this->createUrl('collections/viewTemp', array('id
     <table class="itemThumbnailDescriptionBlock">
         <tr>
             <td class="itemThumbnailTextBlock">
-                <p class='itemThumbnailName'><a href="<?= CHtml::encode($itemUrl) ?>" title="<?= CHtml::encode($data->name) ?>"><?= CHtml::encode($data->name) ?></a></p>
+                <p class='itemThumbnailName longTextFadeNoCheckbox'><a href="<?= CHtml::encode($itemUrl) ?>" title="<?= CHtml::encode($data->name) ?>"><?= CHtml::encode($data->name) ?></a></p>
             </td>
 
         </tr>

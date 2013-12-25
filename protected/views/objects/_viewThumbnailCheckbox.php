@@ -13,7 +13,7 @@ $itemUrl = $this->createUrl('objects/view', array('id' => $data->id));
         <tr>
             <td class="itemThumbnailCheckboxBlock"><input type="checkbox" /></td>
             <td class="itemThumbnailTextBlock">
-                <p class='itemThumbnailName'><a href="<?= CHtml::encode($itemUrl) ?>" title="<?= CHtml::encode($data->name) ?>"><?= CHtml::encode($data->name) ?></a></p>
+                <p class='itemThumbnailName longTextFadeCheckbox'><a href="<?= CHtml::encode($itemUrl) ?>" title="<?= CHtml::encode($data->name) ?>"><?= CHtml::encode($data->name) ?></a></p>
                 <?php if(!empty($data->author->initials)): ?>
                     <p class='itemThumbnailAuthor'><?= CHtml::encode($data->author->initials) ?></p>
                 <?php endif; ?>
