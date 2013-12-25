@@ -2,7 +2,7 @@
     <label class="control-label"><?= $model->getAttributeLabel('preview') ?></label>
     <div class="controls">
 
-        <?php if(!$model->isNewRecord && $model->has_preview): ?>
+        <?php if(!$model->isNewRecord && $model->has_preview && $model->reallyHasPreview()): ?>
             <div class="_collectionForm_previewBlock">
 
                 <div class="collectionForm_preview">
@@ -33,7 +33,7 @@
             </div>
         <?php endif; ?>
 
-        <div class="_collectionForm_xuploadBlock collectionForm_xuploadBlock" style="<?= ($model->has_preview ? 'display:none;' : '') ?>">
+        <div class="_collectionForm_xuploadBlock collectionForm_xuploadBlock" style="<?= ($model->has_preview && $model->reallyHasPreview() ? 'display:none;' : '') ?>">
             <?php
             $this->widget(
                 'xupload.XUpload',

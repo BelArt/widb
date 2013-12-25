@@ -15,6 +15,6 @@ return array(
     'xuploadStatePreviewsName' => '__xuploadPreviews',
 
     // путь к файлу с данными о версиях превью, внутри protected
-    // @see ImageHelper::getPreviewsVersion(), ImageHelper::setPreviewsVersion()
+    // @see PreviewHelper::getPreviewsVersion(), PreviewHelper::setPreviewsVersion()
     'previewsVersionsFile' => 'runtime'.DIRECTORY_SEPARATOR.'previews_versions.txt',
 );

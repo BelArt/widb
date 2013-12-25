@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Базовый класс ActiveRecord для данного проекта
  */
@@ -28,7 +29,7 @@ class ActiveRecord extends CActiveRecord
                 $this->date_modify = $now;
                 $this->user_modify = $userId;
                 break;
-            case UploadsHelper::SCENARIO_SAVE_PREVIEWS:
+            case PreviewHelper::SCENARIO_SAVE_PREVIEWS:
                 break;
             case 'delete':
                 $this->date_delete = $now;

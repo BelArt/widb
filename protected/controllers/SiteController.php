@@ -172,11 +172,11 @@ class SiteController extends Controller
         switch ($action) {
             // удаляем не сохраненные превью, которые подгрузил пользователь
             case 'clearUserUploads':
-                UploadsHelper::clearUserPreviewsUploads();
+                PreviewHelper::clearUserPreviewsUploads();
                 break;
             // удаляем сохраненное превью
             case 'deletePreview':
-                UploadsHelper::deletePreview($params);
+                PreviewHelper::deletePreview($params);
                 break;
         }
 
