@@ -93,6 +93,8 @@ class Collections extends ActiveRecord
 			'has_preview' => Yii::t('common', 'Есть превью'),
 			'sort' => Yii::t('common', 'Сортировка'),
             'temporary_public' => Yii::t('collections', 'Открытая временная коллекция'),
+            // такого арибута в модели нет, это только для вывода лэйбла на форму
+            'preview' => Yii::t('common', 'Превью'),
 		);
 	}
 
@@ -161,9 +163,9 @@ class Collections extends ActiveRecord
             throw new CException(Yii::t('collections', 'Метод "{method}" не может вызываться для вновь создаваемой коллекции', array('{method}' => __METHOD__)));
         }
 
-        $this->thumbnailBig = ImageHelper::getBigThumbnailForCollection($this);
-        $this->thumbnailMedium = ImageHelper::getMediumThumbnailForCollection($this);
-        $this->thumbnailSmall = ImageHelper::getSmallThumbnailForCollection($this);
+        $this->thumbnailBig = PreviewHelper::getBigThumbnailForCollection($this);
+        $this->thumbnailMedium = PreviewHelper::getMediumThumbnailForCollection($this);
+        $this->thumbnailSmall = PreviewHelper::getSmallThumbnailForCollection($this);
     }
 
     /**
@@ -629,6 +631,9 @@ class Collections extends ActiveRecord
                 }
             }
 
+            // удаляем превью
+            PreviewHelper::deletePreview($this);
+
             return true;
         }
 
@@ -676,8 +681,42 @@ class Collections extends ActiveRecord
                 }
             }
 
+            // удаляем превью
+            PreviewHelper::deletePreview($this);
+
             return true;
         }
         return false;
+    }
+
+    /**
+     * Проверяет, действительно ли есть картинка превью на сервере
+     * @param string $size какое превью проверяем - 'small', 'medium', 'big' или 'original'
+     * @throws CException
+     * @return bool
+     */
+    public function reallyHasPreview($size = 'medium')
+    {
+        if (!in_array($size, array('small', 'medium', 'big', 'original'))) {
+            throw new CException(Yii::t('common', 'Переданный размер не поддерживается'));
+        }
+
+        if ($this->isNewRecord) {
+            return false;
+        }
+
+        $previewUrl = PreviewHelper::getPreviewUrl($this, $size);
+
+        return !empty($previewUrl);
+    }
+
+    public function afterSave()
+    {
+        // проверяем на сценарий для исключения рекурсивного вызова этой функции в afterSave() после сохранения данных о превью
+        if ($this->scenario != PreviewHelper::SCENARIO_SAVE_PREVIEWS) {
+            PreviewHelper::savePreviews($this);
+        }
+
+        parent::afterSave();
     }
 }

@@ -312,18 +312,35 @@ class CollectionsController extends Controller
 		$model = new Collections;
 
         $model->temporary = 0;
+
+        Yii::import( "xupload.models.XUploadForm" );
+        $PhotoUploadModel = new MyXUploadForm;
+
         $view = '_formNormalCollection';
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['Collections']))
-		{
-			$model->attributes=$_POST['Collections'];
-			if ($model->save()) {
-                $this->redirect(array('index'));
+        if(isset($_POST['Collections']))
+        {
+            $model->attributes = $_POST['Collections'];
+
+            $transaction = Yii::app()->db->beginTransaction();
+
+            try {
+                if ($model->save()) {
+                    $transaction->commit();
+                    $this->redirect(array('index'));
+                } else {
+                    $transaction->rollback();
+                    PreviewHelper::clearUserPreviewsUploads();
+                }
+            } catch (Exception $e) {
+                $transaction->rollback();
+                PreviewHelper::clearUserPreviewsUploads();
+                throw $e;
             }
-		}
+        }
 
         // параметры страницы
         $this->pageTitle = array(Yii::t('collections', 'Создание коллекции'));
@@ -332,6 +349,7 @@ class CollectionsController extends Controller
 
 		$this->render('create',array(
 			'model' => $model,
+            'photoUploadModel' => $PhotoUploadModel,
             'view' => $view
 		));
 	}
@@ -346,14 +364,30 @@ class CollectionsController extends Controller
         $model->temporary = 1;
         $view = '_formTempCollection';
 
+        Yii::import( "xupload.models.XUploadForm" );
+        $PhotoUploadModel = new MyXUploadForm;
+
         // Uncomment the following line if AJAX validation is needed
         // $this->performAjaxValidation($model);
 
         if(isset($_POST['Collections']))
         {
-            $model->attributes=$_POST['Collections'];
-            if ($model->save()) {
-                $this->redirect(array('index'));
+            $model->attributes = $_POST['Collections'];
+
+            $transaction = Yii::app()->db->beginTransaction();
+
+            try {
+                if ($model->save()) {
+                    $transaction->commit();
+                    $this->redirect(array('index'));
+                } else {
+                    $transaction->rollback();
+                    PreviewHelper::clearUserPreviewsUploads();
+                }
+            } catch (Exception $e) {
+                $transaction->rollback();
+                PreviewHelper::clearUserPreviewsUploads();
+                throw $e;
             }
         }
 
@@ -364,6 +398,7 @@ class CollectionsController extends Controller
 
         $this->render('create',array(
             'model' => $model,
+            'photoUploadModel' => $PhotoUploadModel,
             'view' => $view
         ));
     }
@@ -372,10 +407,14 @@ class CollectionsController extends Controller
      * Редактирование обычной коллекции
 	 * @param integer $id айди коллекции
      * @throws CHttpException
+     * @throws Exception
 	 */
 	public function actionUpdate($id)
 	{
 		$model = $this->loadModel($id);
+
+        Yii::import( "xupload.models.XUploadForm" );
+        $PhotoUploadModel = new MyXUploadForm;
 
         if ($model->temporary) {
             throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
@@ -388,9 +427,23 @@ class CollectionsController extends Controller
 
 		if(isset($_POST['Collections']))
 		{
-			$model->attributes=$_POST['Collections'];
-			if($model->save())
-				$this->redirect(array('view','id'=>$model->id));
+			$model->attributes = $_POST['Collections'];
+
+            $transaction = Yii::app()->db->beginTransaction();
+
+            try {
+                if ($model->save()) {
+                    $transaction->commit();
+                    $this->redirect(array('view','id'=>$model->id));
+                } else {
+                    $transaction->rollback();
+                    PreviewHelper::clearUserPreviewsUploads();
+                }
+            } catch (Exception $e) {
+                $transaction->rollback();
+                PreviewHelper::clearUserPreviewsUploads();
+                throw $e;
+            }
 		}
 
         // параметры страницы
@@ -400,6 +453,7 @@ class CollectionsController extends Controller
 
 		$this->render('update',array(
 			'model' => $model,
+            'photoUploadModel' => $PhotoUploadModel,
             'view' => $view
 		));
 	}
@@ -408,6 +462,7 @@ class CollectionsController extends Controller
      * Редактирование временной коллекции
      * @param integer $id айди коллекции
      * @throws CHttpException
+     * @throws Exception
      */
     public function actionUpdateTemp($id)
     {
@@ -417,6 +472,9 @@ class CollectionsController extends Controller
             throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
         }
 
+        Yii::import( "xupload.models.XUploadForm" );
+        $PhotoUploadModel = new MyXUploadForm;
+
         $view = '_formTempCollection';
 
         // Uncomment the following line if AJAX validation is needed
@@ -424,9 +482,23 @@ class CollectionsController extends Controller
 
         if(isset($_POST['Collections']))
         {
-            $model->attributes=$_POST['Collections'];
-            if($model->save())
-                $this->redirect(array('viewTemp','id'=>$model->id));
+            $model->attributes = $_POST['Collections'];
+
+            $transaction = Yii::app()->db->beginTransaction();
+
+            try {
+                if ($model->save()) {
+                    $transaction->commit();
+                    $this->redirect(array('viewTemp','id'=>$model->id));
+                } else {
+                    $transaction->rollback();
+                    PreviewHelper::clearUserPreviewsUploads();
+                }
+            } catch (Exception $e) {
+                $transaction->rollback();
+                PreviewHelper::clearUserPreviewsUploads();
+                throw $e;
+            }
         }
 
         // параметры страницы
@@ -436,6 +508,7 @@ class CollectionsController extends Controller
 
         $this->render('update',array(
             'model' => $model,
+            'photoUploadModel' => $PhotoUploadModel,
             'view' => $view
         ));
     }

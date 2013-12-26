@@ -2,12 +2,12 @@
 
 class SiteController extends Controller
 {
-    /*public function filters()
+    public function filters()
     {
         return array(
-            array('ext.yiibooster.filters.BootstrapFilter + login')
+            'ajaxOnly + ajax',
         );
-    }*/
+    }
 
 	/**
 	 * Declares class-based actions.
@@ -22,10 +22,23 @@ class SiteController extends Controller
 			),
 			// page action renders "static" pages stored under 'protected/views/site/pages'
 			// They can be accessed via: index.php?r=site/page&view=FileName
+            // @todo убрать
 			'page'=>array(
 				'class'=>'CViewAction',
 			),
+
+            'upload' => array(
+                'class'=>'xupload.actions.XUploadAction',
+                'path' => Yii::getPathOfAlias('webroot').DIRECTORY_SEPARATOR.Yii::app()->params['filesFolder'].DIRECTORY_SEPARATOR.Yii::app()->params['tempFilesFolder'],
+                'publicPath' => Yii::app()->baseUrl.DIRECTORY_SEPARATOR.Yii::app()->params['filesFolder'].DIRECTORY_SEPARATOR.Yii::app()->params['tempFilesFolder'],
+                'secureFileNames' => true,
+                'stateVariable' => Yii::app()->params['xuploadStatePreviewsName'], // для красоты
+                'subfolderVar' => false, // не надо класть временные файлы в подпапки
+                'formClass' => 'MyXUploadForm' // используем собственное расширение
+            ),
 		);
+
+
 	}
 
     public function actionIndex()
@@ -60,6 +73,7 @@ class SiteController extends Controller
 
 	/**
 	 * Displays the contact page
+     * @todo убрать
 	 */
 	public function actionContact()
 	{
@@ -146,4 +160,26 @@ class SiteController extends Controller
 		Yii::app()->user->logout();
 		$this->redirect(array('site/index'));
 	}
+
+    /**
+     * Общая точка входа всех AJAX-запросов
+     */
+    public function actionAjax()
+    {
+        $action = Yii::app()->request->getParam('action');
+        $params = Yii::app()->request->getParam('params');
+
+        switch ($action) {
+            // удаляем не сохраненные превью, которые подгрузил пользователь
+            case 'clearUserUploads':
+                PreviewHelper::clearUserPreviewsUploads();
+                break;
+            // удаляем сохраненное превью
+            case 'deletePreview':
+                PreviewHelper::deletePreview($params);
+                break;
+        }
+
+    }
+
 }

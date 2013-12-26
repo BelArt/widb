@@ -1,9 +1,11 @@
 <?php
 /* @var $this CollectionsController */
 /* @var $model Collections */
+/* @var $photoUploadModel XUploadForm */
 /* @var $form CActiveForm */
 
 Yii::app()->clientScript->registerPackage('collectionForm');
+Yii::app()->clientScript->registerPackage('uploadFiles');
 
 $form = $this->beginWidget(
     'bootstrap.widgets.TbActiveForm',
@@ -11,7 +13,10 @@ $form = $this->beginWidget(
         'id' => 'collections-form',
         'type' => 'horizontal',
         'inlineErrors' => true,
-        'htmlOptions' => array('class' => 'collectionForm_form _collectionForm_form'), // for inset effect
+        'htmlOptions' => array(
+            'class' => 'collectionForm_form _collectionForm_form',
+            'enctype' => 'multipart/form-data'
+        ),
     )
 );
 
@@ -42,6 +47,12 @@ echo $form->textFieldRow($model,'sort', array(
     'class' => 'input-small _collectionForm_hideErrorsKeypress',
     'value' => empty($model->sort) ? '' : null
 ));
+
+?>
+
+<?php $this->renderPartial('_uploadPreviewForm', array('model' => $model, 'photoUploadModel' => $photoUploadModel)); ?>
+
+<?php
 
 echo CHtml::openTag('div', array(
     'class' => 'form-actions',

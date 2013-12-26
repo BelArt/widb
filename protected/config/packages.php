@@ -48,4 +48,9 @@ return array(
         'css'=>array('css/collection-view.css'),
         'depends' => array('global')
     ),
+    'uploadFiles' => array(
+        'basePath'=>'application.assets',
+        'js'=>array('js/upload-files.js'),
+        'depends' => array('global')
+    ),
 );

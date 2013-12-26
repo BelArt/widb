@@ -18,10 +18,15 @@ return array(
         'bootstrap'
     ),
 
+    'aliases' => array(
+        'xupload' => 'ext.xupload'
+    ),
+
 	// autoloading model and component classes
-	'import'=>array(
+	'import' => array(
 		'application.models.*',
 		'application.components.*',
+        'application.components.helpers.*',
         'application.widgets.*',
 	),
 
@@ -92,12 +97,16 @@ return array(
         'authManager' => array(
             'class' => 'PhpAuthManager',
         ),
+        'image' => array(
+            'class'=>'application.extensions.image.CImageComponent',
+            // GD or ImageMagick
+            'driver'=>'ImageMagick',
+            // ImageMagick setup path
+            //'params'=>array('directory'=>'/opt/local/bin'),
+        ),
 	),
 
 	// application-level parameters that can be accessed
 	// using Yii::app()->params['paramName']
-	'params'=>array(
-		// this is used in contact page
-		'adminEmail'=>'webmaster@example.com',
-	),
+	'params' => require_once('params.php'),
 );

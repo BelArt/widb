@@ -6,10 +6,12 @@
 .itemThumbnail {
     width: 160px;
     margin: 0px 15px 15px 0px !important;
+    /*display: block;*/
 }
 .itemThumbnail IMG {
     width: 150px;
     height: 150px;
+    margin: 0;
 }
 .itemThumbnail .itemThumbnailName {
     margin: 0px;
@@ -19,6 +21,18 @@
     margin: 0px;
     padding: 0px;
     color: #999999;
+}
+.itemThumbnail .longTextFadeCheckbox {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 125px;
+}
+.itemThumbnail .longTextFadeNoCheckbox {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 145px;
 }
 .gape {
     height: 20px;

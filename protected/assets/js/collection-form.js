@@ -31,4 +31,37 @@ $(function(){
         $Obj.parent().prev('label.error').removeClass('error');
     });
 
+    // при отправке формы - сбрасываем обработчик onbeforeunload, см. upload-files.js
+    $('._collectionForm_form').submit(function(){
+        window.onbeforeunload = null;
+    });
+
+    // удаление превью
+    $('._collectionForm_deletePreviewButton').click(function(){
+
+        var type = $(this).data('type');
+        var id = $(this).data('id');
+
+        $.ajax({
+            url: '/site/ajax',
+            type: 'POST',
+            data: {
+                action: 'deletePreview',
+                params: {
+                    type: type,
+                    id: id
+                }
+            },
+            success: function() {
+                // при успешном удалении показываем блок загрузки превью
+                $('._collectionForm_previewBlock').remove();
+                $('._collectionForm_xuploadBlock').show();
+
+            },
+            error: function() {
+                // @todo тут надо что-то сделать
+            }
+        });
+    });
+
 });

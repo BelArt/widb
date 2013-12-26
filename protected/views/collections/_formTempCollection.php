@@ -1,9 +1,11 @@
 <?php
 /* @var $this CollectionsController */
 /* @var $model Collections */
+/* @var $photoUploadModel XUploadForm */
 /* @var $form CActiveForm */
 
 Yii::app()->clientScript->registerPackage('collectionForm');
+Yii::app()->clientScript->registerPackage('uploadFiles');
 
 $form = $this->beginWidget(
     'bootstrap.widgets.TbActiveForm',
@@ -46,6 +48,12 @@ if (Yii::app()->user->checkAccess('oCollectionEdit')) {
         'value' => empty($model->sort) ? '' : null
     ));
 }
+
+?>
+
+<?php $this->renderPartial('_uploadPreviewForm', array('model' => $model, 'photoUploadModel' => $photoUploadModel)); ?>
+
+<?php
 
 echo CHtml::openTag('div', array(
     'class' => 'form-actions',

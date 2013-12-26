@@ -30,13 +30,13 @@
 ehthumbs.db
 Thumbs.db
 
-# Yii #
+# Project #
 /assets/
 /protected/runtime/
-/themes/classic/views/
 /protected/config/main.php
 /protected/config/test.php
 /protected/config/console.php
+/files/
 
 # NetBeans #
 nbproject/
@@ -45,3 +45,6 @@ nbproject/
 .idea/
 
 .project
+
+# but track .gitkeep always
+!.gitkeep

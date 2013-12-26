@@ -169,9 +169,9 @@ class Objects extends ActiveRecord
      */
     protected function setThumbnails()
     {
-        $this->thumbnailBig = ImageHelper::getBigThumbnailForObject($this);
-        $this->thumbnailMedium = ImageHelper::getMediumThumbnailForObject($this);
-        $this->thumbnailSmall = ImageHelper::getSmallThumbnailForObject($this);
+        $this->thumbnailBig = PreviewHelper::getBigThumbnailForObject($this);
+        $this->thumbnailMedium = PreviewHelper::getMediumThumbnailForObject($this);
+        $this->thumbnailSmall = PreviewHelper::getSmallThumbnailForObject($this);
     }
 
     public function getThumbnailBig()

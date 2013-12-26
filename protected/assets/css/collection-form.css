@@ -5,3 +5,11 @@ SPAN.help-inline.error {
     background-color: transparent;
     margin: 30px 0px 0px 0px;
 }
+.collectionForm_preview {
+    width: 160px;
+    float: left;
+    margin-right: 15px;
+}
+.collectionForm_deletePreviewButtonBlock {
+    /*display: block;*/
+}
