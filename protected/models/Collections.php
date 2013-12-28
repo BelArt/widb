@@ -59,7 +59,7 @@ class Collections extends ActiveRecord
 
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, parent_id, name, description, code, temporary, has_preview, date_create, date_modify, date_delete, sort, deleted', 'safe', 'on'=>'search'),
+			//array('id, parent_id, name, description, code, temporary, has_preview, date_create, date_modify, date_delete, sort, deleted', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -73,9 +73,11 @@ class Collections extends ActiveRecord
             'childCollections' => array(self::HAS_MANY, 'Collections', 'parent_id'),
             'userAllowedCollection' => array(self::HAS_MANY, 'UserAllowedCollection', 'collection_id'),
 
-            'userCreate' => array(self::BELONGS_TO, 'User', 'user_create'),
-            'userModify' => array(self::BELONGS_TO, 'User', 'user_modify'),
-            'userDelete' => array(self::BELONGS_TO, 'User', 'user_delete'),
+            'objects' => array(self::HAS_MANY, 'Objects', 'collection_id'),
+
+            'userCreate' => array(self::BELONGS_TO, 'Users', 'user_create'),
+            'userModify' => array(self::BELONGS_TO, 'Users', 'user_modify'),
+            'userDelete' => array(self::BELONGS_TO, 'Users', 'user_delete'),
         );
 	}
 
@@ -110,7 +112,7 @@ class Collections extends ActiveRecord
 	 * @return CActiveDataProvider the data provider that can return the models
 	 * based on the search/filter conditions.
 	 */
-	public function search()
+	/*public function search()
 	{
 		// @todo Please modify the following code to remove attributes that should not be searched.
 
@@ -132,7 +134,7 @@ class Collections extends ActiveRecord
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
 		));
-	}
+	}*/
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -157,12 +159,8 @@ class Collections extends ActiveRecord
      * Формирует набор превью
      * @throws CException
      */
-    protected function setThumbnails()
+    private function setThumbnails()
     {
-        if ($this->isNewRecord) {
-            throw new CException(Yii::t('collections', 'Метод "{method}" не может вызываться для вновь создаваемой коллекции', array('{method}' => __METHOD__)));
-        }
-
         $this->thumbnailBig = PreviewHelper::getBigThumbnailForCollection($this);
         $this->thumbnailMedium = PreviewHelper::getMediumThumbnailForCollection($this);
         $this->thumbnailSmall = PreviewHelper::getSmallThumbnailForCollection($this);
@@ -687,27 +685,6 @@ class Collections extends ActiveRecord
             return true;
         }
         return false;
-    }
-
-    /**
-     * Проверяет, действительно ли есть картинка превью на сервере
-     * @param string $size какое превью проверяем - 'small', 'medium', 'big' или 'original'
-     * @throws CException
-     * @return bool
-     */
-    public function reallyHasPreview($size = 'medium')
-    {
-        if (!in_array($size, array('small', 'medium', 'big', 'original'))) {
-            throw new CException(Yii::t('common', 'Переданный размер не поддерживается'));
-        }
-
-        if ($this->isNewRecord) {
-            return false;
-        }
-
-        $previewUrl = PreviewHelper::getPreviewUrl($this, $size);
-
-        return !empty($previewUrl);
     }
 
     public function afterSave()

@@ -11,11 +11,11 @@
  * @property string $name
  * @property string $description
  * @property string $inventory_number
- * @property string $inventory_number_en
  * @property string $code
  * @property string $width
  * @property string $height
  * @property string $depth
+ * @property string $period
  * @property integer $has_preview
  * @property string $department
  * @property string $keeper
@@ -47,18 +47,18 @@ class Objects extends ActiveRecord
 	 */
 	public function rules()
 	{
-		// NOTE: you should only define rules for those attributes that
-		// will receive user inputs.
 		return array(
-			array('has_preview, deleted', 'numerical', 'integerOnly'=>true),
-			array('author_id, type_id, collection_id, sort', 'length', 'max'=>10),
-			array('name, code, department, keeper', 'length', 'max'=>150),
-			array('inventory_number, inventory_number_en', 'length', 'max'=>50),
-			array('width, height, depth', 'length', 'max'=>5),
-			array('description, date_create, date_modify, date_delete', 'safe'),
+
+            array('name, description, type_id, inventory_number, code', 'required'),
+            array('has_preview', 'boolean'),
+            array('author_id, type_id, sort', 'application.components.validators.EmptyOrPositiveIntegerValidator'),
+            array('period, code, department, keeper', 'length', 'max'=>150),
+            array('inventory_number', 'length', 'max'=>50),
+            array('width, height, depth', 'numerical', 'numberPattern' => '/^[1-9]\d{0,2}(\.[1-9]{1,2})?$/', 'message' => Yii::t('objects', 'значение должно быть в формате xxx.xx')),
+
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, author_id, type_id, collection_id, name, description, inventory_number, inventory_number_en, code, width, height, depth, has_preview, department, keeper, date_create, date_modify, date_delete, sort, deleted', 'safe', 'on'=>'search'),
+			//array('id, author_id, type_id, collection_id, name, description, inventory_number, inventory_number_en, code, width, height, depth, has_preview, department, keeper, date_create, date_modify, date_delete, sort, deleted', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -69,37 +69,39 @@ class Objects extends ActiveRecord
 	{
 		return array(
             'author' => array(self::BELONGS_TO, 'Authors', 'author_id'),
+            'type' => array(self::BELONGS_TO, 'ObjectTypes', 'type_id'),
+            'collection' => array(self::BELONGS_TO, 'Collections', 'collection_id'),
+
+            'userCreate' => array(self::BELONGS_TO, 'Users', 'user_create'),
+            'userModify' => array(self::BELONGS_TO, 'Users', 'user_modify'),
+            'userDelete' => array(self::BELONGS_TO, 'Users', 'user_delete'),
 		);
 	}
 
-	/**
-	 * @return array customized attribute labels (name=>label)
-	 */
-	public function attributeLabels()
-	{
-		return array(
-			'id' => 'ID',
-			'author_id' => 'Author',
-			'type_id' => 'Type',
-			'collection_id' => 'Collection',
-			'name' => 'Name',
-			'description' => 'Description',
-			'inventory_number' => 'Inventory Number',
-			'inventory_number_en' => 'Inventory Number En',
-			'code' => 'Code',
-			'width' => 'Width',
-			'height' => 'Height',
-			'depth' => 'Depth',
-			'has_preview' => 'Has Preview',
-			'department' => 'Department',
-			'keeper' => 'Keeper',
-			'date_create' => 'Date Create',
-			'date_modify' => 'Date Modify',
-			'date_delete' => 'Date Delete',
-			'sort' => 'Sort',
-			'deleted' => 'Deleted',
-		);
-	}
+    /**
+     * @return array customized attribute labels (name=>label)
+     */
+    public function attributeLabels()
+    {
+        return array(
+            'author_id' => Yii::t('objects', 'Автор'),
+            'type_id' => Yii::t('objects', 'Тип объекта'),
+            'name' => Yii::t('common', 'Название'),
+            'description' => Yii::t('common', 'Описание'),
+            'inventory_number' => Yii::t('objects', 'Инвентарный номер'),
+            'code' => Yii::t('common', 'Код'),
+            'width' => Yii::t('objects', 'Ширина'),
+            'height' => Yii::t('objects', 'Высота'),
+            'depth' => Yii::t('objects', 'Глубина'),
+            'department' => Yii::t('objects', 'Отдел'),
+            'keeper' => Yii::t('objects', 'Хранитель'),
+            'period' => Yii::t('objects', 'Период создания'),
+            'has_preview' => Yii::t('common', 'Есть превью'),
+            'sort' => Yii::t('common', 'Сортировка'),
+            // такого арибута в модели нет, это только для вывода лэйбла на форму
+            'preview' => Yii::t('common', 'Превью'),
+        );
+    }
 
 	/**
 	 * Retrieves a list of models based on the current search/filter conditions.
@@ -113,7 +115,7 @@ class Objects extends ActiveRecord
 	 * @return CActiveDataProvider the data provider that can return the models
 	 * based on the search/filter conditions.
 	 */
-	public function search()
+	/*public function search()
 	{
 		// @todo Please modify the following code to remove attributes that should not be searched.
 
@@ -143,7 +145,7 @@ class Objects extends ActiveRecord
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
 		));
-	}
+	}*/
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -166,8 +168,9 @@ class Objects extends ActiveRecord
 
     /**
      * Формирует набор превью
+     * @throws CException
      */
-    protected function setThumbnails()
+    private function setThumbnails()
     {
         $this->thumbnailBig = PreviewHelper::getBigThumbnailForObject($this);
         $this->thumbnailMedium = PreviewHelper::getMediumThumbnailForObject($this);
@@ -176,31 +179,94 @@ class Objects extends ActiveRecord
 
     public function getThumbnailBig()
     {
-        return $this->thumbnailBig;
-    }
+        if ($this->isNewRecord) {
+            throw new CException(Yii::t('objects', 'Метод "{method}" не может вызываться для вновь создаваемого объекта', array('{method}' => __METHOD__)));
+        }
 
-    public function setThumbnailBig($value)
-    {
-        $this->thumbnailBig = $value;
+        return $this->thumbnailBig;
     }
 
     public function getThumbnailMedium()
     {
-        return $this->thumbnailMedium;
-    }
+        if ($this->isNewRecord) {
+            throw new CException(Yii::t('objects', 'Метод "{method}" не может вызываться для вновь создаваемого объекта', array('{method}' => __METHOD__)));
+        }
 
-    public function setThumbnailMedium($value)
-    {
-        $this->thumbnailMedium = $value;
+        return $this->thumbnailMedium;
     }
 
     public function getThumbnailSmall()
     {
+        if ($this->isNewRecord) {
+            throw new CException(Yii::t('objects', 'Метод "{method}" не может вызываться для вновь создаваемого объекта', array('{method}' => __METHOD__)));
+        }
+
         return $this->thumbnailSmall;
     }
 
-    public function setThumbnailSmall($value)
+    /**
+     * Получает массив вида id => Имя автора для
+     * построения селекта Автор на форме
+     * создания\редактирования объекта
+     * @return array
+     */
+    public function getArrayOfPossibleAuthors()
     {
-        $this->thumbnailSmall = $value;
+        $Criteria = new CDbCriteria;
+        $Criteria->select = 'id, initials';
+        $Criteria->order = 'sort ASC';
+
+        $authors = Authors::model()->findAll($Criteria);
+
+        $result = array(
+            0 => Yii::t('objects', 'Автор неизвестен')
+        );
+
+        if (empty($authors)) {
+            return $result;
+        }
+
+        foreach ($authors as $Author) {
+            $result[$Author->id] = $Author->initials;
+        }
+
+        return $result;
+    }
+
+    /**
+     * Получает массив вида id => Тип объекта для
+     * построения селекта Тип объекта на форме
+     * создания\редактирования объекта
+     * @return array
+     */
+    public function getArrayOfPossibleObjectTypes()
+    {
+        $Criteria = new CDbCriteria;
+        $Criteria->select = 'id, name';
+        $Criteria->order = 'sort ASC';
+
+        $types = ObjectTypes::model()->findAll($Criteria);
+
+        $result = array();
+
+        if (empty($types)) {
+            return $result;
+        }
+
+        foreach ($types as $Type) {
+            $result[$Type->id] = $Type->name;
+        }
+
+        return $result;
+    }
+
+    public function afterSave()
+    {
+        // проверяем на сценарий для исключения рекурсивного вызова этой функции в afterSave() после сохранения данных о превью
+        if ($this->scenario != PreviewHelper::SCENARIO_SAVE_PREVIEWS) {
+            PreviewHelper::savePreviews($this);
+        }
+
+        parent::afterSave();
     }
 }

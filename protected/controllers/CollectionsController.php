@@ -2,6 +2,7 @@
 
 class CollectionsController extends Controller
 {
+    private $model;
 
 	/**
 	 * @return array action filters
@@ -13,8 +14,6 @@ class CollectionsController extends Controller
 			//'postOnly + delete', // we only allow deletion via POST request
 		);
 	}
-
-    private $model;
 
 	/**
 	 * Specifies the access control rules.
@@ -158,14 +157,18 @@ class CollectionsController extends Controller
                     'collections/update',
                     array('id' => $id)
                 ),
-                //'itemOptions' => array('class' => 'small')
             );
         }
         if (Yii::app()->user->checkAccess('oCollectionDelete')) {
             $pageMenu[] = array(
                 'label' => Yii::t('collections', 'Удалить коллекцию'),
                 'url' => $this->createUrl('collections/delete', array('id' => $id)),
-                //'itemOptions' => array('class' => 'small')
+            );
+        }
+        if (Yii::app()->user->checkAccess('oObjectCreate')) {
+            $pageMenu[] = array(
+                'label' => Yii::t('objects', 'Создать объект в коллекции'),
+                'url' => $this->createUrl('objects/create', array('ci' => $id)),
             );
         }
         $this->pageMenu = $pageMenu;
@@ -582,9 +585,6 @@ class CollectionsController extends Controller
      */
     public function actionIndex($cv = 'th')
 	{
-        /*echo '<pre>';
-        print_r(Collections::getIdsOfNormalCollectionsAllowedToUser(Yii::app()->user->id));
-        exit;*/
         $allowedCollectionsCriteria = Collections::getAllowedCollectionsCriteria(Yii::app()->user->id);
 
 		$dataProvider=new CActiveDataProvider(
@@ -617,21 +617,6 @@ class CollectionsController extends Controller
 	}
 
 	/**
-	 * Manages all models.
-	 */
-	public function actionAdmin()
-	{
-		$model=new Collections('search');
-		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['Collections']))
-			$model->attributes=$_GET['Collections'];
-
-		$this->render('admin',array(
-			'model'=>$model,
-		));
-	}
-
-	/**
 	 * Returns the data model based on the primary key given in the GET variable.
 	 * If the data model is not found, an HTTP exception will be raised.
 	 * @param integer $id the ID of the model to be loaded
@@ -659,12 +644,12 @@ class CollectionsController extends Controller
 	 * Performs the AJAX validation.
 	 * @param Collections $model the model to be validated
 	 */
-	protected function performAjaxValidation($model)
+	/*protected function performAjaxValidation($model)
 	{
 		if(isset($_POST['ajax']) && $_POST['ajax']==='collections-form')
 		{
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}
-	}
+	}*/
 }

@@ -226,8 +226,15 @@ class PreviewHelper extends CApplicationComponent
                     .$Model->code;
                 break;
             case 'Objects':
-                //throw new CException('Еще не готово');
-                // @todo доделать
+                $previewUrlPart = Yii::app()->baseUrl
+                    .DIRECTORY_SEPARATOR
+                    .Yii::app()->params['filesFolder']
+                    .DIRECTORY_SEPARATOR
+                    .Yii::app()->params['previewsFolder']
+                    .DIRECTORY_SEPARATOR
+                    .$Model->collection->code
+                    .DIRECTORY_SEPARATOR
+                    .$Model->code;
                 break;
             case 'Images':
                 //throw new CException('Еще не готово');
@@ -264,7 +271,6 @@ class PreviewHelper extends CApplicationComponent
             }
         }
 
-        //throw new CException(Yii::t('common', 'Превью отсутствует!'));
         return '';
     }
 
@@ -295,8 +301,15 @@ class PreviewHelper extends CApplicationComponent
                     .$Model->code;
                 break;
             case 'Objects':
-                //throw new CException('Еще не готово');
-                // @todo доделать
+                $path = Yii::getPathOfAlias('webroot')
+                    .DIRECTORY_SEPARATOR
+                    .Yii::app()->params['filesFolder']
+                    .DIRECTORY_SEPARATOR
+                    .Yii::app()->params['previewsFolder']
+                    .DIRECTORY_SEPARATOR
+                    .$Model->collection->code
+                    .DIRECTORY_SEPARATOR
+                    .$Model->code;
                 break;
             case 'Images':
                 //throw new CException('Еще не готово');

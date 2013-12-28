@@ -72,4 +72,29 @@ class ActiveRecord extends CActiveRecord
         return false;
     }
 
+    /**
+     * Проверяет, действительно ли есть картинка превью на сервере
+     * @param string $size какое превью проверяем - 'small', 'medium', 'big' или 'original'
+     * @throws CException
+     * @return bool
+     */
+    public function reallyHasPreview($size = 'medium')
+    {
+        if (!in_array($size, array('small', 'medium', 'big', 'original'))) {
+            throw new CException(Yii::t('common', 'Переданный размер не поддерживается'));
+        }
+
+        if (!in_array(get_class($this), array('Collections', 'Objects', 'Images'))) {
+            throw new CException(Yii::t('common', 'Объект не поддерживает вызванный метод'));
+        }
+
+        if ($this->isNewRecord) {
+            return false;
+        }
+
+        $previewUrl = PreviewHelper::getPreviewUrl($this, $size);
+
+        return !empty($previewUrl);
+    }
+
 } 
