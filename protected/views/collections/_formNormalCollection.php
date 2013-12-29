@@ -10,7 +10,7 @@ Yii::app()->clientScript->registerPackage('uploadFiles');
 $form = $this->beginWidget(
     'bootstrap.widgets.TbActiveForm',
     array(
-        'id' => 'collections-form',
+        'id' => 'collections-form', // этот айди также используется в форме подгрузки превью!!!
         'type' => 'horizontal',
         'inlineErrors' => true,
         'htmlOptions' => array(
@@ -50,7 +50,12 @@ echo $form->textFieldRow($model,'sort', array(
 
 ?>
 
-<?php $this->renderPartial('_uploadPreviewForm', array('model' => $model, 'photoUploadModel' => $photoUploadModel)); ?>
+<?php $this->renderPartial('application.views.common._uploadPreviewForm', array(
+    'model' => $model,
+    'photoUploadModel' => $photoUploadModel,
+    'type' => 'collection',
+    'formId' => 'collections-form'
+)); ?>
 
 <?php
 

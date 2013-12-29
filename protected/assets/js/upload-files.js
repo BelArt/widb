@@ -11,4 +11,33 @@ $(function() {
             }
         });
     }
+
+    // удаление превью
+    $('._uploadFiles_deletePreviewButton').click(function(){
+
+        var type = $(this).data('type');
+        var id = $(this).data('id');
+
+        $.ajax({
+            url: '/site/ajax',
+            type: 'POST',
+            data: {
+                action: 'deletePreview',
+                params: {
+                    type: type,
+                    id: id
+                }
+            },
+            success: function() {
+                // при успешном удалении показываем блок загрузки превью
+                $('._uploadFiles_previewBlock').remove();
+                $('._uploadFiles_xuploadBlock').show();
+
+            },
+            error: function() {
+                // @todo тут надо что-то сделать
+            }
+        });
+    });
+
 });

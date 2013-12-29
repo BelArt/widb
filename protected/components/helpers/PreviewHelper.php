@@ -226,8 +226,15 @@ class PreviewHelper extends CApplicationComponent
                     .$Model->code;
                 break;
             case 'Objects':
-                //throw new CException('Еще не готово');
-                // @todo доделать
+                $previewUrlPart = Yii::app()->baseUrl
+                    .DIRECTORY_SEPARATOR
+                    .Yii::app()->params['filesFolder']
+                    .DIRECTORY_SEPARATOR
+                    .Yii::app()->params['previewsFolder']
+                    .DIRECTORY_SEPARATOR
+                    .$Model->collection->code
+                    .DIRECTORY_SEPARATOR
+                    .$Model->code;
                 break;
             case 'Images':
                 //throw new CException('Еще не готово');
@@ -264,7 +271,6 @@ class PreviewHelper extends CApplicationComponent
             }
         }
 
-        //throw new CException(Yii::t('common', 'Превью отсутствует!'));
         return '';
     }
 
@@ -295,8 +301,15 @@ class PreviewHelper extends CApplicationComponent
                     .$Model->code;
                 break;
             case 'Objects':
-                //throw new CException('Еще не готово');
-                // @todo доделать
+                $path = Yii::getPathOfAlias('webroot')
+                    .DIRECTORY_SEPARATOR
+                    .Yii::app()->params['filesFolder']
+                    .DIRECTORY_SEPARATOR
+                    .Yii::app()->params['previewsFolder']
+                    .DIRECTORY_SEPARATOR
+                    .$Model->collection->code
+                    .DIRECTORY_SEPARATOR
+                    .$Model->code;
                 break;
             case 'Images':
                 //throw new CException('Еще не готово');
@@ -463,7 +476,7 @@ class PreviewHelper extends CApplicationComponent
 
         if (file_exists($previewsFolder)) {
 
-            foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($previewsFolder, FilesystemIterator::SKIP_DOTS), RecursiveIteratorIterator::CHILD_FIRST) as $path) {
+            /*foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($previewsFolder, FilesystemIterator::SKIP_DOTS), RecursiveIteratorIterator::CHILD_FIRST) as $path) {
                 if ($path->isFile()) {
                     if (!unlink($path->getPathname())) {
                         throw new CException(Yii::t('common', 'Произошла ошибка!'));
@@ -476,8 +489,33 @@ class PreviewHelper extends CApplicationComponent
             }
             if (!rmdir($previewsFolder)) {
                 throw new CException(Yii::t('common', 'Произошла ошибка!'));
+            }*/
+
+            $files = array_diff(scandir($previewsFolder), array('..', '.'));
+
+            foreach ($files as $file) {
+                if (
+                    !is_dir($file)
+                    && (
+                        strpos($file, self::PREVIEW_SMALL_NAME) !== false
+                        || strpos($file, self::PREVIEW_MEDIUM_NAME) !== false
+                        || strpos($file, self::PREVIEW_BIG_NAME) !== false
+                        || strpos($file, self::PREVIEW_ORIGINAL_NAME) !== false
+                    )
+                ) {
+                    if (!unlink($previewsFolder.DIRECTORY_SEPARATOR.$file)) {
+                        throw new CException(Yii::t('common', 'Произошла ошибка!'));
+                    }
+                }
             }
 
+            $files = array_diff(scandir($previewsFolder), array('..', '.'));
+
+            if (empty($files)) {
+                if (!rmdir($previewsFolder)) {
+                    throw new CException(Yii::t('common', 'Произошла ошибка!'));
+                }
+            }
 
         }
 
@@ -537,7 +575,7 @@ class PreviewHelper extends CApplicationComponent
             $dir = self::getPreviewFolderPath($Caller);
 
             // удаляем папку и превью, если они есть, т.е. будем перезаписывать вновь загружаемыми
-            if (file_exists($dir)) {
+            /*if (file_exists($dir)) {
                 foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir, FilesystemIterator::SKIP_DOTS), RecursiveIteratorIterator::CHILD_FIRST) as $path) {
                     if ($path->isFile()) {
                         if (!unlink($path->getPathname())) {
@@ -556,13 +594,19 @@ class PreviewHelper extends CApplicationComponent
 
             if (!mkdir($dir, 0777, true)) {
                 throw new CException(Yii::t('common', 'Произошла ошибка при сохранении превью'));
+            }*/
+
+            if (!file_exists($dir)) {
+                if (!mkdir($dir, 0777, true)) {
+                    throw new CException(Yii::t('common', 'Произошла ошибка при сохранении превью'));
+                }
             }
 
-            /*if (!is_writable($dir)) {
+            if (!is_writable($dir)) {
                 if (!chmod($dir, 0777)) {
                     throw new CException(Yii::t('common', 'Произошла ошибка при сохранении превью'));
                 }
-            } */
+            }
 
             foreach ($userImages as $image) {
                 if (is_file($image["path"])) {

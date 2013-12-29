@@ -26,7 +26,7 @@ $this->widget(
                 'urlExpression' => 'Yii::app()->urlManager->createUrl("objects/view", array("id" => $data->id))',
                 'header'=>'Название',
             ),
-            array('value'=>'$data->author->initials', 'header'=>'Автор', 'sortable' => false),
+            array('value'=>'(!empty($data->author->initials) ? $data->author->initials : "")', 'header'=>'Автор', 'sortable' => false),
             array(
                 'header'=>'Действия',
                 'htmlOptions' => array('nowrap'=>'nowrap'),

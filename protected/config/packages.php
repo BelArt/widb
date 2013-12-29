@@ -43,6 +43,12 @@ return array(
         'css'=>array('css/collection-form.css'),
         'depends' => array('global')
     ),
+    'objectForm' => array(
+        'basePath'=>'application.assets',
+        'js'=>array('js/object-form.js'),
+        'css'=>array('css/object-form.css'),
+        'depends' => array('global')
+    ),
     'collectionView' => array(
         'basePath'=>'application.assets',
         'css'=>array('css/collection-view.css'),
@@ -50,6 +56,7 @@ return array(
     ),
     'uploadFiles' => array(
         'basePath'=>'application.assets',
+        'css'=>array('css/upload-files.css'),
         'js'=>array('js/upload-files.js'),
         'depends' => array('global')
     ),
