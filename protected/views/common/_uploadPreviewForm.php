@@ -45,7 +45,7 @@
                     'attribute' => 'file',
                     'multiple' => false,
                     'showForm' => false,
-                    'formView' => 'formCustom'
+                    'formView' => 'formCustom',
                 )
             );
             ?>

@@ -75,7 +75,7 @@ echo $form->textFieldRow($model,'depth', array(
     'append' => Yii::t('common', 'см')
 ));
 
-echo $form->checkBoxRow($model,'has_preview', array('class' => '_objectForm_hideErrorsChange'));
+echo $form->checkBoxRow($model,'has_preview', array('class' => '_objectForm_hideErrorsChange _hasPreviewCheckbox'));
 
 echo $form->textFieldRow($model,'department', array(
     'class' => 'input-xxlarge _objectForm_hideErrorsKeypress'

@@ -33,7 +33,7 @@ echo $form->textFieldRow($model,'code', array(
     'class' => 'input-xlarge _collectionForm_hideErrorsKeypress'
 ));
 
-echo $form->checkBoxRow($model,'has_preview', array('class' => '_collectionForm_hideErrorsChange'));
+echo $form->checkBoxRow($model,'has_preview', array('class' => '_collectionForm_hideErrorsChange _hasPreviewCheckbox'));
 
 echo $form->select2Row($model,'parent_id',
     array(

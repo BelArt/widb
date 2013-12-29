@@ -33,6 +33,9 @@ $(function() {
                 $('._uploadFiles_previewBlock').remove();
                 $('._uploadFiles_xuploadBlock').show();
 
+                // и снимаем галочку Есть превью
+                $('._hasPreviewCheckbox').removeAttr('checked');
+
             },
             error: function() {
                 // @todo тут надо что-то сделать
