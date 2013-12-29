@@ -100,7 +100,7 @@ return array(
         'image' => array(
             'class'=>'application.extensions.image.CImageComponent',
             // GD or ImageMagick
-            'driver'=>'ImageMagick',
+            'driver'=>'GD',
             // ImageMagick setup path
             //'params'=>array('directory'=>'/opt/local/bin'),
         ),
