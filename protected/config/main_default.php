@@ -42,6 +42,12 @@ return array(
 		*/
 	),
 
+    // наш обработчик ошибок
+    'onError' => array('ErrorAndExceptionHandler', 'handleError'),
+
+    // наш обработчик исключений
+    'onException' => array('ErrorAndExceptionHandler', 'handleException'),
+
 	// application components
 	'components'=>array(
 		'user'=>array(
