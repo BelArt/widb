@@ -24,7 +24,8 @@ class ErrorAndExceptionHandler extends CComponent
                 if (Yii::app()->request->isAjaxRequest) {
                     echo $error['message'];
                 } else {
-                    Yii::app()->controller->render('application.views.common.errorCustomAndTrace',$error);
+                    $Controller = new Controller();
+                    $Controller->render('application.views.common.errorCustomAndTrace',$error);
                 }
 
             } else {
@@ -32,7 +33,8 @@ class ErrorAndExceptionHandler extends CComponent
                 if (Yii::app()->request->isAjaxRequest) {
                     echo Yii::t('common', 'Произошла ошибка!');
                 } else {
-                    Yii::app()->controller->render('application.views.common.errorStandart');
+                    $Controller = new Controller();
+                    $Controller->render('application.views.common.errorStandart');
                 }
             }
         }
@@ -59,7 +61,8 @@ class ErrorAndExceptionHandler extends CComponent
                     if (Yii::app()->request->isAjaxRequest) {
                         echo $error['message'];
                     } else {
-                        Yii::app()->controller->render('application.views.common.errorCustomAndTrace',$error);
+                        $Controller = new Controller();
+                        $Controller->render('application.views.common.errorCustomAndTrace',$error);
                     }
 
                 } else {
@@ -67,7 +70,8 @@ class ErrorAndExceptionHandler extends CComponent
                     if (Yii::app()->request->isAjaxRequest) {
                         echo $error['message'];
                     } else {
-                        Yii::app()->controller->render('application.views.common.errorCustom', $error);
+                        $Controller = new Controller();
+                        $Controller->render('application.views.common.errorCustom', $error);
                     }
                 }
             } else {
@@ -79,7 +83,8 @@ class ErrorAndExceptionHandler extends CComponent
                     if (Yii::app()->request->isAjaxRequest) {
                         echo $error['message'];
                     } else {
-                        Yii::app()->controller->render('application.views.common.errorCustomAndTrace',$error);
+                        $Controller = new Controller();
+                        $Controller->render('application.views.common.errorCustomAndTrace',$error);
                     }
 
                 } else {
@@ -87,7 +92,8 @@ class ErrorAndExceptionHandler extends CComponent
                     if (Yii::app()->request->isAjaxRequest) {
                         echo Yii::t('common', 'Произошла ошибка!');
                     } else {
-                        Yii::app()->controller->render('application.views.common.errorStandart');
+                        $Controller = new Controller();
+                        $Controller->render('application.views.common.errorStandart');
                     }
                 }
             }
