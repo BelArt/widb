@@ -42,6 +42,12 @@ return array(
 		*/
 	),
 
+    // наш обработчик ошибок
+    'onError' => array('ErrorAndExceptionHandler', 'handleError'),
+
+    // наш обработчик исключений
+    'onException' => array('ErrorAndExceptionHandler', 'handleException'),
+
 	// application components
 	'components'=>array(
 		'user'=>array(
@@ -69,10 +75,10 @@ return array(
         'bootstrap' => array(
             'class' => 'ext.yiibooster.components.Bootstrap',
         ),
-		'errorHandler'=>array(
+		/*'errorHandler'=>array(
 			// use 'site/error' action to display errors
-			'errorAction'=>'site/error',
-		),
+			//'errorAction'=>'site/error',
+		),*/
 		'log'=>array(
 			'class'=>'CLogRouter',
 			'routes'=>array(

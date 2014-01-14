@@ -1,0 +1,1 @@
+<div class="alert in alert-block fade alert-error"><?= Yii::t('common', 'Произошла ошибка!') ?></div>
