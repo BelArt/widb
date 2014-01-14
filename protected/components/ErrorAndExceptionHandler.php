@@ -1,14 +1,21 @@
 <?php
 /**
  * Обработчик ошибок и исключений
+ *
+ * Вывод реального или стандартного текста
+ * ошибки/исключения и трейса зависит от режима (дебаг или продакшн)
  */
 
 class ErrorAndExceptionHandler extends CComponent
 {
-    public static function handleError(CEvent $Event)
+    /**
+     * Обработчик ошибок
+     * @param CErrorEvent $Event событие ошибки
+     */
+    public static function handleError(CErrorEvent $Event)
     {
         // если вдруг метод вызвали не при ошибке
-        if($error = Yii::app()->errorHandler->error)
+        if($error = self::getErrorInfo($Event))
         {
             self::sendErrorHeader(500);
 
@@ -34,12 +41,16 @@ class ErrorAndExceptionHandler extends CComponent
         $Event->handled = true;
     }
 
-    public static function handleException(CEvent $Event)
+    /**
+     * Обработчик исключений
+     * @param CExceptionEvent $Event событие исключения
+     */
+    public static function handleException(CExceptionEvent $Event)
     {
         // если вдруг метод вызвали не при ошибке
-        if($error = Yii::app()->errorHandler->error)
+        if($error = self::getExceptionInfo($Event))
         {
-            if ($error['type'] == 'CHttpException') {
+            if (get_class($Event->exception) == 'CHttpException') {
 
                 self::sendErrorHeader($error['code']);
 
@@ -87,7 +98,37 @@ class ErrorAndExceptionHandler extends CComponent
     }
 
     /**
-     * Посылает заголовок с кодом ошибки
+     * Получает массив с данными ошибки
+     * @param CErrorEvent $Event событие ошибки
+     * @return array
+     */
+    protected static function getErrorInfo(CErrorEvent $Event)
+    {
+        return array(
+            'code' => $Event->code,
+            'message' => $Event->message,
+            'file' => $Event->file,
+            'line' => $Event->line,
+        );
+    }
+
+    /**
+     * Получает массив с данными исключения
+     * @param CExceptionEvent $Event событие исключения
+     * @return array
+     */
+    protected static function getExceptionInfo(CExceptionEvent $Event)
+    {
+        return array(
+            'code' => $Event->exception->statusCode,
+            'message' => $Event->exception->getMessage(),
+            'file' => $Event->exception->getFile(),
+            'line' => $Event->exception->getLine(),
+        );
+    }
+
+    /**
+     * Посылает заголовок с кодом ошибки/исключения
      * @param mixed $error или массив с данными ошибки, или код ошибки
      */
     protected static function sendErrorHeader($error)
