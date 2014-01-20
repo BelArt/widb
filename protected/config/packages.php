@@ -20,6 +20,7 @@ return array(
     'global' => array(
         'basePath'=>'application.assets',
         'css'=>array('css/global.css'),
+        'js'=>array('js/global.js'),
         'depends' => array('layoutFix')
     ),
     'emptyLayout' => array(

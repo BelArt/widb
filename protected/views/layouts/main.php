@@ -105,6 +105,15 @@
 		<a href="http://eposgroup.ru">ЗАО "Группа ЭПОС"</a> &copy; <?php echo date('Y'); ?>
 	</div><!-- footer -->
 
+    <!-- разметка для диалога -->
+    <div
+        id="_dialog"
+        title=""
+        data-button-ok="<?= Yii::t('common', 'Ок') ?>"
+        data-button-cancel="<?= Yii::t('common', 'Отмена') ?>"
+        data-button-close="<?= Yii::t('common', 'Закрыть') ?>"
+    ></div>
+
 </div><!-- page -->
 
 </body>
