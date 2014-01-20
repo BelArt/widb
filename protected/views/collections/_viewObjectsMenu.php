@@ -24,7 +24,11 @@ if (!$model->temporary) {
                 array(
                     'label' => Yii::t('common', 'Удалить'),
                     'url' => '#',
-                    'itemOptions' => array('class' => 'small')
+                    'itemOptions' => array(
+                        'class' => 'small _deleteSelectedObjects',
+                        'data-dialog-title' => CHtml::encode(Yii::t('objects', 'Удалить выбранные объекты?')),
+                        'data-dialog-message' => CHtml::encode(Yii::t('objects', 'Выбранные объекты будут удалены, и их нельзя будет восстановить')),
+                    )
                 ),
             )
         )

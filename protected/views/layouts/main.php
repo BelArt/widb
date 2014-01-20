@@ -107,11 +107,11 @@
 
     <!-- разметка для диалога -->
     <div
-        id="_dialog"
-        title=""
+        class="_dialog"
         data-button-ok="<?= Yii::t('common', 'Ок') ?>"
         data-button-cancel="<?= Yii::t('common', 'Отмена') ?>"
         data-button-close="<?= Yii::t('common', 'Закрыть') ?>"
+        data-message-error="<?= Yii::t('common', 'Ошибка') ?>"
     ></div>
 
 </div><!-- page -->

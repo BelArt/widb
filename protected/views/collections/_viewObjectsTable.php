@@ -34,9 +34,9 @@ $this->widget(
                 'viewButtonUrl' => 'Yii::app()->urlManager->createUrl("objects/view", array("id" => $data->id));',
                 'updateButtonUrl'=> null,
                 'deleteButtonUrl' => null,
-                /*'buttons' => array(
-                    'view' => array('visible' => 'return false;')
-                )*/
+                'buttons' => array(
+                    'delete' => array('visible' => 'return false;')
+                )
             )
         ),
         'showTableOnEmpty' => false,

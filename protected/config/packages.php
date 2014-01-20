@@ -53,6 +53,7 @@ return array(
     'collectionView' => array(
         'basePath'=>'application.assets',
         'css'=>array('css/collection-view.css'),
+        'js'=>array('js/collection-view.js'),
         'depends' => array('global')
     ),
     'uploadFiles' => array(
