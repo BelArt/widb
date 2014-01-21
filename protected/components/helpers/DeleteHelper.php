@@ -16,6 +16,32 @@ class DeleteHelper extends CApplicationComponent
 
             foreach ($params['ids'] as $objectId) {
 
+                $Object = Objects::model()->findByPk($objectId);
+
+                if (empty($Object)) {
+                    continue;
+                }
+
+                Yii::app()->user->setFlash(
+                    'success',
+                    Yii::t('objects', 'Все выбранные объекты удалены!')
+                );
+
+                if ($Object->isReadyToBeDeleted()) {
+                    if (!$Object->deleteObject()) {
+                        Yii::app()->user->setFlash('success', null);
+                        Yii::app()->user->setFlash(
+                            'error',
+                            Yii::t('objects', 'Некоторые объекты удалить не получилось. У объекта не должно быть относящихся к нему изображений, чтобы его можно было удалить.')
+                        );
+                    }
+                } else {
+                    Yii::app()->user->setFlash('success', null);
+                    Yii::app()->user->setFlash(
+                        'error',
+                        Yii::t('objects', 'Некоторые объекты удалить не получилось. У объекта не должно быть относящихся к нему изображений, чтобы его можно было удалить.')
+                    );
+                }
             }
 
         }

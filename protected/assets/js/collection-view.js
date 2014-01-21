@@ -14,7 +14,7 @@ $(function(){
     });
 
     /**
-     * Удаления выбранных объектов
+     * Удаление выбранных объектов из обычной коллекции
      */
     $('._deleteSelectedObjects').click(function(){
 
@@ -32,7 +32,7 @@ $(function(){
                 });
 
                 closeDialog();
-                //console.log(idsOfObjectsToDelete);
+
                 $.ajax({
                     url: '/site/ajax',
                     type: 'POST',

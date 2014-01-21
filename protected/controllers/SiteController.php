@@ -180,7 +180,9 @@ class SiteController extends Controller
                 break;
             // удаляем выбранные объекты
             case 'deleteObjects':
-                DeleteHelper::deleteObjects($params);
+                if (Yii::app()->user->checkAccess('oObjectDelete')) {
+                    DeleteHelper::deleteObjects($params);
+                }
                 break;
         }
 
