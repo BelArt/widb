@@ -19,14 +19,25 @@ $this->widget(
                 'value' => 'return null;',
                 'checked' => 'return null;',
                 'selectableRows' => 2,
+                'checkBoxHtmlOptions' => array(
+                    'class' => '_objectItem',
+                    'data-object-id' => '' // айдишник объекта будет записываться сюда джаваскриптом
+                )
             ),
             array(
                 'class' => 'CLinkColumn',
                 'labelExpression' => '$data->name',
                 'urlExpression' => 'Yii::app()->urlManager->createUrl("objects/view", array("id" => $data->id))',
                 'header'=>'Название',
+                'linkHtmlOptions' => array(
+                    'class' => '_objectLinkInTableRow'
+                )
             ),
-            array('value'=>'(!empty($data->author->initials) ? $data->author->initials : "")', 'header'=>'Автор', 'sortable' => false),
+            array(
+                'value'=>'(!empty($data->author->initials) ? $data->author->initials : "")',
+                'header'=>'Автор',
+                'sortable' => false
+            ),
             array(
                 'header'=>'Действия',
                 'htmlOptions' => array('nowrap'=>'nowrap'),

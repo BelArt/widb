@@ -180,7 +180,7 @@ class SiteController extends Controller
                 break;
             // удаляем выбранные объекты
             case 'deleteObjects':
-                PreviewHelper::deletePreview($params);
+                DeleteHelper::deleteObjects($params);
                 break;
         }
 
