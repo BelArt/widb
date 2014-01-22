@@ -38,11 +38,36 @@ if (!$model->temporary) {
         )
     );
 
-    echo CHtml::openTag('div', array(
-        'class' => 'gapeSmall',
-    ));
-    echo CHtml::closeTag('div');
+} else {
+
+    $this->widget(
+        'bootstrap.widgets.TbMenu',
+        array(
+            'type' => 'pills',
+            'items' => array(
+                array(
+                    'label' => Yii::t('common', 'С отмеченными'),
+                    'itemOptions' => array('class' => 'nav-header')
+                ),
+                array(
+                    'label' => Yii::t('collections', 'Удалить из временной коллекции'),
+                    'url' => '#',
+                    'itemOptions' => array(
+                        'class' => 'small _deleteSelectedObjectsFromTempCollection',
+                        'data-dialog-title' => CHtml::encode(Yii::t('objects', 'Удалить выбранные объекты из временной коллекции?')),
+                        'data-dialog-message' => CHtml::encode(Yii::t('objects', 'Выбранные объекты будут удалены из временной коллекции')),
+                        'data-temp-collection-id' => $model->id
+                    )
+                ),
+            )
+        )
+    );
 }
+
+echo CHtml::openTag('div', array(
+    'class' => 'gapeSmall',
+));
+echo CHtml::closeTag('div');
 ?>
 
 <?php

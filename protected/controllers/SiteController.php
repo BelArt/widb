@@ -184,6 +184,10 @@ class SiteController extends Controller
                     DeleteHelper::deleteObjects($params);
                 }
                 break;
+            // удаляем выбранные объекты из временной коллекции
+            case 'deleteObjectsFromTempCollection':
+                DeleteHelper::deleteObjectsFromTempCollection($params);
+                break;
         }
 
     }
