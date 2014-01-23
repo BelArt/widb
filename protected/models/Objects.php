@@ -54,7 +54,7 @@ class Objects extends ActiveRecord
             array('author_id, type_id, sort', 'application.components.validators.EmptyOrPositiveIntegerValidator'),
             array('period, code, department, keeper', 'length', 'max'=>150),
             array('inventory_number', 'length', 'max'=>50),
-            array('width, height, depth', 'numerical', 'numberPattern' => '/^[1-9]\d{0,2}(\.[1-9]{1,2})?$/', 'message' => Yii::t('objects', 'значение должно быть в формате xxx.xx')),
+            array('width, height, depth', 'numerical', 'numberPattern' => '/^\d\d{0,2}(\.\d{1,2})?$/', 'message' => Yii::t('objects', 'значение должно быть в формате xxx.xx'), 'allowEmpty' => true),
 
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
@@ -268,5 +268,65 @@ class Objects extends ActiveRecord
         }
 
         parent::afterSave();
+    }
+
+    /**
+     * Проверяет, можно ли удалить объект
+     * @throws CException
+     * @return bool
+     */
+    public function isReadyToBeDeleted()
+    {
+        if ($this->isNewRecord) {
+            throw new CException(Yii::t('objects', 'Метод "{method}" не может вызываться для вновь создаваемого объекта', array('{method}' => __METHOD__)));
+        }
+
+        $Criteria = new CDbCriteria;
+        $Criteria->select = 'id';
+        $Criteria->addCondition('object_id = :object_id');
+        $Criteria->params = array(':object_id' => $this->id);
+
+        $images = Images::model()->findAll($Criteria);
+
+        if (!empty($objects)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Удаляет объект
+     * @throws CException
+     * @return bool
+     */
+    public function deleteObject()
+    {
+        if ($this->isNewRecord) {
+            throw new CException(Yii::t('objects', 'Метод "{method}" не может вызываться для вновь создаваемого объекта', array('{method}' => __METHOD__)));
+        }
+
+        if ($this->deleteRecord()) {
+
+            // удаляем объект из всех временных колекций
+            $Criteria = new CDbCriteria;
+            $Criteria->select = 'id';
+            $Criteria->addCondition('object_id = :object_id');
+            $Criteria->params = array(':object_id' => $this->id);
+
+            $records = TempCollectionObject::model()->findAll($Criteria);
+
+            foreach ($records as $Record) {
+                if (!$Record->deleteRecord()) {
+                    return false;
+                }
+            }
+
+            // удаляем превью
+            PreviewHelper::deletePreview($this);
+
+            return true;
+        }
+        return false;
     }
 }

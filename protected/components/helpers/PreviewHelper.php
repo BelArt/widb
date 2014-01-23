@@ -517,6 +517,38 @@ class PreviewHelper extends CApplicationComponent
                 }
             }
 
+            // удаляем пустую родительскую папку
+            switch (get_class($Model)) {
+                case 'Objects':
+                    $Collection = Collections::model()->findByPk($Model->collection_id);
+                    $previewsFolder = self::getPreviewFolderPath($Collection);
+                    $files = array_diff(scandir($previewsFolder), array('..', '.'));
+                    if (empty($files)) {
+                        if (!rmdir($previewsFolder)) {
+                            throw new CException(Yii::t('common', 'Произошла ошибка!'));
+                        }
+                    }
+                    break;
+                case 'Images':
+                    $Object = Objects::model()->findByPk($Model->object_id);
+                    $previewsFolder = self::getPreviewFolderPath($Object);
+                    $files = array_diff(scandir($previewsFolder), array('..', '.'));
+                    if (empty($files)) {
+                        if (!rmdir($previewsFolder)) {
+                            throw new CException(Yii::t('common', 'Произошла ошибка!'));
+                        }
+                    }
+                    $Collection = Collections::model()->findByPk($Object->collection_id);
+                    $previewsFolder = self::getPreviewFolderPath($Collection);
+                    $files = array_diff(scandir($previewsFolder), array('..', '.'));
+                    if (empty($files)) {
+                        if (!rmdir($previewsFolder)) {
+                            throw new CException(Yii::t('common', 'Произошла ошибка!'));
+                        }
+                    }
+                    break;
+            }
+
         }
 
         $Model->has_preview = 0;

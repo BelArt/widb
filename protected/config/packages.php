@@ -20,6 +20,7 @@ return array(
     'global' => array(
         'basePath'=>'application.assets',
         'css'=>array('css/global.css'),
+        'js'=>array('js/global.js'),
         'depends' => array('layoutFix')
     ),
     'emptyLayout' => array(
@@ -52,6 +53,7 @@ return array(
     'collectionView' => array(
         'basePath'=>'application.assets',
         'css'=>array('css/collection-view.css'),
+        'js'=>array('js/collection-view.js'),
         'depends' => array('global')
     ),
     'uploadFiles' => array(

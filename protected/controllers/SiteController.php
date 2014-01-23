@@ -178,6 +178,16 @@ class SiteController extends Controller
             case 'deletePreview':
                 PreviewHelper::deletePreview($params);
                 break;
+            // удаляем выбранные объекты
+            case 'deleteObjects':
+                if (Yii::app()->user->checkAccess('oObjectDelete')) {
+                    DeleteHelper::deleteObjects($params);
+                }
+                break;
+            // удаляем выбранные объекты из временной коллекции
+            case 'deleteObjectsFromTempCollection':
+                DeleteHelper::deleteObjectsFromTempCollection($params);
+                break;
         }
 
     }
