@@ -163,6 +163,11 @@ class CollectionsController extends Controller
             $pageMenu[] = array(
                 'label' => Yii::t('collections', 'Удалить коллекцию'),
                 'url' => $this->createUrl('collections/delete', array('id' => $id)),
+                'itemOptions' => array(
+                    'class' => '_deleteCollection',
+                    'data-dialog-title' => CHtml::encode(Yii::t('collections', 'Удалить коллекцию?')),
+                    'data-dialog-message' => CHtml::encode(Yii::t('collections', 'Вы уверены, что хотите удалить коллекцию? Ее нельзя будет восстановить!')),
+                )
             );
         }
         if (Yii::app()->user->checkAccess('oObjectCreate')) {
@@ -290,7 +295,11 @@ class CollectionsController extends Controller
             $pageMenu[] = array(
                 'label' => Yii::t('collections', 'Удалить временную коллекцию'),
                 'url' => $this->createUrl('collections/deleteTemp', array('id' => $id)),
-                //'itemOptions' => array('class' => 'small')
+                'itemOptions' => array(
+                    'class' => '_deleteTempCollection',
+                    'data-dialog-title' => CHtml::encode(Yii::t('collections', 'Удалить временную коллекцию?')),
+                    'data-dialog-message' => CHtml::encode(Yii::t('collections', 'Вы уверены, что хотите удалить временную коллекцию? Ее нельзя будет восстановить!')),
+                )
             );
         }
         $this->pageMenu = $pageMenu;
@@ -522,22 +531,12 @@ class CollectionsController extends Controller
 	 */
 	public function actionDelete($id)
 	{
-		$Collection = $this->loadModel($id);
-
-        if ($Collection->isReadyToBeDeleted()) {
-            if ($Collection->deleteNormalCollection()) {
-                Yii::app()->user->setFlash(
-                    'success',
-                    Yii::t('collections', 'Коллекция удалена')
-                );
-                $this->redirect(array('index'));
-            } else {
-                Yii::app()->user->setFlash(
-                    'error',
-                    Yii::t('collections', 'Коллекция не удалена')
-                );
-                $this->redirect(Yii::app()->request->urlReferrer);
-            }
+        if (DeleteHelper::deleteNormalCollection($id)) {
+            Yii::app()->user->setFlash(
+                'success',
+                Yii::t('collections', 'Коллекция удалена')
+            );
+            $this->redirect(array('index'));
         } else {
             Yii::app()->user->setFlash(
                 'error',
@@ -545,10 +544,6 @@ class CollectionsController extends Controller
             );
             $this->redirect(Yii::app()->request->urlReferrer);
         }
-
-		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-		/*if(!isset($_GET['ajax']))
-			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));*/
 	}
 
     /**
@@ -557,14 +552,13 @@ class CollectionsController extends Controller
      */
     public function actionDeleteTemp($id)
     {
-        $Collection = $this->loadModel($id);
-
-        if ($Collection->deleteTempCollection()) {
+        if (DeleteHelper::deleteTempCollection($id)) {
             Yii::app()->user->setFlash(
                 'success',
                 Yii::t('collections', 'Временная коллекция удалена')
             );
             $this->redirect(array('index'));
+
         } else {
             Yii::app()->user->setFlash(
                 'error',
@@ -572,10 +566,6 @@ class CollectionsController extends Controller
             );
             $this->redirect(Yii::app()->request->urlReferrer);
         }
-
-        // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-        /*if(!isset($_GET['ajax']))
-            $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));*/
     }
 
 

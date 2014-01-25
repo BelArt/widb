@@ -188,8 +188,34 @@ class SiteController extends Controller
             case 'deleteObjectsFromTempCollection':
                 DeleteHelper::deleteObjectsFromTempCollection($params);
                 break;
+            // удаляем выбранные дочерние коллекции
+            case 'deleteChildCollections':
+                $this->deleteChildCollections($params);
+                break;
         }
 
+    }
+
+    /**
+     * Удаление выбранных дочерних коллекций
+     * @param mixed $params параметры
+     */
+    protected function deleteChildCollections($params)
+    {
+        if (!empty($params['ids']) && is_array($params['ids'])) {
+
+            if (DeleteHelper::deleteNormalCollections($params['ids'])) {
+                Yii::app()->user->setFlash(
+                    'success',
+                    Yii::t('collections', 'Все выбранные дочерние коллекции удалены')
+                );
+            } else {
+                Yii::app()->user->setFlash(
+                    'error',
+                    Yii::t('collections', 'Не все выбранные дочерние коллекции удалены')
+                );
+            }
+        }
     }
 
 }

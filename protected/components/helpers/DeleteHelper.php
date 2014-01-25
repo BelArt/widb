@@ -10,6 +10,7 @@ class DeleteHelper extends CApplicationComponent
      * Удаляет объекты из обычной коллекции
      * @param array $params массив с параметрами
      * @throws CException
+     * @todo отрефакторить - оставить только логику удаления
      */
     public static function deleteObjects($params)
     {
@@ -57,6 +58,7 @@ class DeleteHelper extends CApplicationComponent
      * Удаляет объекты из временной коллекции
      * @param array $params массив с параметрами
      * @throws CException
+     * @todo отрефакторить - оставить только логику удаления
      */
     public static function deleteObjectsFromTempCollection($params)
     {
@@ -96,5 +98,81 @@ class DeleteHelper extends CApplicationComponent
             }
 
         }
+    }
+
+    /**
+     * Удаляет обычную коллекцию
+     * @param int $id айди обычной коллекции
+     * @return bool true - удалена, false - не удалены
+     */
+    public static function deleteNormalCollection($id)
+    {
+        $Collection = Collections::model()->findByPk($id);
+
+        if (empty($Collection) || $Collection->temporary) {
+            return false;
+        }
+
+        if ($Collection->isReadyToBeDeleted()) {
+            return $Collection->deleteNormalCollection();
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Удаляет временную коллекцию
+     * @param int $id айди временную коллекции
+     * @return bool true - удалена, false - не удалены
+     */
+    public static function deleteTempCollection($id)
+    {
+        $Collection = Collections::model()->findByPk($id);
+
+        if (empty($Collection) || !$Collection->temporary) {
+            return false;
+        }
+
+        return $Collection->deleteTempCollection();
+    }
+
+    /**
+     * Удаляет обычные коллекции
+     * @param array $ids массив с айдишниками обычных коллекций
+     * @return bool true - все переданные удалены, false - не все удалены
+     */
+    public static function deleteNormalCollections(array $ids)
+    {
+        $result = true;
+
+        foreach ($ids as $id) {
+            $tempResult = self::deleteNormalCollection($id);
+            if (!$tempResult) {
+                $result = false;
+            }
+        }
+
+        return $result;
+
+    }
+
+    /**
+     * Удаляет временные коллекции
+     * @param array $ids массив с айдишниками временных коллекций
+     * @return bool true - все переданные удалены, false - не все удалены
+     */
+    public static function deleteTempCollections(array $ids)
+    {
+        $result = true;
+
+        foreach ($ids as $id) {
+            $tempResult = self::deleteTempCollection($id);
+            if (!$tempResult) {
+                $result = false;
+            }
+        }
+
+        return $result;
+
     }
 } 
