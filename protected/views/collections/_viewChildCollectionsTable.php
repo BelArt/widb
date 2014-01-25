@@ -19,12 +19,19 @@ $this->widget(
                 'value' => 'return null;',
                 'checked' => 'return null;',
                 'selectableRows' => 2,
+                'checkBoxHtmlOptions' => array(
+                    'class' => '_collectionItem',
+                    'data-collection-id' => '' // айдишник будет записываться сюда джаваскриптом
+                )
             ),
             array(
                 'class' => 'CLinkColumn',
                 'labelExpression' => '$data->name',
                 'urlExpression' => 'Yii::app()->urlManager->createUrl("collections/view", array("id" => $data->id))',
                 'header'=>'Название',
+                'linkHtmlOptions' => array(
+                    'class' => '_collectionLinkInTableRow'
+                )
             ),
             array(
                 'header'=>'Действия',

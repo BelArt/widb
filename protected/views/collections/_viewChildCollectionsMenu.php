@@ -18,7 +18,11 @@ $this->widget(
             array(
                 'label' => Yii::t('common', 'Удалить'),
                 'url' => '#',
-                'itemOptions' => array('class' => 'small')
+                'itemOptions' => array(
+                    'class' => 'small _deleteSelectedChildCollections',
+                    'data-dialog-title' => CHtml::encode(Yii::t('collections', 'Удалить выбранные дочерние коллекции?')),
+                    'data-dialog-message' => CHtml::encode(Yii::t('collections', 'Выбранные дочерние коллекции будут удалены, и их нельзя будет восстановить')),
+                )
             ),
         )
     )
