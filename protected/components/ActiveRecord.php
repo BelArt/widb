@@ -60,9 +60,18 @@ class ActiveRecord extends CActiveRecord
     /**
      * Удаляет запись в таблицах проекта.
      * Т.е. ставит в ней флаг, что запись удалена, но не удаляет ее из таблицы
-     * @return bool
+     * @throws ActiveRecordException
      */
     public function deleteRecord()
+    {
+        $this->scenario = 'delete';
+        $this->deleted = 1;
+
+        if (!$this->save()) {
+            throw new ActiveRecordException();
+        }
+    }
+    /*public function deleteRecord()
     {
         $this->scenario = 'delete';
         $this->deleted = 1;
@@ -70,7 +79,7 @@ class ActiveRecord extends CActiveRecord
             return true;
         }
         return false;
-    }
+    }*/
 
     /**
      * Проверяет, действительно ли есть картинка превью на сервере

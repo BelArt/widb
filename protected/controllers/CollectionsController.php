@@ -552,20 +552,13 @@ class CollectionsController extends Controller
      */
     public function actionDeleteTemp($id)
     {
-        if (DeleteHelper::deleteTempCollection($id)) {
-            Yii::app()->user->setFlash(
-                'success',
-                Yii::t('collections', 'Временная коллекция удалена')
-            );
-            $this->redirect(array('index'));
+        DeleteHelper::deleteTempCollection($id);
 
-        } else {
-            Yii::app()->user->setFlash(
-                'error',
-                Yii::t('collections', 'Временная коллекция не удалена')
-            );
-            $this->redirect(Yii::app()->request->urlReferrer);
-        }
+        Yii::app()->user->setFlash(
+            'success',
+            Yii::t('collections', 'Временная коллекция удалена')
+        );
+        $this->redirect(array('index'));
     }
 
 

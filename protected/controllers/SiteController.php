@@ -202,7 +202,7 @@ class SiteController extends Controller
      */
     protected function deleteChildCollections($params)
     {
-        if (!empty($params['ids']) && is_array($params['ids'])) {
+        if (!empty($params['ids'])) {
 
             if (DeleteHelper::deleteNormalCollections($params['ids'])) {
                 Yii::app()->user->setFlash(

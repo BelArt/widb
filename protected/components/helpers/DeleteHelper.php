@@ -94,18 +94,20 @@ class DeleteHelper extends CApplicationComponent
     /**
      * Удаляет обычную коллекцию
      * @param int $id айди обычной коллекции
-     * @return bool true - удалена, false - не удалены
+     * @return bool true - удалена, false - не удалена, из-за того, что не выполнены все необходимые для удаления условия
+     * @throws DeleteHelperException
      */
     public static function deleteNormalCollection($id)
     {
         $Collection = Collections::model()->findByPk($id);
 
         if (empty($Collection) || $Collection->temporary) {
-            return false;
+            throw new DeleteHelperException();
         }
 
         if ($Collection->isReadyToBeDeleted()) {
-            return $Collection->deleteNormalCollection();
+            $Collection->deleteNormalCollection();
+            return true;
         } else {
             return false;
         }
@@ -114,17 +116,17 @@ class DeleteHelper extends CApplicationComponent
     /**
      * Удаляет временную коллекцию
      * @param int $id айди временную коллекции
-     * @return bool true - удалена, false - не удалены
+     * @throws DeleteHelperException
      */
     public static function deleteTempCollection($id)
     {
         $Collection = Collections::model()->findByPk($id);
 
         if (empty($Collection) || !$Collection->temporary) {
-            return false;
+            throw new DeleteHelperException();
         }
 
-        return $Collection->deleteTempCollection();
+        $Collection->deleteTempCollection();
     }
 
     /**
@@ -144,7 +146,6 @@ class DeleteHelper extends CApplicationComponent
         }
 
         return $result;
-
     }
 
     /**
