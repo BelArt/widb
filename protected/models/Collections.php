@@ -613,6 +613,10 @@ class Collections extends ActiveRecord
             throw new CException(Yii::t('collections', 'Метод "{method}" не может вызываться для вновь создаваемой коллекции', array('{method}' => __METHOD__)));
         }
 
+        if ($this->temporary) {
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
+        }
+
         if ($this->deleteRecord()) {
 
             // удаляем коллекцию из списка доступных коллекций у всех пользователей
@@ -647,6 +651,10 @@ class Collections extends ActiveRecord
     {
         if ($this->isNewRecord) {
             throw new CException(Yii::t('collections', 'Метод "{method}" не может вызываться для вновь создаваемой коллекции', array('{method}' => __METHOD__)));
+        }
+
+        if (!$this->temporary) {
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
         if ($this->deleteRecord()) {

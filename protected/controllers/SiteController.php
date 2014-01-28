@@ -178,15 +178,15 @@ class SiteController extends Controller
             case 'deletePreview':
                 PreviewHelper::deletePreview($params);
                 break;
-            // удаляем выбранные объекты
+            // удаляем выбранные объекты из обычной коллекции
             case 'deleteObjects':
                 if (Yii::app()->user->checkAccess('oObjectDelete')) {
-                    DeleteHelper::deleteObjects($params);
+                    $this->deleteObjectsFromNormalCollection($params);
                 }
                 break;
             // удаляем выбранные объекты из временной коллекции
             case 'deleteObjectsFromTempCollection':
-                DeleteHelper::deleteObjectsFromTempCollection($params);
+                $this->deleteObjectsFromTempCollection($params);
                 break;
             // удаляем выбранные дочерние коллекции
             case 'deleteChildCollections':
@@ -213,6 +213,50 @@ class SiteController extends Controller
                 Yii::app()->user->setFlash(
                     'error',
                     Yii::t('collections', 'Не все выбранные дочерние коллекции удалены')
+                );
+            }
+        }
+    }
+
+    /**
+     * Удаление объектов из временной коллекции
+     * @param mixed $params параметры
+     */
+    protected function deleteObjectsFromTempCollection($params)
+    {
+        if (!empty($params['ids']) && is_array($params['ids']) && !empty($params['collectionId'])) {
+
+            if (DeleteHelper::deleteObjectsFromTempCollection($params['ids'], $params['collectionId'])) {
+                Yii::app()->user->setFlash(
+                    'success',
+                    Yii::t('objects', 'Все выбранные объекты из временной коллекции удалены!')
+                );
+            } else {
+                Yii::app()->user->setFlash(
+                    'error',
+                    Yii::t('objects', 'Некоторые объекты удалить из временной коллекции не получилось.')
+                );
+            }
+        }
+    }
+
+    /**
+     * Удаление объектов из обычной коллекции
+     * @param mixed $params параметры
+     */
+    protected function deleteObjectsFromNormalCollection($params)
+    {
+        if (!empty($params['ids']) && is_array($params['ids'])) {
+
+            if (DeleteHelper::deleteObjectsFromNormalCollection($params['ids'])) {
+                Yii::app()->user->setFlash(
+                    'success',
+                    Yii::t('objects', 'Все выбранные объекты удалены!')
+                );
+            } else {
+                Yii::app()->user->setFlash(
+                    'error',
+                    Yii::t('objects', 'Некоторые объекты удалить не получилось. У объекта не должно быть относящихся к нему изображений, чтобы его можно было удалить.')
                 );
             }
         }
