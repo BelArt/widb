@@ -8,96 +8,87 @@ class DeleteHelper extends CApplicationComponent
 
     /**
      * Удаляет объекты из обычной коллекции
-     * @param array $params массив с параметрами
-     * @throws CException
-     * @todo отрефакторить - оставить только логику удаления
+     * @param array $ids айди объектов для удаления
+     * @return bool
      */
-    public static function deleteObjects($params)
+    public static function deleteObjectsFromNormalCollection(array $ids)
     {
-        if (!empty($params['ids'])) {
+        $result = true;
 
-            if (!is_array($params['ids'])) {
-                throw new CException(Yii::t('common', 'Произошла ошибка!'));
+        foreach ($ids as $id) {
+            $tempResult = self::deleteObjectFromNormalCollection($id);
+            if (!$tempResult) {
+                $result = false;
             }
-
-            foreach ($params['ids'] as $objectId) {
-
-                $Object = Objects::model()->findByPk($objectId);
-
-                if (empty($Object)) {
-                    continue;
-                }
-
-                Yii::app()->user->setFlash(
-                    'success',
-                    Yii::t('objects', 'Все выбранные объекты удалены!')
-                );
-
-                if ($Object->isReadyToBeDeleted()) {
-                    if (!$Object->deleteObject()) {
-                        Yii::app()->user->setFlash('success', null);
-                        Yii::app()->user->setFlash(
-                            'error',
-                            Yii::t('objects', 'Некоторые объекты удалить не получилось. У объекта не должно быть относящихся к нему изображений, чтобы его можно было удалить.')
-                        );
-                    }
-                } else {
-                    Yii::app()->user->setFlash('success', null);
-                    Yii::app()->user->setFlash(
-                        'error',
-                        Yii::t('objects', 'Некоторые объекты удалить не получилось. У объекта не должно быть относящихся к нему изображений, чтобы его можно было удалить.')
-                    );
-                }
-            }
-
         }
 
+        return $result;
     }
 
     /**
      * Удаляет объекты из временной коллекции
-     * @param array $params массив с параметрами
-     * @throws CException
-     * @todo отрефакторить - оставить только логику удаления
+     * @param $objectIds айди объектов для удаления
+     * @param $collectionId айди временной коллекции
+     * @return bool
      */
-    public static function deleteObjectsFromTempCollection($params)
+    public static function deleteObjectsFromTempCollection(array $objectIds, $collectionId)
     {
-        if (!empty($params['ids']) && !empty($params['collectionId'])) {
+        $result = true;
 
-            if (!is_array($params['ids'])) {
-                throw new CException(Yii::t('common', 'Произошла ошибка!'));
+        foreach ($objectIds as $id) {
+            $tempResult = self::deleteObjectFromTempCollection($id, $collectionId);
+            if (!$tempResult) {
+                $result = false;
             }
-
-            $Criteria = new CDbCriteria;
-            $Criteria->select = 'id';
-            $Criteria->addCondition('collection_id = :collection_id');
-            $Criteria->params = array(
-                ':collection_id' => $params['collectionId']
-            );
-            $Criteria->addInCondition('object_id', $params['ids']);
-
-
-            $records = TempCollectionObject::model()->findAll($Criteria);
-
-            if (!empty($records)) {
-
-                Yii::app()->user->setFlash(
-                    'success',
-                    Yii::t('objects', 'Все выбранные объекты из временной коллекции удалены!')
-                );
-
-                foreach ($records as $Record) {
-                    if (!$Record->deleteRecord()) {
-                        Yii::app()->user->setFlash('success', null);
-                        Yii::app()->user->setFlash(
-                            'error',
-                            Yii::t('objects', 'Некоторые объекты удалить из временной коллекции не получилось.')
-                        );
-                    }
-                }
-            }
-
         }
+
+        return $result;
+    }
+
+    /**
+     * Удаляет объект из обычной коллекции
+     * @param $id айди объекта
+     * @return bool
+     */
+    public static function deleteObjectFromNormalCollection($id)
+    {
+        $Object = Objects::model()->findByPk($id);
+
+        if (empty($Object)) {
+            return false;
+        }
+
+        if ($Object->isReadyToBeDeleted()) {
+            return $Object->deleteObject();
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Удаляет объект из временной коллекции
+     * @param $objectId айди объекта
+     * @param $collectionId айди коллекции
+     * @return bool
+     */
+    public static function deleteObjectFromTempCollection($objectId, $collectionId)
+    {
+        $Criteria = new CDbCriteria;
+        $Criteria->select = 'id';
+        $Criteria->addCondition('collection_id = :collection_id');
+        $Criteria->addCondition('object_id = :object_id');
+        $Criteria->params = array(
+            ':collection_id' => $collectionId,
+            ':object_id' => $objectId
+        );
+
+        $Record = TempCollectionObject::model()->find($Criteria);
+
+        if (empty($Record)) {
+            return false;
+        }
+
+        return $Record->deleteRecord();
     }
 
     /**
