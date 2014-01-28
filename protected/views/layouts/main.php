@@ -105,14 +105,11 @@
 		<a href="http://eposgroup.ru">ЗАО "Группа ЭПОС"</a> &copy; <?php echo date('Y'); ?>
 	</div><!-- footer -->
 
-    <!-- разметка для диалога -->
-    <div
-        class="_dialog"
-        data-button-ok="<?= Yii::t('common', 'Ок') ?>"
-        data-button-cancel="<?= Yii::t('common', 'Отмена') ?>"
-        data-button-close="<?= Yii::t('common', 'Закрыть') ?>"
-        data-message-error="<?= Yii::t('common', 'Ошибка') ?>"
-    ></div>
+    <!-- Диалог -->
+    <?php
+        $this->widget('application.widgets.dialog.Dialog');
+    ?>
+    <!-- / Диалог -->
 
 </div><!-- page -->
 

@@ -61,7 +61,7 @@ $(function(){
                     error: function(jqXHR) {
 
                         showDialog(
-                            $('._dialog').data('message-error'),
+                            getDialogErrorMessageTitle(),
                             jqXHR.responseText,
                             function() {
                                 closeDialog();
@@ -117,7 +117,7 @@ $(function(){
                     error: function(jqXHR) {
 
                         showDialog(
-                            $('._dialog').data('message-error'),
+                            getDialogErrorMessageTitle(),
                             jqXHR.responseText,
                             function() {
                                 closeDialog();
@@ -214,7 +214,7 @@ $(function(){
                     error: function(jqXHR) {
 
                         showDialog(
-                            $('._dialog').data('message-error'),
+                            getDialogErrorMessageTitle(),
                             jqXHR.responseText,
                             function() {
                                 closeDialog();
