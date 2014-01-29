@@ -202,7 +202,7 @@ class SiteController extends Controller
      */
     protected function deleteChildCollections($params)
     {
-        if (!empty($params['ids']) && is_array($params['ids'])) {
+        if (!empty($params['ids'])) {
 
             if (DeleteHelper::deleteNormalCollections($params['ids'])) {
                 Yii::app()->user->setFlash(
@@ -224,19 +224,15 @@ class SiteController extends Controller
      */
     protected function deleteObjectsFromTempCollection($params)
     {
-        if (!empty($params['ids']) && is_array($params['ids']) && !empty($params['collectionId'])) {
+        if (!empty($params['ids']) && !empty($params['collectionId'])) {
 
-            if (DeleteHelper::deleteObjectsFromTempCollection($params['ids'], $params['collectionId'])) {
-                Yii::app()->user->setFlash(
-                    'success',
-                    Yii::t('objects', 'Все выбранные объекты из временной коллекции удалены!')
-                );
-            } else {
-                Yii::app()->user->setFlash(
-                    'error',
-                    Yii::t('objects', 'Некоторые объекты удалить из временной коллекции не получилось.')
-                );
-            }
+            DeleteHelper::deleteObjectsFromTempCollection($params['ids'], $params['collectionId']);
+
+            Yii::app()->user->setFlash(
+                'success',
+                Yii::t('objects', 'Все выбранные объекты из временной коллекции удалены!')
+            );
+
         }
     }
 
@@ -246,7 +242,7 @@ class SiteController extends Controller
      */
     protected function deleteObjectsFromNormalCollection($params)
     {
-        if (!empty($params['ids']) && is_array($params['ids'])) {
+        if (!empty($params['ids'])) {
 
             if (DeleteHelper::deleteObjectsFromNormalCollection($params['ids'])) {
                 Yii::app()->user->setFlash(

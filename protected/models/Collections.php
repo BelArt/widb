@@ -564,13 +564,13 @@ class Collections extends ActiveRecord
 
     /**
      * Проверяет, можно ли удалить коллекцию
-     * @throws CException
+     * @throws CollectionsException
      * @return bool
      */
     public function isReadyToBeDeleted()
     {
         if ($this->isNewRecord) {
-            throw new CException(Yii::t('collections', 'Метод "{method}" не может вызываться для вновь создаваемой коллекции', array('{method}' => __METHOD__)));
+            throw new CollectionsException();
         }
 
         if ($this->temporary) {
@@ -604,20 +604,20 @@ class Collections extends ActiveRecord
 
     /**
      * Удаляет обычную коллекцию
-     * @throws CException
-     * @return bool
+     * @throws CollectionsException|Exception
      */
     public function deleteNormalCollection()
     {
-        if ($this->isNewRecord) {
-            throw new CException(Yii::t('collections', 'Метод "{method}" не может вызываться для вновь создаваемой коллекции', array('{method}' => __METHOD__)));
+        if ($this->isNewRecord || $this->temporary) {
+            throw new CollectionsException();
         }
 
-        if ($this->temporary) {
-            throw new CException(Yii::t('common', 'Произошла ошибка!'));
-        }
+        $Transaction = Yii::app()->db->beginTransaction();
 
-        if ($this->deleteRecord()) {
+        try {
+
+            // удаляем коллекцию
+            $this->deleteRecord();
 
             // удаляем коллекцию из списка доступных коллекций у всех пользователей
             $Criteria = new CDbCriteria;
@@ -628,36 +628,39 @@ class Collections extends ActiveRecord
             $records = UserAllowedCollection::model()->findAll($Criteria);
 
             foreach ($records as $Record) {
-                if (!$Record->deleteRecord()) {
-                    return false;
-                }
+                $Record->deleteRecord();
             }
 
             // удаляем превью
             PreviewHelper::deletePreview($this);
 
-            return true;
+            // раз все ок - завершаем транзакцию
+            $Transaction->commit();
+
+        } catch (Exception $Exception) {
+
+            $Transaction->rollback();
+            throw $Exception;
         }
 
-        return false;
     }
 
     /**
      * Удаляет временную коллекцию
-     * @throws CException
-     * @return bool
+     * @throws CollectionsException
      */
     public function deleteTempCollection()
     {
-        if ($this->isNewRecord) {
-            throw new CException(Yii::t('collections', 'Метод "{method}" не может вызываться для вновь создаваемой коллекции', array('{method}' => __METHOD__)));
+        if ($this->isNewRecord || !$this->temporary) {
+            throw new CollectionsException();
         }
 
-        if (!$this->temporary) {
-            throw new CException(Yii::t('common', 'Произошла ошибка!'));
-        }
+        $Transaction = Yii::app()->db->beginTransaction();
 
-        if ($this->deleteRecord()) {
+        try {
+
+            // удаляем коллекцию
+            $this->deleteRecord();
 
             // удаляем коллекцию из списка доступных коллекций у всех пользователей
             $Criteria = new CDbCriteria;
@@ -668,9 +671,7 @@ class Collections extends ActiveRecord
             $records = UserAllowedCollection::model()->findAll($Criteria);
 
             foreach ($records as $Record) {
-                if (!$Record->deleteRecord()) {
-                    return false;
-                }
+                $Record->deleteRecord();
             }
 
             // удаляем объекты из этой временной коллекции
@@ -682,17 +683,21 @@ class Collections extends ActiveRecord
             $records = TempCollectionObject::model()->findAll($Criteria);
 
             foreach ($records as $Record) {
-                if (!$Record->deleteRecord()) {
-                    return false;
-                }
+                $Record->deleteRecord();
             }
 
             // удаляем превью
             PreviewHelper::deletePreview($this);
 
-            return true;
+            // раз все ок - завершаем транзакцию
+            $Transaction->commit();
+
+        } catch (Exception $Exception) {
+
+            $Transaction->rollback();
+            throw $Exception;
         }
-        return false;
+
     }
 
     public function afterSave()

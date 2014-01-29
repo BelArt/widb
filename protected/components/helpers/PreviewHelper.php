@@ -209,7 +209,7 @@ class PreviewHelper extends CApplicationComponent
         $className = get_class($Model);
 
         if (!in_array($className, array('Collections', 'Objects', 'Images'))) {
-            throw new CException(Yii::t('common', 'Объект не поддерживает вызванный метод'));
+            throw new PreviewHelperException();
         }
 
         $previewDir = self::getPreviewFolderPath($Model);
@@ -262,7 +262,7 @@ class PreviewHelper extends CApplicationComponent
                 $fileNamePart = self::PREVIEW_ORIGINAL_NAME;
                 break;
             default:
-                throw new CException(Yii::t('common', 'Переданный размер не поддерживается'));
+                throw new PreviewHelperException();
         }
 
         foreach (scandir($previewDir) as $file) {
@@ -285,7 +285,7 @@ class PreviewHelper extends CApplicationComponent
         $className = get_class($Model);
 
         if (!in_array($className, array('Collections', 'Objects', 'Images'))) {
-            throw new CException(Yii::t('common', 'Объект не поддерживает вызванный метод'));
+            throw new PreviewHelperException();
         }
 
         $path = '';
@@ -337,7 +337,7 @@ class PreviewHelper extends CApplicationComponent
             file_put_contents($file,'');
         } else {
             if (($versions = file_get_contents($file)) === false) {
-                throw new CException(Yii::t('common', 'Произошла ошибка!'));
+                throw new PreviewHelperException();
             }
         }
 
@@ -364,7 +364,7 @@ class PreviewHelper extends CApplicationComponent
                 $version = empty($versions['images']) ? 0 : $versions['images'];
                 break;
             default:
-                throw new CException(Yii::t('common', 'Переданный параметр не поддерживается'));
+                throw new PreviewHelperException();
         }
 
         return $version;
@@ -385,7 +385,7 @@ class PreviewHelper extends CApplicationComponent
 
         if (file_exists($file)) {
             if (($versions = file_get_contents($file)) === false) {
-                throw new CException(Yii::t('common', 'Произошла ошибка!'));
+                throw new PreviewHelperException();
             }
         }
 
@@ -410,11 +410,11 @@ class PreviewHelper extends CApplicationComponent
                 $versions['images'] = $version;
                 break;
             default:
-                throw new CException(Yii::t('common', 'Переданный параметр не поддерживается'));
+                throw new PreviewHelperException();
         }
 
         if (false === file_put_contents($file, serialize($versions))) {
-            throw new CException(Yii::t('common', 'Произошла ошибка!'));
+            throw new PreviewHelperException();
         }
     }
 
@@ -444,13 +444,9 @@ class PreviewHelper extends CApplicationComponent
      */
     public static function deletePreview($params)
     {
-        if (empty($params)) {
-            throw new CException(Yii::t('common', 'Произошла ошибка!'));
-        }
-
         $Model = null;
 
-        if (is_array($params) && !empty($params['type']) && !empty($params['id'])) {
+        if (!empty($params) && is_array($params) && !empty($params['type']) && !empty($params['id'])) {
             switch ($params['type']) {
                 case 'collection':
                     $Model = Collections::model()->findByPk($params['id']);
@@ -462,34 +458,19 @@ class PreviewHelper extends CApplicationComponent
                     $Model = Images::model()->findByPk($params['id']);
                     break;
                 default:
-                    throw new CException(Yii::t('common', 'Произошла ошибка!'));
+                    throw new PreviewHelperException();
             }
-        } elseif (is_object($params) && (get_class($params) == 'Collections' || get_class($params) == 'Objects' || get_class($params) == 'Images')) {
+        } elseif (!empty($params) && is_object($params) && (get_class($params) == 'Collections' || get_class($params) == 'Objects' || get_class($params) == 'Images')) {
             $Model = $params;
         }
 
         if (empty($Model)) {
-            throw new CException(Yii::t('common', 'Произошла ошибка!'));
+            throw new PreviewHelperException();
         }
 
         $previewsFolder = self::getPreviewFolderPath($Model);
 
         if (file_exists($previewsFolder)) {
-
-            /*foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($previewsFolder, FilesystemIterator::SKIP_DOTS), RecursiveIteratorIterator::CHILD_FIRST) as $path) {
-                if ($path->isFile()) {
-                    if (!unlink($path->getPathname())) {
-                        throw new CException(Yii::t('common', 'Произошла ошибка!'));
-                    }
-                } else {
-                    if (!rmdir($path->getPathname())) {
-                        throw new CException(Yii::t('common', 'Произошла ошибка!'));
-                    }
-                }
-            }
-            if (!rmdir($previewsFolder)) {
-                throw new CException(Yii::t('common', 'Произошла ошибка!'));
-            }*/
 
             $files = array_diff(scandir($previewsFolder), array('..', '.'));
 
@@ -504,7 +485,7 @@ class PreviewHelper extends CApplicationComponent
                     )
                 ) {
                     if (!unlink($previewsFolder.DIRECTORY_SEPARATOR.$file)) {
-                        throw new CException(Yii::t('common', 'Произошла ошибка!'));
+                        throw new PreviewHelperException();
                     }
                 }
             }
@@ -513,7 +494,7 @@ class PreviewHelper extends CApplicationComponent
 
             if (empty($files)) {
                 if (!rmdir($previewsFolder)) {
-                    throw new CException(Yii::t('common', 'Произошла ошибка!'));
+                    throw new PreviewHelperException();
                 }
             }
 
@@ -525,7 +506,7 @@ class PreviewHelper extends CApplicationComponent
                     $files = array_diff(scandir($previewsFolder), array('..', '.'));
                     if (empty($files)) {
                         if (!rmdir($previewsFolder)) {
-                            throw new CException(Yii::t('common', 'Произошла ошибка!'));
+                            throw new PreviewHelperException();
                         }
                     }
                     break;
@@ -535,7 +516,7 @@ class PreviewHelper extends CApplicationComponent
                     $files = array_diff(scandir($previewsFolder), array('..', '.'));
                     if (empty($files)) {
                         if (!rmdir($previewsFolder)) {
-                            throw new CException(Yii::t('common', 'Произошла ошибка!'));
+                            throw new PreviewHelperException();
                         }
                     }
                     $Collection = Collections::model()->findByPk($Object->collection_id);
@@ -543,7 +524,7 @@ class PreviewHelper extends CApplicationComponent
                     $files = array_diff(scandir($previewsFolder), array('..', '.'));
                     if (empty($files)) {
                         if (!rmdir($previewsFolder)) {
-                            throw new CException(Yii::t('common', 'Произошла ошибка!'));
+                            throw new PreviewHelperException();
                         }
                     }
                     break;
@@ -553,7 +534,7 @@ class PreviewHelper extends CApplicationComponent
 
         $Model->has_preview = 0;
         if (!$Model->save()) {
-            throw new CException(Yii::t('common', 'Произошла ошибка!'));
+            throw new PreviewHelperException();
         }
 
     }
@@ -569,13 +550,13 @@ class PreviewHelper extends CApplicationComponent
             $userImages = Yii::app()->user->getState(Yii::app()->params['xuploadStatePreviewsName']);
 
             if (!is_array($userImages)) {
-                throw new CException(Yii::t('common', 'Произошла ошибка!'));
+                throw new PreviewHelperException();
             }
 
             foreach ($userImages as $image) {
                 if (is_file($image["path"])) {
                     if (!unlink($image["path"])) {
-                        throw new CException(Yii::t('common', 'Произошла ошибка!'));
+                        throw new PreviewHelperException();
                     }
                 }
             }
@@ -595,7 +576,7 @@ class PreviewHelper extends CApplicationComponent
         $callerClassName = get_class($Caller);
 
         if (!in_array($callerClassName, array('Collections', 'Objects', 'Images'))) {
-            throw new CException(Yii::t('common', 'Объект не поддерживает вызванный метод'));
+            throw new PreviewHelperException();
         }
 
         // предполагается, что в сессии хранится только одна картинка, которую как раз загрузили
@@ -630,13 +611,13 @@ class PreviewHelper extends CApplicationComponent
 
             if (!file_exists($dir)) {
                 if (!mkdir($dir, 0777, true)) {
-                    throw new CException(Yii::t('common', 'Произошла ошибка при сохранении превью'));
+                    throw new PreviewHelperException();
                 }
             }
 
             if (!is_writable($dir)) {
                 if (!chmod($dir, 0777)) {
-                    throw new CException(Yii::t('common', 'Произошла ошибка при сохранении превью'));
+                    throw new PreviewHelperException();
                 }
             }
 
@@ -651,12 +632,12 @@ class PreviewHelper extends CApplicationComponent
                     $Image->resize(self::PREVIEW_SMALL_SIZE, self::PREVIEW_SMALL_SIZE, Image::AUTO);
                     if (file_exists($dir . DIRECTORY_SEPARATOR . self::PREVIEW_SMALL_NAME . '.' . $imageExt)) {
                         if (!unlink($dir . DIRECTORY_SEPARATOR . self::PREVIEW_SMALL_NAME . '.' . $imageExt)) {
-                            throw new CException(Yii::t('common', 'Произошла ошибка при сохранении превью'));
+                            throw new PreviewHelperException();
                         }
                     }
                     $Image->save($dir . DIRECTORY_SEPARATOR . self::PREVIEW_SMALL_NAME . '.' . $imageExt);
                     if (!chmod($dir . DIRECTORY_SEPARATOR . self::PREVIEW_SMALL_NAME . '.' . $imageExt, 0777)) {
-                        throw new CException(Yii::t('common', 'Произошла ошибка при сохранении превью'));
+                        throw new PreviewHelperException();
                     }
 
                     // средняя
@@ -665,12 +646,12 @@ class PreviewHelper extends CApplicationComponent
                     $Image->resize(self::PREVIEW_MEDIUM_SIZE, self::PREVIEW_MEDIUM_SIZE, Image::AUTO);
                     if (file_exists($dir . DIRECTORY_SEPARATOR . self::PREVIEW_MEDIUM_NAME . '.' . $imageExt)) {
                         if (!unlink($dir . DIRECTORY_SEPARATOR . self::PREVIEW_MEDIUM_NAME . '.' . $imageExt)) {
-                            throw new CException(Yii::t('common', 'Произошла ошибка при сохранении превью'));
+                            throw new PreviewHelperException();
                         }
                     }
                     $Image->save($dir . DIRECTORY_SEPARATOR . self::PREVIEW_MEDIUM_NAME . '.' . $imageExt);
                     if (!chmod($dir . DIRECTORY_SEPARATOR . self::PREVIEW_MEDIUM_NAME . '.' . $imageExt, 0777)) {
-                        throw new CException(Yii::t('common', 'Произошла ошибка при сохранении превью'));
+                        throw new PreviewHelperException();
                     }
 
                     // большая
@@ -679,25 +660,25 @@ class PreviewHelper extends CApplicationComponent
                     $Image->resize(self::PREVIEW_BIG_SIZE, self::PREVIEW_BIG_SIZE, Image::AUTO);
                     if (file_exists($dir . DIRECTORY_SEPARATOR . self::PREVIEW_BIG_NAME . '.' . $imageExt)) {
                         if (!unlink($dir . DIRECTORY_SEPARATOR . self::PREVIEW_BIG_NAME . '.' . $imageExt)) {
-                            throw new CException(Yii::t('common', 'Произошла ошибка при сохранении превью'));
+                            throw new PreviewHelperException();
                         }
                     }
                     $Image->save($dir . DIRECTORY_SEPARATOR . self::PREVIEW_BIG_NAME . '.' . $imageExt);
                     if (!chmod($dir . DIRECTORY_SEPARATOR . self::PREVIEW_BIG_NAME . '.' . $imageExt, 0777)) {
-                        throw new CException(Yii::t('common', 'Произошла ошибка при сохранении превью'));
+                        throw new PreviewHelperException();
                     }
 
                     // перемещаем оригинал
                     if (file_exists($dir . DIRECTORY_SEPARATOR . self::PREVIEW_ORIGINAL_NAME . '.' . $imageExt)) {
                         if (!unlink($dir . DIRECTORY_SEPARATOR . self::PREVIEW_ORIGINAL_NAME . '.' . $imageExt)) {
-                            throw new CException(Yii::t('common', 'Произошла ошибка при сохранении превью'));
+                            throw new PreviewHelperException();
                         }
                     }
                     if (!rename($image["path"], $dir . DIRECTORY_SEPARATOR . self::PREVIEW_ORIGINAL_NAME . '.' . $imageExt)) {
-                        throw new CException(Yii::t('common', 'Произошла ошибка при сохранении превью'));
+                        throw new PreviewHelperException();
                     }
                     if (!chmod($dir . DIRECTORY_SEPARATOR . self::PREVIEW_ORIGINAL_NAME . '.' . $imageExt, 0777)) {
-                        throw new CException(Yii::t('common', 'Произошла ошибка при сохранении превью'));
+                        throw new PreviewHelperException();
                     }
 
                     // ставим отметку, что превью есть
@@ -711,7 +692,7 @@ class PreviewHelper extends CApplicationComponent
                     $Caller->scenario = self::SCENARIO_SAVE_PREVIEWS;
 
                     if (!$Caller->save()) {
-                        throw new CException(Yii::t('common', 'Произошла ошибка при сохранении превью'));
+                        throw new PreviewHelperException();
                     }
 
                     self::incrementPreviewVersion($Caller);
