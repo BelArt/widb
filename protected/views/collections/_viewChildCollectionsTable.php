@@ -16,8 +16,8 @@ $this->widget(
         'columns' => array(
             array(
                 'class' => 'CCheckBoxColumn',
-                'value' => 'return null;',
-                'checked' => 'return null;',
+                'value' => 'false',
+                'checked' => 'false',
                 'selectableRows' => 2,
                 'checkBoxHtmlOptions' => array(
                     'class' => '_collectionItem',
@@ -40,9 +40,9 @@ $this->widget(
                 'viewButtonUrl' => 'Yii::app()->urlManager->createUrl("collections/view", array("id" => $data->id));',
                 'updateButtonUrl'=> null,
                 'deleteButtonUrl' => null,
-                /*'buttons' => array(
-                    'view' => array('visible' => 'return false;')
-                )*/
+                'buttons' => array(
+                    'delete' => array('visible' => 'false')
+                )
             )
         ),
         'showTableOnEmpty' => false,

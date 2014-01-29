@@ -245,7 +245,9 @@ class CollectionsController extends Controller
         $objectIds = array();
 
         foreach ($tempCollectionObjects as $Record) {
-            $objectIds[] = $Record->object_id;
+            if (Objects::getObjectIsAllowedToUser($Record->object_id, Yii::app()->user->id)) {
+                $objectIds[] = $Record->object_id;
+            }
         }
 
         $ObjectsCriteria = new CDbCriteria();

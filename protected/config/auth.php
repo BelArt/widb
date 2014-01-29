@@ -190,9 +190,15 @@ return array(
         'bizRule' => null,
         'data' => null
     ),
-    'oObjectFromTempCollectionDelete' => array(
+    'oObjectFromTempCollectionDelete_Collection' => array(
         'type' => CAuthItem::TYPE_OPERATION,
-        'description' => 'Удаление Объекта из Временной коллекции',
+        'description' => 'Удаление Объекта из Временной коллекции - для Временной коллекции',
+        'bizRule' => null,
+        'data' => null
+    ),
+    'oObjectFromTempCollectionDelete_Object' => array(
+        'type' => CAuthItem::TYPE_OPERATION,
+        'description' => 'Удаление Объекта из Временной коллекции - для Коллекции Объекта',
         'bizRule' => null,
         'data' => null
     ),
@@ -208,10 +214,10 @@ return array(
             'tTempCollectionIsOwn',
             'oTempCollectionView',
             'oObjectToTempCollectionAdd',
-            'oObjectFromTempCollectionDelete',
             'oCollectionView',
             'oObjectView',
             'oImageView',
+            'oObjectFromTempCollectionDelete_Object'
         ),
     ),
     'tTempCollectionIsOwn' => array(
@@ -223,7 +229,7 @@ return array(
             'oTempCollectionEdit',
             'oTempCollectionDelete',
             'oObjectToTempCollectionAdd',
-            'oObjectFromTempCollectionDelete',
+            'oObjectFromTempCollectionDelete_Collection',
         ),
     ),
     /*
@@ -279,7 +285,8 @@ return array(
             'oTempCollectionEdit',
             'oTempCollectionDelete',
             'oObjectToTempCollectionAdd',
-            'oObjectFromTempCollectionDelete',
+            'oObjectFromTempCollectionDelete_Collection',
+            'oObjectFromTempCollectionDelete_Object',
         ),
     ),
     'user' => array(

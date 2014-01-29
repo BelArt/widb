@@ -16,8 +16,8 @@ $this->widget(
         'columns' => array(
             array(
                 'class' => 'CCheckBoxColumn',
-                'value' => 'return null;',
-                'checked' => 'return null;',
+                'value' => 'false',
+                'checked' => 'false',
                 'selectableRows' => 2,
                 'checkBoxHtmlOptions' => array(
                     'class' => '_objectItem',
@@ -46,7 +46,7 @@ $this->widget(
                 'updateButtonUrl'=> null,
                 'deleteButtonUrl' => null,
                 'buttons' => array(
-                    'delete' => array('visible' => 'return false;')
+                    'delete' => array('visible' => 'false')
                 )
             )
         ),
