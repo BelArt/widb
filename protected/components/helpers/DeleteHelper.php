@@ -29,37 +29,32 @@ class DeleteHelper extends CApplicationComponent
      * Удаляет объекты из временной коллекции
      * @param $objectIds айди объектов для удаления
      * @param $collectionId айди временной коллекции
-     * @return bool
      */
     public static function deleteObjectsFromTempCollection(array $objectIds, $collectionId)
     {
-        $result = true;
-
         foreach ($objectIds as $id) {
-            $tempResult = self::deleteObjectFromTempCollection($id, $collectionId);
-            if (!$tempResult) {
-                $result = false;
-            }
-        }
+            self::deleteObjectFromTempCollection($id, $collectionId);
 
-        return $result;
+        }
     }
 
     /**
      * Удаляет объект из обычной коллекции
      * @param $id айди объекта
      * @return bool
+     * @throws DeleteHelperException
      */
     public static function deleteObjectFromNormalCollection($id)
     {
         $Object = Objects::model()->findByPk($id);
 
         if (empty($Object)) {
-            return false;
+            throw new DeleteHelperException();
         }
 
         if ($Object->isReadyToBeDeleted()) {
-            return $Object->deleteObject();
+            $Object->deleteObject();
+            return true;
         } else {
             return false;
         }
@@ -69,7 +64,7 @@ class DeleteHelper extends CApplicationComponent
      * Удаляет объект из временной коллекции
      * @param $objectId айди объекта
      * @param $collectionId айди коллекции
-     * @return bool
+     * @throws DeleteHelperException
      */
     public static function deleteObjectFromTempCollection($objectId, $collectionId)
     {
@@ -85,10 +80,10 @@ class DeleteHelper extends CApplicationComponent
         $Record = TempCollectionObject::model()->find($Criteria);
 
         if (empty($Record)) {
-            return false;
+            throw new DeleteHelperException();
         }
 
-        return $Record->deleteRecord();
+        $Record->deleteRecord();
     }
 
     /**
@@ -151,20 +146,12 @@ class DeleteHelper extends CApplicationComponent
     /**
      * Удаляет временные коллекции
      * @param array $ids массив с айдишниками временных коллекций
-     * @return bool true - все переданные удалены, false - не все удалены
      */
     public static function deleteTempCollections(array $ids)
     {
-        $result = true;
-
         foreach ($ids as $id) {
-            $tempResult = self::deleteTempCollection($id);
-            if (!$tempResult) {
-                $result = false;
-            }
+            self::deleteTempCollection($id);
         }
-
-        return $result;
 
     }
 } 

@@ -564,13 +564,13 @@ class Collections extends ActiveRecord
 
     /**
      * Проверяет, можно ли удалить коллекцию
-     * @throws CException
+     * @throws CollectionsException
      * @return bool
      */
     public function isReadyToBeDeleted()
     {
         if ($this->isNewRecord) {
-            throw new CException(Yii::t('collections', 'Метод "{method}" не может вызываться для вновь создаваемой коллекции', array('{method}' => __METHOD__)));
+            throw new CollectionsException();
         }
 
         if ($this->temporary) {

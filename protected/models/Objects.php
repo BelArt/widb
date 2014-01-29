@@ -272,13 +272,13 @@ class Objects extends ActiveRecord
 
     /**
      * Проверяет, можно ли удалить объект
-     * @throws CException
+     * @throws ObjectsException
      * @return bool
      */
     public function isReadyToBeDeleted()
     {
         if ($this->isNewRecord) {
-            throw new CException(Yii::t('objects', 'Метод "{method}" не может вызываться для вновь создаваемого объекта', array('{method}' => __METHOD__)));
+            throw new ObjectsException();
         }
 
         $Criteria = new CDbCriteria;
@@ -288,7 +288,7 @@ class Objects extends ActiveRecord
 
         $images = Images::model()->findAll($Criteria);
 
-        if (!empty($objects)) {
+        if (!empty($images)) {
             return false;
         }
 
@@ -297,16 +297,20 @@ class Objects extends ActiveRecord
 
     /**
      * Удаляет объект
-     * @throws CException
-     * @return bool
+     * @throws ObjectsException
      */
     public function deleteObject()
     {
         if ($this->isNewRecord) {
-            throw new CException(Yii::t('objects', 'Метод "{method}" не может вызываться для вновь создаваемого объекта', array('{method}' => __METHOD__)));
+            throw new ObjectsException();
         }
 
-        if ($this->deleteRecord()) {
+        $Transaction = Yii::app()->db->beginTransaction();
+
+        try {
+
+            // удаляем объект
+            $this->deleteRecord();
 
             // удаляем объект из всех временных колекций
             $Criteria = new CDbCriteria;
@@ -317,16 +321,19 @@ class Objects extends ActiveRecord
             $records = TempCollectionObject::model()->findAll($Criteria);
 
             foreach ($records as $Record) {
-                if (!$Record->deleteRecord()) {
-                    return false;
-                }
+                $Record->deleteRecord();
             }
 
             // удаляем превью
             PreviewHelper::deletePreview($this);
 
-            return true;
+            // раз все ок - завершаем транзакцию
+            $Transaction->commit();
+
+        } catch (Exception $Exception) {
+
+            $Transaction->rollback();
+            throw $Exception;
         }
-        return false;
     }
 }

@@ -9,6 +9,9 @@ class ActiveRecordException extends CustomException {}
 // Исключение контекста Collections
 class CollectionsException extends ActiveRecordException {}
 
+// Исключение контекста Objects
+class ObjectsException extends ActiveRecordException {}
+
 // Исключение контекста DeleteHelper
 class DeleteHelperException extends CustomException {}
 
