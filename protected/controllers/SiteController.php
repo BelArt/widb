@@ -180,9 +180,7 @@ class SiteController extends Controller
                 break;
             // удаляем выбранные объекты из обычной коллекции
             case 'deleteObjects':
-                if (Yii::app()->user->checkAccess('oObjectDelete')) {
-                    $this->deleteObjectsFromNormalCollection($params);
-                }
+                $this->deleteObjectsFromNormalCollection($params);
                 break;
             // удаляем выбранные объекты из временной коллекции
             case 'deleteObjectsFromTempCollection':
@@ -199,10 +197,15 @@ class SiteController extends Controller
     /**
      * Удаление выбранных дочерних коллекций
      * @param mixed $params параметры
+     * @throws CHttpException
      */
     protected function deleteChildCollections($params)
     {
         if (!empty($params['ids'])) {
+
+            if (!Yii::app()->user->checkAccess('oCollectionDelete')) {
+                throw new CHttpException(403, Yii::t('yii','You are not authorized to perform this action.'));
+            }
 
             if (DeleteHelper::deleteNormalCollections($params['ids'])) {
                 Yii::app()->user->setFlash(
@@ -219,12 +222,27 @@ class SiteController extends Controller
     }
 
     /**
-     * Удаление объектов из временной коллекции
+     * Удаление объектов из временной коллекци
+     *
      * @param mixed $params параметры
+     * @throws CHttpException
      */
     protected function deleteObjectsFromTempCollection($params)
     {
         if (!empty($params['ids']) && !empty($params['collectionId'])) {
+
+            // проверям права доступа
+            foreach ($params['ids'] as $objectId) {
+                $Object = Objects::model()->findByPk($objectId);
+                $TempCollection = Collections::model()->findByPk($params['collectionId']);
+
+                if (!(
+                    Yii::app()->user->checkAccess('oObjectFromTempCollectionDelete_Object', array('Collection' => $Object->collection))
+                    && Yii::app()->user->checkAccess('oObjectFromTempCollectionDelete_Collection', array('Collection' => $TempCollection))
+                )) {
+                    throw new CHttpException(403, Yii::t('yii','You are not authorized to perform this action.'));
+                }
+            }
 
             DeleteHelper::deleteObjectsFromTempCollection($params['ids'], $params['collectionId']);
 
@@ -239,10 +257,15 @@ class SiteController extends Controller
     /**
      * Удаление объектов из обычной коллекции
      * @param mixed $params параметры
+     * @throws CHttpException
      */
     protected function deleteObjectsFromNormalCollection($params)
     {
         if (!empty($params['ids'])) {
+
+            if (!Yii::app()->user->checkAccess('oObjectDelete')) {
+                throw new CHttpException(403, Yii::t('yii','You are not authorized to perform this action.'));
+            }
 
             if (DeleteHelper::deleteObjectsFromNormalCollection($params['ids'])) {
                 Yii::app()->user->setFlash(

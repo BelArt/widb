@@ -336,4 +336,37 @@ class Objects extends ActiveRecord
             throw $Exception;
         }
     }
+
+    /**
+     * Проверяет, доступен ли текущий объект пользователю.
+     * @param integer $userId айдишник пользователя
+     * @throws ObjectsException
+     * @return bool
+     */
+    public function isAllowedToUser($userId)
+    {
+        if ($this->isNewRecord) {
+            throw new ObjectsException();
+        }
+
+        return self::getObjectIsAllowedToUser($this->id, $userId);
+    }
+
+    /**
+     * Проверяет, доступна ли объект пользователю.
+     * @param integer $objectId айди объекта
+     * @param integer $userId айди пользователя
+     * @return bool
+     * @throws ObjectsException
+     */
+    public static function getObjectIsAllowedToUser($objectId, $userId)
+    {
+        $Object = Objects::model()->findByPk($objectId);
+
+        if (empty($Object)) {
+            throw new ObjectsException();
+        }
+
+        return in_array($Object->collection_id, Collections::getIdsOfCollectionsAllowedToUser($userId));
+    }
 }
