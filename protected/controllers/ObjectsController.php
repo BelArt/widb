@@ -3,6 +3,7 @@
 class ObjectsController extends Controller
 {
     private $model;
+    private $collectionModel;
 
 	/**
 	 * @return array action filters
@@ -26,6 +27,14 @@ class ObjectsController extends Controller
             array('allow',
                 'actions' => array('create'),
                 'roles' => array('oObjectCreate'),
+            ),
+            array('allow',
+                'actions' => array('view'),
+                'roles' => array(
+                    'oObjectView' => array(
+                        'Collection' => $this->loadCollectionModel(Yii::app()->request->getQuery('id'))
+                    )
+                ),
             ),
             array('deny',  // deny all users
                 'users'=>array('*'),
@@ -120,4 +129,139 @@ class ObjectsController extends Controller
             return null;
         }
 	}
+
+    /**
+     * Возвращает модель коллекции, к которой принадлежит объект
+     * @param $id
+     * @return array|mixed|null
+     * @throws ObjectsControllerException
+     */
+    public function loadCollectionModel($id)
+    {
+        if (!empty($id)) {
+            if (empty($this->collectionModel)) {
+
+                $Object = $this->loadModel($id);
+                $Collection = $Object->collection;
+
+                if (empty($Collection)) {
+                    throw new ObjectsControllerException();
+                }
+
+                $this->collectionModel = $Collection;
+            }
+
+            return $this->collectionModel;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Просмотр обычной коллекции
+     * @param string $id айди коллекции
+     * @param string $cv как отображать дочерние коллекции: th - картинками, ls - списком, tb - таблицей
+     * @param string $ov как отображать объекты в коллекции: th - картинками, ls - списком, tb - таблицей
+     * @param string $tb какая вкладка открыта (параметр используется уже во view): cc - дочерние коллекции, ob - объекты
+     * @throws CHttpException
+     */
+    public function actionView($id, $cv = 'th', $ov = 'th', $tb = 'cc')
+    {
+        $model = $this->loadModel($id);
+
+        if ($model->temporary) {
+            throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
+        }
+
+        // как отображать дочерние коллекции
+        switch ($cv) {
+            case 'th': // картинками
+                $renderViewChildCollections = '_viewChildCollectionsThumbnails';
+                break;
+            case 'ls': // списком
+                $renderViewChildCollections = '_viewChildCollectionsList';
+                break;
+            case 'tb': // таблицей
+                $renderViewChildCollections = '_viewChildCollectionsTable';
+                break;
+            default: // картинками
+                $renderViewChildCollections = '_viewChildCollectionsThumbnails';
+        }
+
+        // как отображать объекты в коллекции
+        switch ($ov) {
+            case 'th': // картинками
+                $renderViewObjects = '_viewObjectsThumbnails';
+                break;
+            case 'ls': // списком
+                $renderViewObjects = '_viewObjectsList';
+                break;
+            case 'tb': // таблицей
+                $renderViewObjects = '_viewObjectsTable';
+                break;
+            default: // картинками
+                $renderViewObjects = '_viewObjectsThumbnails';
+        }
+
+        $ObjectsCriteria = new CDbCriteria();
+        $ObjectsCriteria->condition = 't.collection_id = :collection_id';
+        $ObjectsCriteria->params = array(':collection_id' => $id);
+        $ObjectsCriteria->with = array('author');
+
+        $ObjectsDataProvider = new CActiveDataProvider('Objects', array('criteria' => $ObjectsCriteria));
+
+        $ChildCollectionsDataProvider = new CActiveDataProvider(
+            'Collections',
+            array(
+                'criteria' => array(
+                    'condition' => 'parent_id = :parent_id',
+                    'params' => array(':parent_id' => $id)
+                ),
+            )
+        );
+
+        // параметры страницы
+        $this->pageTitle = array($model->name);
+        $this->breadcrumbs = array($model->name);
+        $this->pageName = $model->name;
+        $pageMenu = array();
+        if (Yii::app()->user->checkAccess('oCollectionEdit')) {
+            $pageMenu[] = array(
+                'label' => Yii::t('collections', 'Редактировать коллекцию'),
+                'url' => $this->createUrl(
+                        'collections/update',
+                        array('id' => $id)
+                    ),
+            );
+        }
+        if (Yii::app()->user->checkAccess('oCollectionDelete')) {
+            $pageMenu[] = array(
+                'label' => Yii::t('collections', 'Удалить коллекцию'),
+                'url' => $this->createUrl('collections/delete', array('id' => $id)),
+                'itemOptions' => array(
+                    'class' => '_deleteCollection',
+                    'data-dialog-title' => CHtml::encode(Yii::t('collections', 'Удалить коллекцию?')),
+                    'data-dialog-message' => CHtml::encode(Yii::t('collections', 'Вы уверены, что хотите удалить коллекцию? Ее нельзя будет восстановить!')),
+                )
+            );
+        }
+        if (Yii::app()->user->checkAccess('oObjectCreate')) {
+            $pageMenu[] = array(
+                'label' => Yii::t('objects', 'Создать объект в коллекции'),
+                'url' => $this->createUrl('objects/create', array('ci' => $id)),
+            );
+        }
+        $this->pageMenu = $pageMenu;
+
+        $this->render(
+            'viewNormal',
+            array(
+                'model' => $model,
+                'ObjectsDataProvider' => $ObjectsDataProvider,
+                'ChildCollectionsDataProvider' => $ChildCollectionsDataProvider,
+                'renderViewChildCollections' => $renderViewChildCollections,
+                'renderViewObjects' => $renderViewObjects,
+            )
+        );
+    }
 }

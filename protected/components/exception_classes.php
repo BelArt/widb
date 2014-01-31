@@ -17,3 +17,9 @@ class DeleteHelperException extends CustomException {}
 
 // Исключение контекста PreviewHelper
 class PreviewHelperException extends CustomException {}
+
+// Исключение контекста Controller
+class ControllerException extends CustomException {}
+
+// Исключение контекста ObjectsController
+class ObjectsControllerException extends ControllerException {}
