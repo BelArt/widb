@@ -183,43 +183,16 @@ class ObjectsController extends Controller
                 $renderViewImages = '_viewImagesThumbnails';
         }
 
-        /*if ($model->temporary) {
-            throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
-        }
-
-
-
-        // как отображать объекты в коллекции
-        switch ($ov) {
-            case 'th': // картинками
-                $renderViewObjects = '_viewObjectsThumbnails';
-                break;
-            case 'ls': // списком
-                $renderViewObjects = '_viewObjectsList';
-                break;
-            case 'tb': // таблицей
-                $renderViewObjects = '_viewObjectsTable';
-                break;
-            default: // картинками
-                $renderViewObjects = '_viewObjectsThumbnails';
-        }
-
-        $ObjectsCriteria = new CDbCriteria();
-        $ObjectsCriteria->condition = 't.collection_id = :collection_id';
-        $ObjectsCriteria->params = array(':collection_id' => $id);
-        $ObjectsCriteria->with = array('author');
-
-        $ObjectsDataProvider = new CActiveDataProvider('Objects', array('criteria' => $ObjectsCriteria));
-
-        $ChildCollectionsDataProvider = new CActiveDataProvider(
-            'Collections',
+        $ImagesDataProvider = new CActiveDataProvider(
+            'Images',
             array(
                 'criteria' => array(
-                    'condition' => 'parent_id = :parent_id',
-                    'params' => array(':parent_id' => $id)
+                    'condition' => 'object_id = :object_id',
+                    'params' => array(':object_id' => $id),
+                    'with' => array('photoType'),
                 ),
             )
-        );*/
+        );
 
         // параметры страницы
         $this->pageTitle = array($Collection->name, $Object->name);
@@ -258,8 +231,8 @@ class ObjectsController extends Controller
             'view',
             array(
                 'Object' => $Object,
-                'Collection' => $Collection,
-                'renderViewImages' => $renderViewImages
+                'renderViewImages' => $renderViewImages,
+                'ImagesDataProvider' => $ImagesDataProvider
             )
         );
     }

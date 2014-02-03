@@ -1,12 +1,8 @@
 <?php
 /* @var $this ObjectsController */
 /* @var $Object Objects */
-/* @var $collection Collections */
-
-/* @var $ObjectsDataProvider CActiveDataProvider */
-/* @var $ChildCollectionsDataProvider CActiveDataProvider */
-/* @var $renderViewChildCollections string */
-/* @var $renderViewObjects string */
+/* @var $ImagesDataProvider CActiveDataProvider */
+/* @var $renderViewImages string */
 
 Yii::app()->clientScript->registerPackage('objectView');
 ?>
@@ -75,7 +71,7 @@ $this->widget(
         'tabs' => array(
             array(
                 'label' => Yii::t('objects', 'Изображения объекта'),
-                'content' => $this->renderPartial($renderViewImages, array('Object' => $Object), true),
+                'content' => $this->renderPartial($renderViewImages, array('Object' => $Object, 'ImagesDataProvider' => $ImagesDataProvider), true),
                 'active' => true
             ),
 

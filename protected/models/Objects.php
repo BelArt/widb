@@ -72,6 +72,8 @@ class Objects extends ActiveRecord
             'type' => array(self::BELONGS_TO, 'ObjectTypes', 'type_id'),
             'collection' => array(self::BELONGS_TO, 'Collections', 'collection_id'),
 
+            'images' => array(self::HAS_MANY, 'Images', 'object_id'),
+
             'userCreate' => array(self::BELONGS_TO, 'Users', 'user_create'),
             'userModify' => array(self::BELONGS_TO, 'Users', 'user_modify'),
             'userDelete' => array(self::BELONGS_TO, 'Users', 'user_delete'),
@@ -103,50 +105,6 @@ class Objects extends ActiveRecord
             'size' => Yii::t('common', 'Размер'),
         );
     }
-
-	/**
-	 * Retrieves a list of models based on the current search/filter conditions.
-	 *
-	 * Typical usecase:
-	 * - Initialize the model fields with values from filter form.
-	 * - Execute this method to get CActiveDataProvider instance which will filter
-	 * models according to data in model fields.
-	 * - Pass data provider to CGridView, CListView or any similar widget.
-	 *
-	 * @return CActiveDataProvider the data provider that can return the models
-	 * based on the search/filter conditions.
-	 */
-	/*public function search()
-	{
-		// @todo Please modify the following code to remove attributes that should not be searched.
-
-		$criteria=new CDbCriteria;
-
-		$criteria->compare('id',$this->id,true);
-		$criteria->compare('author_id',$this->author_id,true);
-		$criteria->compare('type_id',$this->type_id,true);
-		$criteria->compare('collection_id',$this->collection_id,true);
-		$criteria->compare('name',$this->name,true);
-		$criteria->compare('description',$this->description,true);
-		$criteria->compare('inventory_number',$this->inventory_number,true);
-		$criteria->compare('inventory_number_en',$this->inventory_number_en,true);
-		$criteria->compare('code',$this->code,true);
-		$criteria->compare('width',$this->width,true);
-		$criteria->compare('height',$this->height,true);
-		$criteria->compare('depth',$this->depth,true);
-		$criteria->compare('has_preview',$this->has_preview);
-		$criteria->compare('department',$this->department,true);
-		$criteria->compare('keeper',$this->keeper,true);
-		$criteria->compare('date_create',$this->date_create,true);
-		$criteria->compare('date_modify',$this->date_modify,true);
-		$criteria->compare('date_delete',$this->date_delete,true);
-		$criteria->compare('sort',$this->sort,true);
-		$criteria->compare('deleted',$this->deleted);
-
-		return new CActiveDataProvider($this, array(
-			'criteria'=>$criteria,
-		));
-	}*/
 
 	/**
 	 * Returns the static model of the specified AR class.
