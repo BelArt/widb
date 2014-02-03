@@ -36,6 +36,10 @@ class ObjectsController extends Controller
                     )
                 ),
             ),
+            array('allow',
+                'actions' => array('delete'),
+                'roles' => array('oObjectDelete'),
+            ),
             array('deny',  // deny all users
                 'users'=>array('*'),
             ),
@@ -99,8 +103,8 @@ class ObjectsController extends Controller
 
         $Collection = Collections::model()->findByPk($collectionId);
 
-        if (empty($collectionId) || empty($Collection) || $Collection->temporary == 1) {
-            throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
+        if (empty($Collection) || $Collection->temporary == 1) {
+            throw new ObjectsControllerException();
         }
 
         $filterChain->run();
@@ -159,16 +163,16 @@ class ObjectsController extends Controller
     }
 
     /**
-     * Просмотр обычной коллекции
-     * @param string $id айди коллекции
-     * @param string $iv как отображать дочерние коллекции: th - картинками, ls - списком, tb - таблицей
+     * Просмотр объекта
+     * @param string $id айди объекта
+     * @param string $iv как отображать изображения: th - картинками, ls - списком, tb - таблицей
      */
     public function actionView($id, $iv = 'th')
     {
         $Object = $this->loadObject($id);
         $Collection = $this->loadCollection($id);
 
-        // как отображать дочерние коллекции
+        // как отображать изображения
         switch ($iv) {
             case 'th': // картинками
                 $renderViewImages = '_viewImagesThumbnails';
@@ -198,33 +202,34 @@ class ObjectsController extends Controller
         $this->pageTitle = array($Collection->name, $Object->name);
         $this->breadcrumbs = array($Collection->name => array('collections/view', 'id' => $Collection->id), $Object->name);
         $this->pageName = $Object->name;
+
         $pageMenu = array();
-        /*if (Yii::app()->user->checkAccess('oCollectionEdit')) {
+
+        $pageMenu[] = array(
+            'label' => Yii::t('objects', 'Редактировать объект'),
+            'url' => '#',
+        );
+        if (Yii::app()->user->checkAccess('oObjectDelete')) {
             $pageMenu[] = array(
-                'label' => Yii::t('collections', 'Редактировать коллекцию'),
-                'url' => $this->createUrl(
-                        'collections/update',
-                        array('id' => $id)
-                    ),
-            );
-        }
-        if (Yii::app()->user->checkAccess('oCollectionDelete')) {
-            $pageMenu[] = array(
-                'label' => Yii::t('collections', 'Удалить коллекцию'),
-                'url' => $this->createUrl('collections/delete', array('id' => $id)),
+                'label' => Yii::t('objects', 'Удалить объект'),
+                'url' => $this->createUrl('delete', array('id' => $id)),
                 'itemOptions' => array(
-                    'class' => '_deleteCollection',
-                    'data-dialog-title' => CHtml::encode(Yii::t('collections', 'Удалить коллекцию?')),
-                    'data-dialog-message' => CHtml::encode(Yii::t('collections', 'Вы уверены, что хотите удалить коллекцию? Ее нельзя будет восстановить!')),
+                    'class' => '_deleteObject',
+                    'data-dialog-title' => CHtml::encode(Yii::t('objects', 'Удалить объект?')),
+                    'data-dialog-message' => CHtml::encode(Yii::t('objects', 'Вы уверены, что хотите удалить объект? Его нельзя будет восстановить!')),
                 )
             );
         }
-        if (Yii::app()->user->checkAccess('oObjectCreate')) {
-            $pageMenu[] = array(
-                'label' => Yii::t('objects', 'Создать объект в коллекции'),
-                'url' => $this->createUrl('objects/create', array('ci' => $id)),
-            );
-        }*/
+
+        $pageMenu[] = array(
+            'label' => Yii::t('objects', 'Добавить объект во временную коллекцию'),
+            'url' => '#',
+        );
+        $pageMenu[] = array(
+            'label' => Yii::t('objects', 'Переместить объект в другую коллекцию'),
+            'url' => '#',
+        );
+
         $this->pageMenu = $pageMenu;
 
         $this->render(
@@ -235,5 +240,28 @@ class ObjectsController extends Controller
                 'ImagesDataProvider' => $ImagesDataProvider
             )
         );
+    }
+
+    /**
+     * Удаляет объект
+     * @param integer $id айди объекта
+     */
+    public function actionDelete($id)
+    {
+        $Collection = $this->loadCollection($id);
+
+        if (DeleteHelper::deleteObjectFromNormalCollection($id)) {
+            Yii::app()->user->setFlash(
+                'success',
+                Yii::t('objects', 'Объект удален')
+            );
+            $this->redirect(array('collections/view', 'id' => $Collection->id));
+        } else {
+            Yii::app()->user->setFlash(
+                'error',
+                Yii::t('objects', 'Объект не удален. У объекта не должно быть относящихся к нему изображений, чтобы его можно было удалить')
+            );
+            $this->redirect(Yii::app()->request->urlReferrer);
+        }
     }
 }

@@ -65,7 +65,7 @@ return array(
     'objectView' => array(
         'basePath'=>'application.assets',
         //'css'=>array('css/object-view.css'),
-        //'js'=>array('js/object-view.js'),
+        'js'=>array('js/object-view.js'),
         'depends' => array('global')
     ),
 );
