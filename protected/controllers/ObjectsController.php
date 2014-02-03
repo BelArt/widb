@@ -161,34 +161,33 @@ class ObjectsController extends Controller
     /**
      * Просмотр обычной коллекции
      * @param string $id айди коллекции
-     * @param string $cv как отображать дочерние коллекции: th - картинками, ls - списком, tb - таблицей
-     * @param string $ov как отображать объекты в коллекции: th - картинками, ls - списком, tb - таблицей
-     * @param string $tb какая вкладка открыта (параметр используется уже во view): cc - дочерние коллекции, ob - объекты
-     * @throws CHttpException
+     * @param string $iv как отображать дочерние коллекции: th - картинками, ls - списком, tb - таблицей
      */
-    public function actionView($id/*, $cv = 'th', $ov = 'th', $tb = 'cc'*/)
+    public function actionView($id, $iv = 'th')
     {
         $Object = $this->loadObject($id);
         $Collection = $this->loadCollection($id);
+
+        // как отображать дочерние коллекции
+        switch ($iv) {
+            case 'th': // картинками
+                $renderViewImages = '_viewImagesThumbnails';
+                break;
+            case 'ls': // списком
+                $renderViewImages = '_viewImagesList';
+                break;
+            case 'tb': // таблицей
+                $renderViewImages = '_viewImagesTable';
+                break;
+            default: // картинками
+                $renderViewImages = '_viewImagesThumbnails';
+        }
 
         /*if ($model->temporary) {
             throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
         }
 
-        // как отображать дочерние коллекции
-        switch ($cv) {
-            case 'th': // картинками
-                $renderViewChildCollections = '_viewChildCollectionsThumbnails';
-                break;
-            case 'ls': // списком
-                $renderViewChildCollections = '_viewChildCollectionsList';
-                break;
-            case 'tb': // таблицей
-                $renderViewChildCollections = '_viewChildCollectionsTable';
-                break;
-            default: // картинками
-                $renderViewChildCollections = '_viewChildCollectionsThumbnails';
-        }
+
 
         // как отображать объекты в коллекции
         switch ($ov) {
@@ -259,7 +258,8 @@ class ObjectsController extends Controller
             'view',
             array(
                 'Object' => $Object,
-                'Collection' => $Collection
+                'Collection' => $Collection,
+                'renderViewImages' => $renderViewImages
             )
         );
     }

@@ -66,5 +66,23 @@ Yii::app()->clientScript->registerPackage('objectView');
 
 <!--<div class="gape"></div>-->
 
+<?php
+$this->widget(
+    'bootstrap.widgets.TbTabs',
+    array(
+        'type' => 'tabs', // 'tabs' or 'pills'
+        //'placement' => 'below',
+        'tabs' => array(
+            array(
+                'label' => Yii::t('objects', 'Изображения объекта'),
+                'content' => $this->renderPartial($renderViewImages, array('Object' => $Object), true),
+                'active' => true
+            ),
+
+        ),
+    )
+);
+?>
+
 
 
