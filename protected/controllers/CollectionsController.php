@@ -2,7 +2,7 @@
 
 class CollectionsController extends Controller
 {
-    private $model;
+    private $collection;
 
 	/**
 	 * @return array action filters
@@ -39,7 +39,7 @@ class CollectionsController extends Controller
                 'actions' => array('view'),
                 'roles' => array(
                     'oCollectionView' => array(
-                        'Collection' => $this->loadModel(Yii::app()->request->getQuery('id'))
+                        'Collection' => $this->loadCollection(Yii::app()->request->getQuery('id'))
                     )
                 ),
             ),
@@ -47,7 +47,7 @@ class CollectionsController extends Controller
                 'actions' => array('viewTemp'),
                 'roles' => array(
                     'oTempCollectionView' => array(
-                        'Collection' => $this->loadModel(Yii::app()->request->getQuery('id'))
+                        'Collection' => $this->loadCollection(Yii::app()->request->getQuery('id'))
                     )
                 ),
             ),
@@ -59,7 +59,7 @@ class CollectionsController extends Controller
                 'actions' => array('updateTemp'),
                 'roles' => array(
                     'oTempCollectionEdit' => array(
-                        'Collection' => $this->loadModel(Yii::app()->request->getQuery('id'))
+                        'Collection' => $this->loadCollection(Yii::app()->request->getQuery('id'))
                     )
                 ),
             ),
@@ -71,7 +71,7 @@ class CollectionsController extends Controller
                 'actions' => array('deleteTemp'),
                 'roles' => array(
                     'oTempCollectionDelete' => array(
-                        'Collection' => $this->loadModel(Yii::app()->request->getQuery('id'))
+                        'Collection' => $this->loadCollection(Yii::app()->request->getQuery('id'))
                     )
                 ),
             ),
@@ -92,7 +92,7 @@ class CollectionsController extends Controller
      */
     public function actionView($id, $cv = 'th', $ov = 'th', $tb = 'cc')
 	{
-        $model = $this->loadModel($id);
+        $model = $this->loadCollection($id);
 
         if ($model->temporary) {
             throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
@@ -200,7 +200,7 @@ class CollectionsController extends Controller
      */
     public function actionViewTemp($id, /*$cv = 'th',*/ $ov = 'th'/*, $tb = 'cc'*/)
     {
-        $model = $this->loadModel($id);
+        $model = $this->loadCollection($id);
 
         if (!$model->temporary) {
             throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
@@ -425,7 +425,7 @@ class CollectionsController extends Controller
 	 */
 	public function actionUpdate($id)
 	{
-		$model = $this->loadModel($id);
+		$model = $this->loadCollection($id);
 
         Yii::import( "xupload.models.XUploadForm" );
         $PhotoUploadModel = new MyXUploadForm;
@@ -480,7 +480,7 @@ class CollectionsController extends Controller
      */
     public function actionUpdateTemp($id)
     {
-        $model = $this->loadModel($id);
+        $model = $this->loadCollection($id);
 
         if (!$model->temporary) {
             throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
@@ -608,18 +608,18 @@ class CollectionsController extends Controller
 	 * @return Collections the loaded model
 	 * @throws CHttpException
 	 */
-	public function loadModel($id)
+	public function loadCollection($id)
 	{
         if (!empty($id)) {
-            if (empty($this->model)) {
-                $this->model = Collections::model()->findByPk($id);
+            if (empty($this->collection)) {
+                $this->collection = Collections::model()->findByPk($id);
 
-                if (empty($this->model)) {
+                if (empty($this->collection)) {
                     throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
                 }
             }
 
-            return $this->model;
+            return $this->collection;
         } else {
             return null;
         }

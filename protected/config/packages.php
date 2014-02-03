@@ -62,4 +62,10 @@ return array(
         'js'=>array('js/upload-files.js'),
         'depends' => array('global')
     ),
+    'objectView' => array(
+        'basePath'=>'application.assets',
+        //'css'=>array('css/object-view.css'),
+        //'js'=>array('js/object-view.js'),
+        'depends' => array('global')
+    ),
 );

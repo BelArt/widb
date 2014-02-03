@@ -2,8 +2,8 @@
 
 class ObjectsController extends Controller
 {
-    private $model;
-    private $collectionModel;
+    private $object;
+    private $collection;
 
 	/**
 	 * @return array action filters
@@ -32,7 +32,7 @@ class ObjectsController extends Controller
                 'actions' => array('view'),
                 'roles' => array(
                     'oObjectView' => array(
-                        'Collection' => $this->loadCollectionModel(Yii::app()->request->getQuery('id'))
+                        'Collection' => $this->loadCollection(Yii::app()->request->getQuery('id'))
                     )
                 ),
             ),
@@ -113,21 +113,22 @@ class ObjectsController extends Controller
 	 * @return Objects the loaded model
 	 * @throws CHttpException
 	 */
-	public function loadModel($id)
+	public function loadObject($id)
 	{
-        if (!empty($id)) {
-            if (empty($this->model)) {
-                $this->model = Objects::model()->findByPk($id);
-
-                if (empty($this->model)) {
-                    throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
-                }
-            }
-
-            return $this->model;
-        } else {
+        if (empty($id)) {
             return null;
         }
+
+        if (empty($this->object)) {
+
+            $this->object = Objects::model()->findByPk($id);
+
+            if (empty($this->object)) {
+                throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
+            }
+        }
+
+        return $this->object;
 	}
 
     /**
@@ -136,25 +137,25 @@ class ObjectsController extends Controller
      * @return array|mixed|null
      * @throws ObjectsControllerException
      */
-    public function loadCollectionModel($id)
+    public function loadCollection($id)
     {
-        if (!empty($id)) {
-            if (empty($this->collectionModel)) {
-
-                $Object = $this->loadModel($id);
-                $Collection = $Object->collection;
-
-                if (empty($Collection)) {
-                    throw new ObjectsControllerException();
-                }
-
-                $this->collectionModel = $Collection;
-            }
-
-            return $this->collectionModel;
-        } else {
+        if (empty($id)) {
             return null;
         }
+
+        if (empty($this->collection)) {
+
+            $Object = $this->loadObject($id);
+
+            $this->collection = $Object->collection;
+
+            if (empty($this->collection)) {
+                throw new ObjectsControllerException();
+            }
+        }
+
+        return $this->collection;
+
     }
 
     /**
@@ -165,11 +166,12 @@ class ObjectsController extends Controller
      * @param string $tb какая вкладка открыта (параметр используется уже во view): cc - дочерние коллекции, ob - объекты
      * @throws CHttpException
      */
-    public function actionView($id, $cv = 'th', $ov = 'th', $tb = 'cc')
+    public function actionView($id/*, $cv = 'th', $ov = 'th', $tb = 'cc'*/)
     {
-        $model = $this->loadModel($id);
+        $Object = $this->loadObject($id);
+        $Collection = $this->loadCollection($id);
 
-        if ($model->temporary) {
+        /*if ($model->temporary) {
             throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
         }
 
@@ -218,14 +220,14 @@ class ObjectsController extends Controller
                     'params' => array(':parent_id' => $id)
                 ),
             )
-        );
+        );*/
 
         // параметры страницы
-        $this->pageTitle = array($model->name);
-        $this->breadcrumbs = array($model->name);
-        $this->pageName = $model->name;
+        $this->pageTitle = array($Collection->name, $Object->name);
+        $this->breadcrumbs = array($Collection->name => array('collections/view', 'id' => $Collection->id), $Object->name);
+        $this->pageName = $Object->name;
         $pageMenu = array();
-        if (Yii::app()->user->checkAccess('oCollectionEdit')) {
+        /*if (Yii::app()->user->checkAccess('oCollectionEdit')) {
             $pageMenu[] = array(
                 'label' => Yii::t('collections', 'Редактировать коллекцию'),
                 'url' => $this->createUrl(
@@ -250,17 +252,14 @@ class ObjectsController extends Controller
                 'label' => Yii::t('objects', 'Создать объект в коллекции'),
                 'url' => $this->createUrl('objects/create', array('ci' => $id)),
             );
-        }
+        }*/
         $this->pageMenu = $pageMenu;
 
         $this->render(
-            'viewNormal',
+            'view',
             array(
-                'model' => $model,
-                'ObjectsDataProvider' => $ObjectsDataProvider,
-                'ChildCollectionsDataProvider' => $ChildCollectionsDataProvider,
-                'renderViewChildCollections' => $renderViewChildCollections,
-                'renderViewObjects' => $renderViewObjects,
+                'Object' => $Object,
+                'Collection' => $Collection
             )
         );
     }

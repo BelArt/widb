@@ -86,6 +86,7 @@ class Objects extends ActiveRecord
         return array(
             'author_id' => Yii::t('objects', 'Автор'),
             'type_id' => Yii::t('objects', 'Тип объекта'),
+            'collection_id' => Yii::t('collections', 'Коллекция'),
             'name' => Yii::t('common', 'Название'),
             'description' => Yii::t('common', 'Описание'),
             'inventory_number' => Yii::t('objects', 'Инвентарный номер'),
@@ -98,8 +99,8 @@ class Objects extends ActiveRecord
             'period' => Yii::t('objects', 'Период создания'),
             'has_preview' => Yii::t('common', 'Есть превью'),
             'sort' => Yii::t('common', 'Сортировка'),
-            // такого арибута в модели нет, это только для вывода лэйбла на форму
             'preview' => Yii::t('common', 'Превью'),
+            'size' => Yii::t('common', 'Размер'),
         );
     }
 
@@ -168,7 +169,6 @@ class Objects extends ActiveRecord
 
     /**
      * Формирует набор превью
-     * @throws CException
      */
     private function setThumbnails()
     {
@@ -180,7 +180,7 @@ class Objects extends ActiveRecord
     public function getThumbnailBig()
     {
         if ($this->isNewRecord) {
-            throw new CException(Yii::t('objects', 'Метод "{method}" не может вызываться для вновь создаваемого объекта', array('{method}' => __METHOD__)));
+            throw new ObjectsException();
         }
 
         return $this->thumbnailBig;
@@ -189,7 +189,7 @@ class Objects extends ActiveRecord
     public function getThumbnailMedium()
     {
         if ($this->isNewRecord) {
-            throw new CException(Yii::t('objects', 'Метод "{method}" не может вызываться для вновь создаваемого объекта', array('{method}' => __METHOD__)));
+            throw new ObjectsException();
         }
 
         return $this->thumbnailMedium;
@@ -198,7 +198,7 @@ class Objects extends ActiveRecord
     public function getThumbnailSmall()
     {
         if ($this->isNewRecord) {
-            throw new CException(Yii::t('objects', 'Метод "{method}" не может вызываться для вновь создаваемого объекта', array('{method}' => __METHOD__)));
+            throw new ObjectsException();
         }
 
         return $this->thumbnailSmall;
