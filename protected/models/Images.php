@@ -24,6 +24,11 @@
  */
 class Images extends ActiveRecord
 {
+    private $thumbnailBig;
+    private $thumbnailMedium;
+    private $thumbnailSmall;
+    private $name;
+
 	/**
 	 * @return string the associated database table name
 	 */
@@ -56,10 +61,14 @@ class Images extends ActiveRecord
 	 */
 	public function relations()
 	{
-		// NOTE: you may need to adjust the relation name and the related
-		// class name for the relations automatically generated below.
-		return array(
-		);
+        return array(
+            'object' => array(self::BELONGS_TO, 'Objects', 'object_id'),
+            'photoType' => array(self::BELONGS_TO, 'PhotoTypes', 'photo_type_id'),
+
+            'userCreate' => array(self::BELONGS_TO, 'Users', 'user_create'),
+            'userModify' => array(self::BELONGS_TO, 'Users', 'user_modify'),
+            'userDelete' => array(self::BELONGS_TO, 'Users', 'user_delete'),
+        );
 	}
 
 	/**
@@ -89,47 +98,6 @@ class Images extends ActiveRecord
 	}
 
 	/**
-	 * Retrieves a list of models based on the current search/filter conditions.
-	 *
-	 * Typical usecase:
-	 * - Initialize the model fields with values from filter form.
-	 * - Execute this method to get CActiveDataProvider instance which will filter
-	 * models according to data in model fields.
-	 * - Pass data provider to CGridView, CListView or any similar widget.
-	 *
-	 * @return CActiveDataProvider the data provider that can return the models
-	 * based on the search/filter conditions.
-	 */
-	public function search()
-	{
-		// @todo Please modify the following code to remove attributes that should not be searched.
-
-		$criteria=new CDbCriteria;
-
-		$criteria->compare('id',$this->id,true);
-		$criteria->compare('object_id',$this->object_id,true);
-		$criteria->compare('photo_type_id',$this->photo_type_id,true);
-		$criteria->compare('description',$this->description,true);
-		$criteria->compare('has_preview',$this->has_preview);
-		$criteria->compare('width',$this->width,true);
-		$criteria->compare('height',$this->height,true);
-		$criteria->compare('dpi',$this->dpi,true);
-		$criteria->compare('original',$this->original,true);
-		$criteria->compare('source',$this->source,true);
-		$criteria->compare('deepzoom',$this->deepzoom);
-		$criteria->compare('request',$this->request,true);
-		$criteria->compare('date_create',$this->date_create,true);
-		$criteria->compare('date_modify',$this->date_modify,true);
-		$criteria->compare('date_delete',$this->date_delete,true);
-		$criteria->compare('sort',$this->sort,true);
-		$criteria->compare('deleted',$this->deleted);
-
-		return new CActiveDataProvider($this, array(
-			'criteria'=>$criteria,
-		));
-	}
-
-	/**
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
 	 * @param string $className active record class name.
@@ -139,4 +107,70 @@ class Images extends ActiveRecord
 	{
 		return parent::model($className);
 	}
+
+    protected function afterFind()
+    {
+        parent::afterFind();
+
+        // формируем набор превью
+        $this->setThumbnails();
+
+        // создаем фиктивный атрибут Имя
+        $this->setName();
+    }
+
+    /**
+     * Формирует набор превью
+     */
+    private function setThumbnails()
+    {
+        $this->thumbnailBig = PreviewHelper::getBigThumbnailForImage($this);
+        $this->thumbnailMedium = PreviewHelper::getMediumThumbnailForImage($this);
+        $this->thumbnailSmall = PreviewHelper::getSmallThumbnailForImage($this);
+    }
+
+    public function getThumbnailBig()
+    {
+        if ($this->isNewRecord) {
+            throw new ImagesException();
+        }
+
+        return $this->thumbnailBig;
+    }
+
+    public function getThumbnailMedium()
+    {
+        if ($this->isNewRecord) {
+            throw new ImagesException();
+        }
+
+        return $this->thumbnailMedium;
+    }
+
+    public function getThumbnailSmall()
+    {
+        if ($this->isNewRecord) {
+            throw new ImagesException();
+        }
+
+        return $this->thumbnailSmall;
+    }
+
+    /**
+     * создаем фиктивный атрибут Имя
+     */
+    private function setName()
+    {
+        $this->name = $this->width.' x '.$this->height.' px';
+    }
+
+    public function getName()
+    {
+        if ($this->isNewRecord) {
+            throw new ImagesException();
+        }
+
+        return $this->name;
+    }
+
 }

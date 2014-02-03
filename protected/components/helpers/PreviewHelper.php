@@ -198,6 +198,78 @@ class PreviewHelper extends CApplicationComponent
     }
 
     /**
+     * Возвращает путь к большой превью для изображения
+     * @param Images $Image модель изображения
+     * @param boolean $addVersion добавить ли к пути метку версии, чтобы браузер не показывал закэшированную старую картинку
+     * @return string путь к большой превью
+     */
+    public static function getBigThumbnailForImage(Images $Image, $addVersion = true)
+    {
+        $previewUrl = '';
+
+        if ($Image->has_preview) {
+            $previewUrl = self::getPreviewUrl($Image, 'big');
+            if ($previewUrl && $addVersion) {
+                $previewUrl .= '?v='.self::getPreviewsVersion($Image);
+            }
+        }
+
+        if (empty($previewUrl)) {
+            $previewUrl = self::getNoPhotoPreviewUrl();
+        }
+
+        return $previewUrl;
+    }
+
+    /**
+     * Возвращает путь к средней превью для изображения
+     * @param Images $Image модель изображения
+     * @param boolean $addVersion добавить ли к пути метку версии, чтобы браузер не показывал закэшированную старую картинку
+     * @return string путь к средней превью
+     */
+    public static function getMediumThumbnailForImage(Images $Image, $addVersion = true)
+    {
+        $previewUrl = '';
+
+        if ($Image->has_preview) {
+            $previewUrl = self::getPreviewUrl($Image, 'medium');
+            if ($previewUrl && $addVersion) {
+                $previewUrl .= '?v='.self::getPreviewsVersion($Image);
+            }
+        }
+
+        if (empty($previewUrl)) {
+            $previewUrl = self::getNoPhotoPreviewUrl();
+        }
+
+        return $previewUrl;
+    }
+
+    /**
+     * Возвращает путь к маленькой превью для объекта
+     * @param Images $Image модель объекта
+     * @param boolean $addVersion добавить ли к пути метку версии, чтобы браузер не показывал закэшированную старую картинку
+     * @return string путь к маленькой превью
+     */
+    public static function getSmallThumbnailForImage(Images $Image, $addVersion = true)
+    {
+        $previewUrl = '';
+
+        if ($Image->has_preview) {
+            $previewUrl = self::getPreviewUrl($Image, 'small');
+            if ($previewUrl && $addVersion) {
+                $previewUrl .= '?v='.self::getPreviewsVersion($Image);
+            }
+        }
+
+        if (empty($previewUrl)) {
+            $previewUrl = self::getNoPhotoPreviewUrl();
+        }
+
+        return $previewUrl;
+    }
+
+    /**
      * Возвращает урл превью
      * @param $Model модель коллекции, объекта или изображения
      * @param string $size какое превью вернуть - 'small', 'medium', 'big' или 'original'

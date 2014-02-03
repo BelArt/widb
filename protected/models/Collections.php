@@ -157,7 +157,6 @@ class Collections extends ActiveRecord
 
     /**
      * Формирует набор превью
-     * @throws CException
      */
     private function setThumbnails()
     {
@@ -189,7 +188,7 @@ class Collections extends ActiveRecord
     public function getThumbnailBig()
     {
         if ($this->isNewRecord) {
-            throw new CException(Yii::t('collections', 'Метод "{method}" не может вызываться для вновь создаваемой коллекции', array('{method}' => __METHOD__)));
+            throw new CollectionsException();
         }
 
         return $this->thumbnailBig;
@@ -198,7 +197,7 @@ class Collections extends ActiveRecord
     public function getThumbnailMedium()
     {
         if ($this->isNewRecord) {
-            throw new CException(Yii::t('collections', 'Метод "{method}" не может вызываться для вновь создаваемой коллекции', array('{method}' => __METHOD__)));
+            throw new CollectionsException();
         }
 
         return $this->thumbnailMedium;
@@ -207,7 +206,7 @@ class Collections extends ActiveRecord
     public function getThumbnailSmall()
     {
         if ($this->isNewRecord) {
-            throw new CException(Yii::t('collections', 'Метод "{method}" не может вызываться для вновь создаваемой коллекции', array('{method}' => __METHOD__)));
+            throw new CollectionsException();
         }
 
         return $this->thumbnailSmall;

@@ -2,7 +2,8 @@
 
 class ObjectsController extends Controller
 {
-    private $model;
+    private $object;
+    private $collection;
 
 	/**
 	 * @return array action filters
@@ -26,6 +27,18 @@ class ObjectsController extends Controller
             array('allow',
                 'actions' => array('create'),
                 'roles' => array('oObjectCreate'),
+            ),
+            array('allow',
+                'actions' => array('view'),
+                'roles' => array(
+                    'oObjectView' => array(
+                        'Collection' => $this->loadCollection(Yii::app()->request->getQuery('id'))
+                    )
+                ),
+            ),
+            array('allow',
+                'actions' => array('delete'),
+                'roles' => array('oObjectDelete'),
             ),
             array('deny',  // deny all users
                 'users'=>array('*'),
@@ -90,8 +103,8 @@ class ObjectsController extends Controller
 
         $Collection = Collections::model()->findByPk($collectionId);
 
-        if (empty($collectionId) || empty($Collection) || $Collection->temporary == 1) {
-            throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
+        if (empty($Collection) || $Collection->temporary == 1) {
+            throw new ObjectsControllerException();
         }
 
         $filterChain->run();
@@ -104,20 +117,151 @@ class ObjectsController extends Controller
 	 * @return Objects the loaded model
 	 * @throws CHttpException
 	 */
-	public function loadModel($id)
+	public function loadObject($id)
 	{
-        if (!empty($id)) {
-            if (empty($this->model)) {
-                $this->model = Objects::model()->findByPk($id);
-
-                if (empty($this->model)) {
-                    throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
-                }
-            }
-
-            return $this->model;
-        } else {
+        if (empty($id)) {
             return null;
         }
+
+        if (empty($this->object)) {
+
+            $this->object = Objects::model()->findByPk($id);
+
+            if (empty($this->object)) {
+                throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
+            }
+        }
+
+        return $this->object;
 	}
+
+    /**
+     * Возвращает модель коллекции, к которой принадлежит объект
+     * @param $id
+     * @return array|mixed|null
+     * @throws ObjectsControllerException
+     */
+    public function loadCollection($id)
+    {
+        if (empty($id)) {
+            return null;
+        }
+
+        if (empty($this->collection)) {
+
+            $Object = $this->loadObject($id);
+
+            $this->collection = $Object->collection;
+
+            if (empty($this->collection)) {
+                throw new ObjectsControllerException();
+            }
+        }
+
+        return $this->collection;
+
+    }
+
+    /**
+     * Просмотр объекта
+     * @param string $id айди объекта
+     * @param string $iv как отображать изображения: th - картинками, ls - списком, tb - таблицей
+     */
+    public function actionView($id, $iv = 'th')
+    {
+        $Object = $this->loadObject($id);
+        $Collection = $this->loadCollection($id);
+
+        // как отображать изображения
+        switch ($iv) {
+            case 'th': // картинками
+                $renderViewImages = '_viewImagesThumbnails';
+                break;
+            case 'ls': // списком
+                $renderViewImages = '_viewImagesList';
+                break;
+            case 'tb': // таблицей
+                $renderViewImages = '_viewImagesTable';
+                break;
+            default: // картинками
+                $renderViewImages = '_viewImagesThumbnails';
+        }
+
+        $ImagesDataProvider = new CActiveDataProvider(
+            'Images',
+            array(
+                'criteria' => array(
+                    'condition' => 'object_id = :object_id',
+                    'params' => array(':object_id' => $id),
+                    'with' => array('photoType'),
+                ),
+            )
+        );
+
+        // параметры страницы
+        $this->pageTitle = array($Collection->name, $Object->name);
+        $this->breadcrumbs = array($Collection->name => array('collections/view', 'id' => $Collection->id), $Object->name);
+        $this->pageName = $Object->name;
+
+        $pageMenu = array();
+
+        $pageMenu[] = array(
+            'label' => Yii::t('objects', 'Редактировать объект'),
+            'url' => '#',
+        );
+        if (Yii::app()->user->checkAccess('oObjectDelete')) {
+            $pageMenu[] = array(
+                'label' => Yii::t('objects', 'Удалить объект'),
+                'url' => $this->createUrl('delete', array('id' => $id)),
+                'itemOptions' => array(
+                    'class' => '_deleteObject',
+                    'data-dialog-title' => CHtml::encode(Yii::t('objects', 'Удалить объект?')),
+                    'data-dialog-message' => CHtml::encode(Yii::t('objects', 'Вы уверены, что хотите удалить объект? Его нельзя будет восстановить!')),
+                )
+            );
+        }
+
+        $pageMenu[] = array(
+            'label' => Yii::t('objects', 'Добавить объект во временную коллекцию'),
+            'url' => '#',
+        );
+        $pageMenu[] = array(
+            'label' => Yii::t('objects', 'Переместить объект в другую коллекцию'),
+            'url' => '#',
+        );
+
+        $this->pageMenu = $pageMenu;
+
+        $this->render(
+            'view',
+            array(
+                'Object' => $Object,
+                'renderViewImages' => $renderViewImages,
+                'ImagesDataProvider' => $ImagesDataProvider
+            )
+        );
+    }
+
+    /**
+     * Удаляет объект
+     * @param integer $id айди объекта
+     */
+    public function actionDelete($id)
+    {
+        $Collection = $this->loadCollection($id);
+
+        if (DeleteHelper::deleteObjectFromNormalCollection($id)) {
+            Yii::app()->user->setFlash(
+                'success',
+                Yii::t('objects', 'Объект удален')
+            );
+            $this->redirect(array('collections/view', 'id' => $Collection->id));
+        } else {
+            Yii::app()->user->setFlash(
+                'error',
+                Yii::t('objects', 'Объект не удален. У объекта не должно быть относящихся к нему изображений, чтобы его можно было удалить')
+            );
+            $this->redirect(Yii::app()->request->urlReferrer);
+        }
+    }
 }
