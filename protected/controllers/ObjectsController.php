@@ -37,6 +37,10 @@ class ObjectsController extends Controller
                 ),
             ),
             array('allow',
+                'actions' => array('update'),
+                'roles' => array('oObjectEdit'),
+            ),
+            array('allow',
                 'actions' => array('delete'),
                 'roles' => array('oObjectDelete'),
             ),
@@ -205,10 +209,12 @@ class ObjectsController extends Controller
 
         $pageMenu = array();
 
-        $pageMenu[] = array(
-            'label' => Yii::t('objects', 'Редактировать объект'),
-            'url' => '#',
-        );
+        if (Yii::app()->user->checkAccess('oObjectEdit')) {
+            $pageMenu[] = array(
+                'label' => Yii::t('objects', 'Редактировать объект'),
+                'url' => $this->createUrl('update', array('id' => $id)),
+            );
+        }
         if (Yii::app()->user->checkAccess('oObjectDelete')) {
             $pageMenu[] = array(
                 'label' => Yii::t('objects', 'Удалить объект'),
@@ -263,5 +269,53 @@ class ObjectsController extends Controller
             );
             $this->redirect(Yii::app()->request->urlReferrer);
         }
+    }
+
+    /**
+     * Редактирование объекта
+     * @param int $id айди объекта
+     * @throws Exception
+     */
+    public function actionUpdate($id)
+    {
+        $Object = $this->loadObject($id);
+        $Collection = $this->loadCollection($id);
+
+        Yii::import( "xupload.models.XUploadForm" );
+        $PhotoUploadModel = new MyXUploadForm;
+
+        $view = '_formObject';
+
+        if(isset($_POST['Objects']))
+        {
+            $Object->attributes = $_POST['Objects'];
+
+            $transaction = Yii::app()->db->beginTransaction();
+
+            try {
+                if ($Object->save()) {
+                    $transaction->commit();
+                    $this->redirect(array('view','id'=>$Object->id));
+                } else {
+                    $transaction->rollback();
+                    PreviewHelper::clearUserPreviewsUploads();
+                }
+            } catch (Exception $e) {
+                $transaction->rollback();
+                PreviewHelper::clearUserPreviewsUploads();
+                throw $e;
+            }
+        }
+
+        // параметры страницы
+        $this->pageTitle = array($Collection->name, $Object->name, Yii::t('objects', 'Редактирование объекта'));
+        $this->breadcrumbs = array($Collection->name => array('collections/view', 'id' => $Collection->id), $Object->name => array('objects/view', 'id' => $Object->id), Yii::t('objects', 'Редактирование объекта'));
+        $this->pageName = $Object->name;
+
+        $this->render('update',array(
+            'Object' => $Object,
+            'photoUploadModel' => $PhotoUploadModel,
+            'view' => $view
+        ));
     }
 }
