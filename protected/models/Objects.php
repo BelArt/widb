@@ -51,10 +51,12 @@ class Objects extends ActiveRecord
 
             array('name, description, type_id, inventory_number, code', 'required'),
             array('has_preview', 'boolean'),
-            array('author_id, type_id, sort', 'application.components.validators.EmptyOrPositiveIntegerValidator'),
+            array('author_id, type_id, sort', 'application.components.validators.EmptyOrPositiveIntegerValidator', 'skipOnError' => true),
             array('period, code, department, keeper', 'length', 'max'=>150),
             array('inventory_number', 'length', 'max'=>50),
             array('width, height, depth', 'numerical', 'numberPattern' => '/^\d\d{0,2}(\.\d{1,2})?$/', 'message' => Yii::t('objects', 'значение должно быть в формате xxx.xx'), 'allowEmpty' => true),
+            array('code', 'application.components.validators.CodeValidator', 'skipOnError' => true),
+
 
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.

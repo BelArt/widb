@@ -206,21 +206,6 @@ class CollectionsController extends Controller
             throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
         }
 
-        // как отображать дочерние коллекции
-        /*switch ($cv) {
-            case 'th': // картинками
-                $renderViewChildCollections = '_viewChildCollectionsThumbnails';
-                break;
-            case 'ls': // списком
-                $renderViewChildCollections = '_viewChildCollectionsList';
-                break;
-            case 'tb': // таблицей
-                $renderViewChildCollections = '_viewChildCollectionsTable';
-                break;
-            default: // картинками
-                $renderViewChildCollections = '_viewChildCollectionsThumbnails';
-        }*/
-
         // как отображать объекты в коллекции
         switch ($ov) {
             case 'th': // картинками
@@ -255,16 +240,6 @@ class CollectionsController extends Controller
         $ObjectsCriteria->with = array('author');
 
         $ObjectsDataProvider = new CActiveDataProvider('Objects', array('criteria' => $ObjectsCriteria));
-
-        /*$ChildCollectionsDataProvider = new CActiveDataProvider(
-            'Collections',
-            array(
-                'criteria' => array(
-                    'condition' => 'parent_id = :parent_id',
-                    'params' => array(':parent_id' => $id)
-                ),
-            )
-        );*/
 
         // параметры страницы
         $this->pageTitle = array($model->name);
