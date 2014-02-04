@@ -38,7 +38,7 @@ class ActiveRecord extends CActiveRecord
                 $this->user_modify = $userId;
                 break;
             default:
-                throw new CException(Yii::t('common', 'Установлен неизвестный сценарий!'));
+                throw new ActiveRecordException();
         }
 
         return true;
@@ -71,14 +71,30 @@ class ActiveRecord extends CActiveRecord
             throw new ActiveRecordException();
         }
     }
-    /*public function deleteRecord()
-    {
-        $this->scenario = 'delete';
-        $this->deleted = 1;
-        if ($this->save()) {
-            return true;
-        }
-        return false;
-    }*/
 
-} 
+    /**
+     * Проверяет, действительно ли есть картинка превью на сервере
+     * @param string $size какое превью проверяем - 'small', 'medium', 'big' или 'original'
+     * @throws CException
+     * @return bool
+     */
+    public function reallyHasPreview($size = 'medium')
+    {
+        if (!in_array($size, array('small', 'medium', 'big', 'original'))) {
+            throw new ActiveRecordException();
+        }
+
+        if (!in_array(get_class($this), array('Collections', 'Objects', 'Images'))) {
+            throw new ActiveRecordException();
+        }
+
+        if ($this->isNewRecord) {
+            throw new ActiveRecordException();
+        }
+
+        $previewUrl = PreviewHelper::getPreviewUrl($this, $size);
+
+        return !empty($previewUrl);
+    }
+
+}
