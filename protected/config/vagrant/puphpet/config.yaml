@@ -112,7 +112,7 @@ drush:
     settings:
         drush.tag_branch: 6.x
 mysql:
-    root_password: herounit1
+    root_password: widbpass
     phpmyadmin: 0
     adminer: 0
     databases:
