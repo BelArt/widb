@@ -190,8 +190,59 @@ class SiteController extends Controller
             case 'deleteChildCollections':
                 $this->deleteChildCollections($params);
                 break;
+            // добавляем объекты во Временную коллекцию
+            case 'addObjectsToTempCollection':
+                $this->addObjectsToTempCollection($params);
+                break;
         }
 
+    }
+
+    /**
+     * добавляем объекты во Временную коллекцию
+     * @param mixed $params параметры
+     * @throws CHttpException
+     */
+    protected function addObjectsToTempCollection($params)
+    {
+        // всякие проверки
+        if (empty($params['objectIds']) || empty($params['tempCollectionId'])) {
+            return;
+        }
+
+        if (
+            !Yii::app()->user->checkAccess(
+                'oObjectToTempCollectionAdd_Collection',
+                array(
+                    'Collection' => Collections::model()->findByPk($params['tempCollectionId'])
+                )
+            )
+        ) {
+            return;
+        }
+
+        foreach ($params['objectIds'] as $objectId) {
+            $Object = Objects::model()->with('collection')->findByPk($objectId);
+            if (empty($Object)) { return;}
+            if (
+                !Yii::app()->user->checkAccess(
+                    'oObjectToTempCollectionAdd_Object',
+                    array(
+                        'Collection' => $Object->collection
+                    )
+                )
+            ) {
+                return;
+            }
+        }
+
+        // собственно добавление
+        Yii::app()->user->setFlash(
+            'success',
+            count($params['objectIds']) == 1
+                ? Yii::t('objects', 'Объект добавлен в выбранную Временную коллекцию')
+                : Yii::t('objects', 'Все объекты добавлены в выбранную Временную коллекцию')
+        );
     }
 
     /**

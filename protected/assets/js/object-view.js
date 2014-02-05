@@ -89,4 +89,55 @@ $(function(){
         return false;
     });
 
+
+    $('._addObjectToTempCollection').click(function(){
+
+        var $this = $(this);
+
+
+        showDialog(
+            $this.data('dialog-title'),
+            $this.data('dialog-message'),
+            function() {
+
+                var $tempCollectionSelect = $('._tempCollectionSelect');
+                var objectIds = [$tempCollectionSelect.data('object-id')];
+                var tempCollectionId = $tempCollectionSelect.children(':selected').val();
+                //console.log(objectIds, tempCollectionId);
+                closeDialog();
+
+                $.ajax({
+                    url: '/site/ajax',
+                    type: 'POST',
+                    data: {
+                        action: 'addObjectsToTempCollection',
+                        params: {
+                            objectIds: objectIds,
+                            tempCollectionId: tempCollectionId
+                        }
+                    },
+                    success: function() {
+                        window.location.reload(true);
+                    },
+                    error: function(jqXHR) {
+
+                        showDialog(
+                            getDialogErrorMessageTitle(),
+                            jqXHR.responseText,
+                            function() {
+                                closeDialog();
+                            }
+                        );
+
+                    }
+                });
+            },
+            function() {
+                closeDialog();
+            }
+        );
+
+        return false;
+    });
+
 });
