@@ -227,10 +227,19 @@ class ObjectsController extends Controller
             );
         }
 
-        $pageMenu[] = array(
-            'label' => Yii::t('objects', 'Добавить объект во временную коллекцию'),
-            'url' => '#',
-        );
+        $tempCollections = Collections::getTempCollectionsAllowedToUser(Yii::app()->user->id);
+        if (!empty($tempCollections)) {
+            $pageMenu[] = array(
+                'label' => Yii::t('objects', 'Добавить объект во временную коллекцию'),
+                'url' => '#',
+                'itemOptions' => array(
+                    'class' => '_addObjectToTempCollection',
+                    'data-dialog-title' => CHtml::encode(Yii::t('objects', 'Выберите временную коллекцию, в которую хотите добавить объект')),
+                    'data-dialog-message' => CHtml::encode($this->renderPartial('_tempCollectionsSelect', array('Object' => $Object, 'tempCollections' => $tempCollections), true)),
+                )
+            );
+        }
+
         $pageMenu[] = array(
             'label' => Yii::t('objects', 'Переместить объект в другую коллекцию'),
             'url' => '#',

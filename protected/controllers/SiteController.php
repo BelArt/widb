@@ -190,8 +190,84 @@ class SiteController extends Controller
             case 'deleteChildCollections':
                 $this->deleteChildCollections($params);
                 break;
+            // добавляем объекты во Временную коллекцию
+            case 'addObjectsToTempCollection':
+                $this->addObjectsToTempCollection($params);
+                break;
         }
 
+    }
+
+    /**
+     * Добавляем объекты во Временную коллекцию.
+     * Если какие-то объекты из переданных уже есть в этой временной коллекции, то просто их игнорируем
+     * @param mixed $params параметры
+     * @throws SiteControllerException
+     * @throws Exception
+     */
+    protected function addObjectsToTempCollection($params)
+    {
+        /*
+         * всякие проверки
+         */
+
+        if (empty($params['objectIds']) || empty($params['tempCollectionId'])) {
+            throw new SiteControllerException();
+        }
+
+        if (
+            !Yii::app()->user->checkAccess(
+                'oObjectToTempCollectionAdd_Collection',
+                array(
+                    'Collection' => Collections::model()->findByPk($params['tempCollectionId'])
+                )
+            )
+        ) {
+            throw new SiteControllerException();
+        }
+
+        $Criteria = new CDbCriteria();
+        $Criteria->addInCondition('t.id', $params['objectIds']);
+
+        $objects = Objects::model()->with('collection')->findAll($Criteria);
+
+        // если по каким-то айдшникам объектов не удалось найти запись в БД - например, айдишники непраильные
+        if (count($objects) != count($params['objectIds'])) {
+            throw new SiteControllerException();
+        }
+
+        // проверим все объекты на доступность юзеру
+        foreach ($objects as $Object) {
+
+            if (!Yii::app()->user->checkAccess('oObjectToTempCollectionAdd_Object', array(
+                    'Collection' => $Object->collection
+            ))) {
+                throw new SiteControllerException();
+            }
+        }
+
+        /*
+         * собственно добавление
+         */
+
+        $Transaction = Yii::app()->db->beginTransaction();
+
+        try {
+            foreach ($objects as $Object) {
+                $Object->addToTempCollection($params['tempCollectionId']);
+            }
+            $Transaction->commit();
+        } catch (Exception $Exception) {
+            $Transaction->rollback();
+            throw $Exception;
+        }
+
+        Yii::app()->user->setFlash(
+            'success',
+            count($params['objectIds']) == 1
+                ? Yii::t('objects', 'Объект добавлен в выбранную Временную коллекцию')
+                : Yii::t('objects', 'Все объекты добавлены в выбранную Временную коллекцию')
+        );
     }
 
     /**

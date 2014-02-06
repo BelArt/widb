@@ -234,4 +234,67 @@ $(function(){
         return false;
     });
 
+    /**
+     * Добавление объектов во временную коллекцию
+     * @todo сделать колбэк с параметрами
+     */
+    $('._addObjectsToTempCollection').click(function(){
+
+        var $this = $(this);
+        var objectIds = [];
+        $('._objectItem:checked').each(function(){
+            objectIds.push($(this).data('object-id'));
+        });
+        // если не выбрали объекты - ничего не делаем
+        if (objectIds.length == 0) {
+            return false;
+        }
+
+        showDialog(
+            $this.data('dialog-title'),
+            $this.data('dialog-message'),
+            function() {
+
+                var objectIds = [];
+                $('._objectItem:checked').each(function(){
+                    objectIds.push($(this).data('object-id'));
+                });
+                var tempCollectionId = $('._tempCollectionSelect').children(':selected').val();
+
+                closeDialog();
+
+                $.ajax({
+                    url: '/site/ajax',
+                    type: 'POST',
+                    data: {
+                        action: 'addObjectsToTempCollection',
+                        params: {
+                            objectIds: objectIds,
+                            tempCollectionId: tempCollectionId
+                        }
+                    },
+                    success: function() {
+                        window.location.reload(true);
+                    },
+                    error: function(jqXHR) {
+
+                        showDialog(
+                            getDialogErrorMessageTitle(),
+                            jqXHR.responseText,
+                            function() {
+                                closeDialog();
+                            }
+                        );
+
+                    }
+                });
+            },
+            function() {
+                closeDialog();
+            }
+        );
+
+        return false;
+    });
+
 });

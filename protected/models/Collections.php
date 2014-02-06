@@ -422,9 +422,30 @@ class Collections extends ActiveRecord
     }
 
     /**
+     * Возвращает массив с AR временных коллекций, доступных пользователю
+     * @param integer $userId айди пользователя
+     * @return array массив с AR временных коллекций, доступных пользователю или пустой, если таких нет
+     */
+    public static function getTempCollectionsAllowedToUser($userId)
+    {
+        $ids = self::getIdsOfTempCollectionsAllowedToUser($userId);
+
+        if (empty($ids)) {
+            return $ids;
+        }
+
+        $Criteria = new CDbCriteria();
+        $Criteria->addInCondition('id', $ids);
+        $Criteria->addCondition('temporary = 1');
+
+        return self::model()->findAll($Criteria);
+    }
+
+    /**
      * Возвращает массив с айди временных коллекций, доступных пользователю
      * @param integer $userId айди пользователя
      * @return array массив с айди коллекций, доступных пользователю
+     * @throws CollectionsException
      */
     public static function getIdsOfTempCollectionsAllowedToUser($userId)
     {
@@ -436,6 +457,10 @@ class Collections extends ActiveRecord
                 'select' => 'role'
             )
         );
+
+        if (empty($User)) {
+            throw new CollectionsException();
+        }
 
         // все временные коллекции
         $collections = self::model()->findAll(

@@ -2,9 +2,10 @@
 /* @var $this CollectionsController */
 /* @var $ObjectsDataProvider CActiveDataProvider */
 /* @var $model Collections */
+/* @var $tempCollectionsAllowedToUser array */
 ?>
 
-<?php $this->renderPartial('_viewObjectsMenu', array('model' => $model)); ?>
+<?php $this->renderPartial('_viewObjectsMenu', array('model' => $model, 'tempCollectionsAllowedToUser' => $tempCollectionsAllowedToUser)); ?>
 
 <div class="row-fluid">
     <?php

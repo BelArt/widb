@@ -22,6 +22,7 @@ function showDialog(title, msg, okButtonCallback, cancelButtonCallback) {
         buttons[$dialog.data('button-cancel')] = cancelButtonCallback;
     }
 
+    msg = $("<div/>").html(msg).text();
     $dialog.html(msg);
 
     $dialog.dialog({
