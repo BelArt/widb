@@ -145,6 +145,8 @@ class CollectionsController extends Controller
             )
         );
 
+        $tempCollectionsAllowedToUser = Collections::getTempCollectionsAllowedToUser(Yii::app()->user->id);
+
         // параметры страницы
         $this->pageTitle = array($model->name);
         $this->breadcrumbs = array($model->name);
@@ -186,6 +188,7 @@ class CollectionsController extends Controller
                 'ChildCollectionsDataProvider' => $ChildCollectionsDataProvider,
                 'renderViewChildCollections' => $renderViewChildCollections,
                 'renderViewObjects' => $renderViewObjects,
+                'tempCollectionsAllowedToUser' => $tempCollectionsAllowedToUser
             )
         );
 	}

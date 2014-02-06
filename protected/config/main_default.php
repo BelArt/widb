@@ -27,6 +27,9 @@ return array(
 		'application.models.*',
 		'application.components.*',
         'application.components.helpers.*',
+        'application.components.exceptions.*',
+        'application.components.actions.*',
+        'application.components.validators.*',
         'application.widgets.*',
 	),
 

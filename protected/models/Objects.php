@@ -329,4 +329,36 @@ class Objects extends ActiveRecord
 
         return in_array($Object->collection_id, Collections::getIdsOfCollectionsAllowedToUser($userId));
     }
+
+    /**
+     * Добавляет текущий объект во временную коллекцию
+     * @param int $tempCollectionId айди временной коллекции
+     * @throws ObjectsException
+     */
+    public function addToTempCollection($tempCollectionId)
+    {
+        $Collection = Collections::model()->findByPk($tempCollectionId);
+
+        if (empty($Collection) || $Collection->temporary == 0) {
+            throw new ObjectsException();
+        }
+
+        $TempCollectionObject = TempCollectionObject::model()->findByAttributes(array(
+            'collection_id' => $tempCollectionId,
+            'object_id' => $this->id
+        ));
+
+        if (!empty($TempCollectionObject)) {
+            return;
+        }
+
+        $TempCollectionObject = new TempCollectionObject();
+        $TempCollectionObject->collection_id = $tempCollectionId;
+        $TempCollectionObject->object_id = $this->id;
+
+        if (!$TempCollectionObject->save()) {
+            throw new ObjectsException();
+        }
+
+    }
 }

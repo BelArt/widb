@@ -199,15 +199,20 @@ class SiteController extends Controller
     }
 
     /**
-     * добавляем объекты во Временную коллекцию
+     * Добавляем объекты во Временную коллекцию.
+     * Если какие-то объекты из переданных уже есть в этой временной коллекции, то просто их игнорируем
      * @param mixed $params параметры
-     * @throws CHttpException
+     * @throws SiteControllerException
+     * @throws Exception
      */
     protected function addObjectsToTempCollection($params)
     {
-        // всякие проверки
+        /*
+         * всякие проверки
+         */
+
         if (empty($params['objectIds']) || empty($params['tempCollectionId'])) {
-            return;
+            throw new SiteControllerException();
         }
 
         if (
@@ -218,25 +223,45 @@ class SiteController extends Controller
                 )
             )
         ) {
-            return;
+            throw new SiteControllerException();
         }
 
-        foreach ($params['objectIds'] as $objectId) {
-            $Object = Objects::model()->with('collection')->findByPk($objectId);
-            if (empty($Object)) { return;}
-            if (
-                !Yii::app()->user->checkAccess(
-                    'oObjectToTempCollectionAdd_Object',
-                    array(
-                        'Collection' => $Object->collection
-                    )
-                )
-            ) {
-                return;
+        $Criteria = new CDbCriteria();
+        $Criteria->addInCondition('t.id', $params['objectIds']);
+
+        $objects = Objects::model()->with('collection')->findAll($Criteria);
+
+        // если по каким-то айдшникам объектов не удалось найти запись в БД - например, айдишники непраильные
+        if (count($objects) != count($params['objectIds'])) {
+            throw new SiteControllerException();
+        }
+
+        // проверим все объекты на доступность юзеру
+        foreach ($objects as $Object) {
+
+            if (!Yii::app()->user->checkAccess('oObjectToTempCollectionAdd_Object', array(
+                    'Collection' => $Object->collection
+            ))) {
+                throw new SiteControllerException();
             }
         }
 
-        // собственно добавление
+        /*
+         * собственно добавление
+         */
+
+        $Transaction = Yii::app()->db->beginTransaction();
+
+        try {
+            foreach ($objects as $Object) {
+                $Object->addToTempCollection($params['tempCollectionId']);
+            }
+            $Transaction->commit();
+        } catch (Exception $Exception) {
+            $Transaction->rollback();
+            throw $Exception;
+        }
+
         Yii::app()->user->setFlash(
             'success',
             count($params['objectIds']) == 1

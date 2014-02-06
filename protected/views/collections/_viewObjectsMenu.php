@@ -1,5 +1,7 @@
 <?php
 /* @var $model Collections */
+/* @var $tempCollectionsAllowedToUser array */
+
 
 if (!$model->temporary) {
 
@@ -8,11 +10,18 @@ if (!$model->temporary) {
         'label' => Yii::t('common', 'С отмеченными'),
         'itemOptions' => array('class' => 'nav-header')
     );
-    $items[] = array(
-        'label' => Yii::t('collections', 'Добавить во временную коллекцию'),
-        'url' => '#',
-        'itemOptions' => array('class' => 'small')
-    );
+    if (!empty($tempCollectionsAllowedToUser)) {
+        $items[] = array(
+            'label' => Yii::t('collections', 'Добавить во временную коллекцию'),
+            'url' => '#',
+            'itemOptions' => array(
+                'class' => 'small _addObjectsToTempCollection',
+                'data-dialog-title' => CHtml::encode(Yii::t('objects', 'Выберите временную коллекцию, в которую хотите добавить объекты')),
+                'data-dialog-message' => CHtml::encode($this->renderPartial('_tempCollectionsSelect', array('tempCollections' => $tempCollectionsAllowedToUser), true)),
+            )
+        );
+    }
+
     $items[] = array(
         'label' => Yii::t('common', 'Переместить'),
         'url' => '#',

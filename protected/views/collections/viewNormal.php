@@ -5,6 +5,7 @@
 /* @var $ChildCollectionsDataProvider CActiveDataProvider */
 /* @var $renderViewChildCollections string */
 /* @var $renderViewObjects string */
+/* @var $tempCollectionsAllowedToUser array */
 
 Yii::app()->clientScript->registerPackage('collectionView');
 ?>
@@ -22,7 +23,7 @@ $this->widget(
         'tabs' => array(
             array(
                 'label' => Yii::t('collections', 'Объекты в коллекции'),
-                'content' => $this->renderPartial($renderViewObjects, array('ObjectsDataProvider' => $ObjectsDataProvider, 'model' => $model), true),
+                'content' => $this->renderPartial($renderViewObjects, array('ObjectsDataProvider' => $ObjectsDataProvider, 'model' => $model, 'tempCollectionsAllowedToUser' => $tempCollectionsAllowedToUser), true),
                 'active' => (empty($_GET['tb']) || (!empty($_GET['tb']) && $_GET['tb'] == 'ob') || (!empty($_GET['tb']) && $_GET['tb'] != 'ob' && $_GET['tb'] != 'cc'))
             ),
             array(
