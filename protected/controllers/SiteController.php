@@ -215,11 +215,17 @@ class SiteController extends Controller
             throw new SiteControllerException();
         }
 
+        $Collection = Collections::model()->findByPk($params['tempCollectionId']);
+
+        if (empty($Collection) || $Collection->temporary == 0) {
+            throw new SiteControllerException();
+        }
+
         if (
             !Yii::app()->user->checkAccess(
                 'oObjectToTempCollectionAdd_Collection',
                 array(
-                    'Collection' => Collections::model()->findByPk($params['tempCollectionId'])
+                    'Collection' => $Collection
                 )
             )
         ) {
@@ -231,7 +237,7 @@ class SiteController extends Controller
 
         $objects = Objects::model()->with('collection')->findAll($Criteria);
 
-        // если по каким-то айдшникам объектов не удалось найти запись в БД - например, айдишники непраильные
+        // если по каким-то айдшникам объектов не удалось найти запись в БД - например, не все айдишники правильные
         if (count($objects) != count($params['objectIds'])) {
             throw new SiteControllerException();
         }
