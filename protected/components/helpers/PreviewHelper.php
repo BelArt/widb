@@ -387,6 +387,8 @@ class PreviewHelper extends CApplicationComponent
                 //throw new CException('Еще не готово');
                 // @todo доделать
                 break;
+            default:
+                throw new PreviewHelperException();
         }
 
         return $path;
@@ -772,6 +774,33 @@ class PreviewHelper extends CApplicationComponent
             }
 
             Yii::app()->user->setState(Yii::app()->params['xuploadStatePreviewsName'], null);
+        }
+    }
+
+    public static function moveObjectToOtherCollection(Objects $Object, Collections $Collection)
+    {
+        $objectFolder = self::getPreviewFolderPath($Object);
+
+        if (!file_exists($objectFolder)) {
+            return;
+        }
+
+        $collectionFolder = self::getPreviewFolderPath($Collection);
+        $newObjectFolder = $collectionFolder.DIRECTORY_SEPARATOR.$Object->code;
+
+        // по какой-то причине новая папка объекта уже есть в коллекции, куда хотим переместить объект - этого не должно быть!
+        if (file_exists($newObjectFolder)) {
+            throw new PreviewHelperException();
+        }
+
+        if (!rename($objectFolder, $newObjectFolder)) {
+            throw new PreviewHelperException();
+        }
+
+        if (!is_writable($newObjectFolder)) {
+            if (!chmod($newObjectFolder, 0777)) {
+                throw new PreviewHelperException();
+            }
         }
     }
 }

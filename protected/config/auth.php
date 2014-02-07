@@ -208,6 +208,12 @@ return array(
         'bizRule' => null,
         'data' => null
     ),
+    'oChangeObjectsCollection' => array(
+        'type' => CAuthItem::TYPE_OPERATION,
+        'description' => 'Перемещение Объекта из одной Коллекции в другую',
+        'bizRule' => null,
+        'data' => null
+    ),
     /*
      * Таски
      */
@@ -279,6 +285,7 @@ return array(
             'oObjectCreate',
             'oObjectEdit',
             'oObjectDelete',
+            'oChangeObjectsCollection',
             // Коллекции
             'oCollectionsView',
             'oCollectionView',

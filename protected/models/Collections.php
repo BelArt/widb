@@ -734,4 +734,21 @@ class Collections extends ActiveRecord
 
         parent::afterSave();
     }
+
+    /**
+     * Возвращает масиив AR всех обычных коллекций кроме той, чей айди передам параметром
+     * @param $collectionId айди коллекции, которую надо исключить
+     * @return CActiveRecord[]
+     */
+    public static function getAllNormalCollectionsExcept($collectionId)
+    {
+        $Criteria = new CDbCriteria();
+        $Criteria->addCondition('id <> :collection_id');
+        $Criteria->addCondition('temporary = 0');
+        $Criteria->params = array(':collection_id' => $collectionId);
+
+        return self::model()->findAll($Criteria);
+    }
+
+
 }

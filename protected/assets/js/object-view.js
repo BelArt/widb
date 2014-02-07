@@ -90,6 +90,9 @@ $(function(){
     });
 
 
+    /**
+     * Добавление объекта во временную коллекцию
+     */
     $('._addObjectToTempCollection').click(function(){
 
         var $this = $(this);
@@ -114,6 +117,58 @@ $(function(){
                         params: {
                             objectIds: objectIds,
                             tempCollectionId: tempCollectionId
+                        }
+                    },
+                    success: function() {
+                        window.location.reload(true);
+                    },
+                    error: function(jqXHR) {
+
+                        showDialog(
+                            getDialogErrorMessageTitle(),
+                            jqXHR.responseText,
+                            function() {
+                                closeDialog();
+                            }
+                        );
+
+                    }
+                });
+            },
+            function() {
+                closeDialog();
+            }
+        );
+
+        return false;
+    });
+
+    /**
+     * Перемещение объекта в другую коллекцию
+     */
+    $('._moveObjectToOtherCollection').click(function(){
+
+        var $this = $(this);
+
+        showDialog(
+            $this.data('dialog-title'),
+            $this.data('dialog-message'),
+            function() {
+
+                var $collectionSelect = $('._collectionToMoveToSelect');
+                var objectIds = [$collectionSelect.data('object-id')];
+                var collectionId = $collectionSelect.children(':selected').val();
+                //console.log(objectIds, tempCollectionId);
+                closeDialog();
+
+                $.ajax({
+                    url: '/site/ajax',
+                    type: 'POST',
+                    data: {
+                        action: 'moveObjectsToOtherCollection',
+                        params: {
+                            objectIds: objectIds,
+                            collectionId: collectionId
                         }
                     },
                     success: function() {

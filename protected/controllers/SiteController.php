@@ -194,18 +194,82 @@ class SiteController extends Controller
             case 'addObjectsToTempCollection':
                 $this->addObjectsToTempCollection($params);
                 break;
+            // перемещаем объекты в другую коллекцию
+            case 'moveObjectsToOtherCollection':
+                $this->moveObjectsToOtherCollection($params);
+                break;
         }
 
     }
 
     /**
-     * Добавляем объекты во Временную коллекцию.
-     * Если какие-то объекты из переданных уже есть в этой временной коллекции, то просто их игнорируем
-     * @param mixed $params параметры
+     * Перемещает объекты в другую коллекцию
+     * @param array $params
      * @throws SiteControllerException
      * @throws Exception
      */
-    protected function addObjectsToTempCollection($params)
+    protected function moveObjectsToOtherCollection(array $params)
+    {
+        /*
+         * всякие проверки
+         */
+
+        if (!Yii::app()->user->checkAccess('oChangeObjectsCollection')) {
+            throw new SiteControllerException();
+        }
+
+        if (empty($params['objectIds']) || empty($params['collectionId'])) {
+            throw new SiteControllerException();
+        }
+
+        $Collection = Collections::model()->findByPk($params['collectionId']);
+
+        if (empty($Collection) || $Collection->temporary == 1) {
+            throw new SiteControllerException();
+        }
+
+        $Criteria = new CDbCriteria();
+        $Criteria->addInCondition('t.id', $params['objectIds']);
+
+        $objects = Objects::model()->findAll($Criteria);
+
+        // если по каким-то айдшникам объектов не удалось найти запись в БД - например, не все айдишники правильные
+        if (count($objects) != count($params['objectIds'])) {
+            throw new SiteControllerException();
+        }
+
+        /*
+         * собственно перемещение
+         */
+
+        $Transaction = Yii::app()->db->beginTransaction();
+
+        try {
+            foreach ($objects as $Object) {
+                $Object->moveToCollection($params['collectionId']);
+            }
+            $Transaction->commit();
+        } catch (Exception $Exception) {
+            $Transaction->rollback();
+            throw $Exception;
+        }
+
+        Yii::app()->user->setFlash(
+            'success',
+            count($params['objectIds']) == 1
+                ? Yii::t('objects', 'Объект перемещен')
+                : Yii::t('objects', 'Все объекты перемещены')
+        );
+    }
+
+    /**
+     * Добавляем объекты во Временную коллекцию.
+     * Если какие-то объекты из переданных уже есть в этой временной коллекции, то просто их игнорируем
+     * @param array $params параметры
+     * @throws SiteControllerException
+     * @throws Exception
+     */
+    protected function addObjectsToTempCollection(array $params)
     {
         /*
          * всякие проверки
