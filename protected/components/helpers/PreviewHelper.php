@@ -777,6 +777,12 @@ class PreviewHelper extends CApplicationComponent
         }
     }
 
+    /**
+     * Перемещает превью объекта при перемещении объекта в другую коллекцию
+     * @param Objects $Object перемещаемый объект
+     * @param Collections $Collection новая коллекцию объекта - куда его перемещаем
+     * @throws PreviewHelperException
+     */
     public static function moveObjectToOtherCollection(Objects $Object, Collections $Collection)
     {
         $objectFolder = self::getPreviewFolderPath($Object);
@@ -793,12 +799,33 @@ class PreviewHelper extends CApplicationComponent
             throw new PreviewHelperException();
         }
 
+        if (!file_exists($collectionFolder)) {
+            if (!mkdir($collectionFolder, 0777, true)) {
+                throw new PreviewHelperException();
+            }
+        }
+
+        if (!is_writable($collectionFolder)) {
+            if (!chmod($collectionFolder, 0777)) {
+                throw new PreviewHelperException();
+            }
+        }
+
         if (!rename($objectFolder, $newObjectFolder)) {
             throw new PreviewHelperException();
         }
 
         if (!is_writable($newObjectFolder)) {
             if (!chmod($newObjectFolder, 0777)) {
+                throw new PreviewHelperException();
+            }
+        }
+
+        // удаляем пустую папку старой коллекции
+        $oldCollectionFolder = self::getPreviewFolderPath($Object->collection);
+        $files = array_diff(scandir($oldCollectionFolder), array('..', '.'));
+        if (empty($files)) {
+            if (!rmdir($oldCollectionFolder)) {
                 throw new PreviewHelperException();
             }
         }
