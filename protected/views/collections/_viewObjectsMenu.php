@@ -1,6 +1,7 @@
 <?php
 /* @var $model Collections */
 /* @var $tempCollectionsAllowedToUser array */
+/* @var $collectionsToMoveTo array */
 
 
 if (!$model->temporary) {
@@ -10,6 +11,7 @@ if (!$model->temporary) {
         'label' => Yii::t('common', 'С отмеченными'),
         'itemOptions' => array('class' => 'nav-header')
     );
+
     if (!empty($tempCollectionsAllowedToUser)) {
         $items[] = array(
             'label' => Yii::t('collections', 'Добавить во временную коллекцию'),
@@ -22,11 +24,18 @@ if (!$model->temporary) {
         );
     }
 
-    $items[] = array(
-        'label' => Yii::t('common', 'Переместить'),
-        'url' => '#',
-        'itemOptions' => array('class' => 'small')
-    );
+    if (!empty($collectionsToMoveTo) && Yii::app()->user->checkAccess('oChangeObjectsCollection')) {
+        $items[] = array(
+            'label' => Yii::t('common', 'Переместить'),
+            'url' => '#',
+            'itemOptions' => array(
+                'class' => 'small _moveObjectsToOtherCollection',
+                'data-dialog-title' => CHtml::encode(Yii::t('objects', 'Выберите коллекцию, в которую хотите переместить объект/объекты')),
+                'data-dialog-message' => CHtml::encode($this->renderPartial('_collectionsToMoveToSelect', array('collectionsToMoveTo' => $collectionsToMoveTo), true)),
+            )
+        );
+    }
+
     if (Yii::app()->user->checkAccess('oObjectDelete')) {
         $items[] = array(
             'label' => Yii::t('common', 'Удалить'),

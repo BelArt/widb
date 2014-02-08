@@ -3,9 +3,10 @@
 /* @var $ObjectsDataProvider CActiveDataProvider */
 /* @var $model Collections */
 /* @var $tempCollectionsAllowedToUser array */
+/* @var $collectionsToMoveTo array */
 ?>
 
-<?php $this->renderPartial('_viewObjectsMenu', array('model' => $model, 'tempCollectionsAllowedToUser' => $tempCollectionsAllowedToUser)); ?>
+<?php $this->renderPartial('_viewObjectsMenu', array('model' => $model, 'tempCollectionsAllowedToUser' => $tempCollectionsAllowedToUser, 'collectionsToMoveTo' => $collectionsToMoveTo)); ?>
 
 <div class="row-fluid">
 <?php

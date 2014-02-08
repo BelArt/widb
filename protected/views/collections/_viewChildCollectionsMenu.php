@@ -13,7 +13,9 @@ $this->widget(
             array(
                 'label' => Yii::t('common', 'Переместить'),
                 'url' => '#',
-                'itemOptions' => array('class' => 'small')
+                'itemOptions' => array(
+                    'class' => 'small ',
+                )
             ),
             array(
                 'label' => Yii::t('common', 'Удалить'),

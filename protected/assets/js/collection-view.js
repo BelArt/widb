@@ -297,4 +297,66 @@ $(function(){
         return false;
     });
 
+    /**
+     * Перемещение объектов в другую коллекцию
+     */
+    $('._moveObjectsToOtherCollection').click(function(){
+
+        var $this = $(this);
+        var objectIds = [];
+        $('._objectItem:checked').each(function(){
+            objectIds.push($(this).data('object-id'));
+        });
+        // если не выбрали объекты - ничего не делаем
+        if (objectIds.length == 0) {
+            return false;
+        }
+
+        showDialog(
+            $this.data('dialog-title'),
+            $this.data('dialog-message'),
+            function() {
+
+                var objectIds = [];
+                $('._objectItem:checked').each(function(){
+                    objectIds.push($(this).data('object-id'));
+                });
+                var collectionId = $('._collectionToMoveToSelect').children(':selected').val();
+                //console.log(objectIds, tempCollectionId);
+                closeDialog();
+
+                $.ajax({
+                    url: '/site/ajax',
+                    type: 'POST',
+                    data: {
+                        action: 'moveObjectsToOtherCollection',
+                        params: {
+                            objectIds: objectIds,
+                            collectionId: collectionId
+                        }
+                    },
+                    success: function() {
+                        window.location.reload(true);
+                    },
+                    error: function(jqXHR) {
+
+                        showDialog(
+                            getDialogErrorMessageTitle(),
+                            jqXHR.responseText,
+                            function() {
+                                closeDialog();
+                            }
+                        );
+
+                    }
+                });
+            },
+            function() {
+                closeDialog();
+            }
+        );
+
+        return false;
+    });
+
 });
