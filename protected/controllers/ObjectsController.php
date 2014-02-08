@@ -240,10 +240,18 @@ class ObjectsController extends Controller
             );
         }
 
-        $pageMenu[] = array(
-            'label' => Yii::t('objects', 'Переместить объект в другую коллекцию'),
-            'url' => '#',
-        );
+        if (Yii::app()->user->checkAccess('oChangeObjectsCollection')) {
+            $collectionsToMoveTo = Collections::getAllNormalCollectionsExcept($Collection->id);
+            $pageMenu[] = array(
+                'label' => Yii::t('objects', 'Переместить объект в другую коллекцию'),
+                'url' => '#',
+                'itemOptions' => array(
+                    'class' => '_moveObjectToOtherCollection',
+                    'data-dialog-title' => CHtml::encode(Yii::t('objects', 'Выберите коллекцию, в которую хотите переместить объект/объекты')),
+                    'data-dialog-message' => CHtml::encode($this->renderPartial('_collectionsToMoveToSelect', array('Object' => $Object, 'collectionsToMoveTo' => $collectionsToMoveTo), true)),
+                )
+            );
+        }
 
         $this->pageMenu = $pageMenu;
 

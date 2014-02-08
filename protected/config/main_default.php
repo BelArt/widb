@@ -62,6 +62,7 @@ return array(
             'emulatePrepare' => true,
             'charset' => 'utf8',
             'tablePrefix'=>'tbl_',
+            'pdoClass' => 'NestedPDO',
         ),
 		'urlManager'=>array(
 			'urlFormat'=>'path',

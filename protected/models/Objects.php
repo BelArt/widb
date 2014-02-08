@@ -361,4 +361,33 @@ class Objects extends ActiveRecord
         }
 
     }
+
+    public function moveToCollection($param)
+    {
+        $Collection = null;
+
+        if (is_numeric($param)) {
+            $Collection = Collections::model()->findByPk($param);
+        } elseif (is_object($param) && get_class($param) == 'Collections') {
+            $Collection = $param;
+        }
+
+        if (empty($Collection) || $Collection->temporary == 1) {
+            throw new ObjectsException();
+        }
+
+        $Transaction = Yii::app()->db->beginTransaction();
+        try {
+            $this->collection_id = $Collection->id;
+            if ($this->save()) {
+                PreviewHelper::moveObjectToOtherCollection($this, $Collection);
+                $Transaction->commit();
+            } else {
+                $Transaction->rollback();
+            }
+        } catch (Exception $Exception) {
+            $Transaction->rollback();
+            throw $Exception;
+        }
+    }
 }
