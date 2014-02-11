@@ -33,8 +33,11 @@ $(function() {
                 $('._uploadFiles_previewBlock').remove();
                 $('._uploadFiles_xuploadBlock').show();
 
-                // и снимаем галочку Есть превью
-                $('._hasPreviewCheckbox').removeAttr('checked');
+                /*
+                 * См. WIDB-79
+                    // и снимаем галочку Есть превью
+                    $('._hasPreviewCheckbox').removeAttr('checked');
+                */
 
             },
             error: function() {
