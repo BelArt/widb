@@ -75,7 +75,7 @@ class ActiveRecord extends CActiveRecord
     /**
      * Проверяет, действительно ли есть картинка превью на сервере
      * @param string $size какое превью проверяем - 'small', 'medium', 'big' или 'original'
-     * @throws CException
+     * @throws ActiveRecordException
      * @return bool
      */
     public function reallyHasPreview($size = 'medium')
@@ -95,6 +95,26 @@ class ActiveRecord extends CActiveRecord
         $previewUrl = PreviewHelper::getPreviewUrl($this, $size);
 
         return !empty($previewUrl);
+    }
+
+    /**
+     * Проверяет, есть ли папка с картинками превью на сервере
+     * @return bool
+     * @throws ActiveRecordException
+     */
+    public function reallyHasPreviews()
+    {
+        if (!in_array(get_class($this), array('Collections', 'Objects', 'Images'))) {
+            throw new ActiveRecordException();
+        }
+
+        if ($this->isNewRecord) {
+            throw new ActiveRecordException();
+        }
+
+        $previewFolder = PreviewHelper::getPreviewFolderPath($this);
+
+        return file_exists($previewFolder) && is_dir($previewFolder);
     }
 
 }
