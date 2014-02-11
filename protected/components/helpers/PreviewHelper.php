@@ -606,10 +606,14 @@ class PreviewHelper extends CApplicationComponent
 
         }
 
-        $Model->has_preview = 0;
-        if (!$Model->save()) {
-            throw new PreviewHelperException();
-        }
+        /*
+         * WIDB-79. См. self::savePreview()
+         *
+            $Model->has_preview = 0;
+            if (!$Model->save()) {
+                throw new PreviewHelperException();
+            }
+        */
 
     }
 
