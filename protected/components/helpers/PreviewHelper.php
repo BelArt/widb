@@ -607,7 +607,7 @@ class PreviewHelper extends CApplicationComponent
         }
 
         /*
-         * WIDB-79. См. self::savePreview()
+         * @@WIDB-79
          *
             $Model->has_preview = 0;
             if (!$Model->save()) {
@@ -760,7 +760,7 @@ class PreviewHelper extends CApplicationComponent
                     }
 
                     /*
-                     * WIDB-79. Теперь не ставим отметку, даже если загрузили превью - пользователь галочкой Есть превью
+                     * @@WIDB-79 Теперь не ставим отметку, даже если загрузили превью - пользователь галочкой Есть превью
                      * должен управлять выводом превью.
                      * Чтобы включить функционал обратно, надо также изменить метод afterSave() соответствующих моделей
                      *
