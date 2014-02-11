@@ -61,16 +61,16 @@ class PreviewHelper extends CApplicationComponent
      */
     public static function getBigThumbnailForCollection(Collections $Collection, $addVersion = true)
     {
-        $previewUrl = '';
-
         if ($Collection->has_preview) {
-            $previewUrl = self::getPreviewUrl($Collection, 'big');
-            if ($previewUrl && $addVersion) {
-                $previewUrl .= '?v='.self::getPreviewsVersion($Collection);
+            if ($Collection->reallyHasPreview('big')) {
+                $previewUrl = self::getPreviewUrl($Collection, 'big');
+                if ($addVersion) {
+                    $previewUrl .= '?v='.self::getPreviewsVersion($Collection);
+                }
+            } else {
+                $previewUrl = self::getNoPhotoPreviewUrl();
             }
-        }
-
-        if (empty($previewUrl)) {
+        } else {
             $previewUrl = self::getNoPhotoPreviewUrl();
         }
 
@@ -85,16 +85,16 @@ class PreviewHelper extends CApplicationComponent
      */
     public static function getMediumThumbnailForCollection(Collections $Collection, $addVersion = true)
     {
-        $previewUrl = '';
-
         if ($Collection->has_preview) {
-            $previewUrl = self::getPreviewUrl($Collection, 'medium');
-            if ($previewUrl && $addVersion) {
-                $previewUrl .= '?v='.self::getPreviewsVersion($Collection);
+            if ($Collection->reallyHasPreview('medium')) {
+                $previewUrl = self::getPreviewUrl($Collection, 'medium');
+                if ($addVersion) {
+                    $previewUrl .= '?v='.self::getPreviewsVersion($Collection);
+                }
+            } else {
+                $previewUrl = self::getNoPhotoPreviewUrl();
             }
-        }
-
-        if (empty($previewUrl)) {
+        } else {
             $previewUrl = self::getNoPhotoPreviewUrl();
         }
 
@@ -109,16 +109,16 @@ class PreviewHelper extends CApplicationComponent
      */
     public static function getSmallThumbnailForCollection(Collections $Collection, $addVersion = true)
     {
-        $previewUrl = '';
-
         if ($Collection->has_preview) {
-            $previewUrl = self::getPreviewUrl($Collection, 'small');
-            if ($previewUrl && $addVersion) {
-                $previewUrl .= '?v='.self::getPreviewsVersion($Collection);
+            if ($Collection->reallyHasPreview('small')) {
+                $previewUrl = self::getPreviewUrl($Collection, 'small');
+                if ($addVersion) {
+                    $previewUrl .= '?v='.self::getPreviewsVersion($Collection);
+                }
+            } else {
+                $previewUrl = self::getNoPhotoPreviewUrl();
             }
-        }
-
-        if (empty($previewUrl)) {
+        } else {
             $previewUrl = self::getNoPhotoPreviewUrl();
         }
 
@@ -133,16 +133,16 @@ class PreviewHelper extends CApplicationComponent
      */
     public static function getBigThumbnailForObject(Objects $Object, $addVersion = true)
     {
-        $previewUrl = '';
-
         if ($Object->has_preview) {
-            $previewUrl = self::getPreviewUrl($Object, 'big');
-            if ($previewUrl && $addVersion) {
-                $previewUrl .= '?v='.self::getPreviewsVersion($Object);
+            if ($Object->reallyHasPreview('big')) {
+                $previewUrl = self::getPreviewUrl($Object, 'big');
+                if ($addVersion) {
+                    $previewUrl .= '?v='.self::getPreviewsVersion($Object);
+                }
+            } else {
+                $previewUrl = self::getNoPhotoPreviewUrl();
             }
-        }
-
-        if (empty($previewUrl)) {
+        } else {
             $previewUrl = self::getNoPhotoPreviewUrl();
         }
 
@@ -157,16 +157,16 @@ class PreviewHelper extends CApplicationComponent
      */
     public static function getMediumThumbnailForObject(Objects $Object, $addVersion = true)
     {
-        $previewUrl = '';
-
         if ($Object->has_preview) {
-            $previewUrl = self::getPreviewUrl($Object, 'medium');
-            if ($previewUrl && $addVersion) {
-                $previewUrl .= '?v='.self::getPreviewsVersion($Object);
+            if ($Object->reallyHasPreview('medium')) {
+                $previewUrl = self::getPreviewUrl($Object, 'medium');
+                if ($addVersion) {
+                    $previewUrl .= '?v='.self::getPreviewsVersion($Object);
+                }
+            } else {
+                $previewUrl = self::getNoPhotoPreviewUrl();
             }
-        }
-
-        if (empty($previewUrl)) {
+        } else {
             $previewUrl = self::getNoPhotoPreviewUrl();
         }
 
@@ -181,16 +181,16 @@ class PreviewHelper extends CApplicationComponent
      */
     public static function getSmallThumbnailForObject(Objects $Object, $addVersion = true)
     {
-        $previewUrl = '';
-
         if ($Object->has_preview) {
-            $previewUrl = self::getPreviewUrl($Object, 'small');
-            if ($previewUrl && $addVersion) {
-                $previewUrl .= '?v='.self::getPreviewsVersion($Object);
+            if ($Object->reallyHasPreview('small')) {
+                $previewUrl = self::getPreviewUrl($Object, 'small');
+                if ($addVersion) {
+                    $previewUrl .= '?v='.self::getPreviewsVersion($Object);
+                }
+            } else {
+                $previewUrl = self::getNoPhotoPreviewUrl();
             }
-        }
-
-        if (empty($previewUrl)) {
+        } else {
             $previewUrl = self::getNoPhotoPreviewUrl();
         }
 
@@ -205,16 +205,16 @@ class PreviewHelper extends CApplicationComponent
      */
     public static function getBigThumbnailForImage(Images $Image, $addVersion = true)
     {
-        $previewUrl = '';
-
         if ($Image->has_preview) {
-            $previewUrl = self::getPreviewUrl($Image, 'big');
-            if ($previewUrl && $addVersion) {
-                $previewUrl .= '?v='.self::getPreviewsVersion($Image);
+            if ($Image->reallyHasPreview('big')) {
+                $previewUrl = self::getPreviewUrl($Image, 'big');
+                if ($addVersion) {
+                    $previewUrl .= '?v='.self::getPreviewsVersion($Image);
+                }
+            } else {
+                $previewUrl = self::getNoPhotoPreviewUrl();
             }
-        }
-
-        if (empty($previewUrl)) {
+        } else {
             $previewUrl = self::getNoPhotoPreviewUrl();
         }
 
@@ -229,16 +229,16 @@ class PreviewHelper extends CApplicationComponent
      */
     public static function getMediumThumbnailForImage(Images $Image, $addVersion = true)
     {
-        $previewUrl = '';
-
         if ($Image->has_preview) {
-            $previewUrl = self::getPreviewUrl($Image, 'medium');
-            if ($previewUrl && $addVersion) {
-                $previewUrl .= '?v='.self::getPreviewsVersion($Image);
+            if ($Image->reallyHasPreview('medium')) {
+                $previewUrl = self::getPreviewUrl($Image, 'medium');
+                if ($addVersion) {
+                    $previewUrl .= '?v='.self::getPreviewsVersion($Image);
+                }
+            } else {
+                $previewUrl = self::getNoPhotoPreviewUrl();
             }
-        }
-
-        if (empty($previewUrl)) {
+        } else {
             $previewUrl = self::getNoPhotoPreviewUrl();
         }
 
@@ -253,16 +253,16 @@ class PreviewHelper extends CApplicationComponent
      */
     public static function getSmallThumbnailForImage(Images $Image, $addVersion = true)
     {
-        $previewUrl = '';
-
         if ($Image->has_preview) {
-            $previewUrl = self::getPreviewUrl($Image, 'small');
-            if ($previewUrl && $addVersion) {
-                $previewUrl .= '?v='.self::getPreviewsVersion($Image);
+            if ($Image->reallyHasPreview('small')) {
+                $previewUrl = self::getPreviewUrl($Image, 'small');
+                if ($addVersion) {
+                    $previewUrl .= '?v='.self::getPreviewsVersion($Image);
+                }
+            } else {
+                $previewUrl = self::getNoPhotoPreviewUrl();
             }
-        }
-
-        if (empty($previewUrl)) {
+        } else {
             $previewUrl = self::getNoPhotoPreviewUrl();
         }
 
@@ -755,19 +755,25 @@ class PreviewHelper extends CApplicationComponent
                         throw new PreviewHelperException();
                     }
 
-                    // ставим отметку, что превью есть
-                    $Caller->has_preview = 1;
+                    /*
+                     * WIDB-79. Теперь не ставим отметку, даже если загрузили превью - пользователь галочкой Есть превью
+                     * должен управлять выводом превью.
+                     * Чтобы включить функционал обратно, надо также изменить метод afterSave() соответствующих моделей
+                     *
+                            // ставим отметку, что превью есть
+                            $Caller->has_preview = 1;
 
-                    // обязательно для повторного сохранения, иначе при создании yii будет пытаться вставить эту запись еще раз,
-                    // что вызовет ошибку
-                    $Caller->isNewRecord = false;
+                            // обязательно для повторного сохранения, иначе при создании yii будет пытаться вставить эту запись еще раз,
+                            // что вызовет ошибку
+                            $Caller->isNewRecord = false;
 
-                    // устанавливаем сценарий для исключения рекурсивного вызова этой функции в afterSave()
-                    $Caller->scenario = self::SCENARIO_SAVE_PREVIEWS;
+                            // устанавливаем сценарий для исключения рекурсивного вызова этой функции в afterSave()
+                            $Caller->scenario = self::SCENARIO_SAVE_PREVIEWS;
 
-                    if (!$Caller->save()) {
-                        throw new PreviewHelperException();
-                    }
+                            if (!$Caller->save()) {
+                                throw new PreviewHelperException();
+                            }
+                     */
 
                     self::incrementPreviewVersion($Caller);
                 }
