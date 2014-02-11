@@ -830,4 +830,58 @@ class PreviewHelper extends CApplicationComponent
             }
         }
     }
+
+    /**
+     * Перемещает папку с превью (при изменении значения поля code)
+     * @param ActiveRecord $Model модель сущности (коллекции, объекта, изображения) со СТАРЫМ значением поля code
+     * @param string $newCode новое значение поля code
+     * @throws PreviewHelperException
+     */
+    public static function changePreviewPath($Model, $newCode)
+    {
+        $oldFolder = self::getPreviewFolderPath($Model);
+
+        // если превью нет - перемещать ничего не надо
+        if (!file_exists($oldFolder)) {
+            return;
+        }
+
+        $Model->code = $newCode;
+        $newFolder = self::getPreviewFolderPath($Model);
+
+        $parentFolder = '';
+        switch (get_class($Model)) {
+            case 'Collections':
+                $parentFolder = Yii::getPathOfAlias('webroot')
+                    .DIRECTORY_SEPARATOR
+                    .Yii::app()->params['filesFolder']
+                    .DIRECTORY_SEPARATOR
+                    .Yii::app()->params['previewsFolder'];
+                break;
+            case 'Objects':
+                $parentFolder = self::getPreviewFolderPath($Model->collection);
+                break;
+            case 'Images':
+                $parentFolder = self::getPreviewFolderPath($Model->object);
+                break;
+            default:
+                throw new PreviewHelperException();
+        }
+
+        if (!is_writable($parentFolder)) {
+            if (!chmod($parentFolder, 0777)) {
+                throw new PreviewHelperException();
+            }
+        }
+
+        if (!rename($oldFolder, $newFolder)) {
+            throw new PreviewHelperException();
+        }
+
+        if (!is_writable($newFolder)) {
+            if (!chmod($newFolder, 0777)) {
+                throw new PreviewHelperException();
+            }
+        }
+    }
 }

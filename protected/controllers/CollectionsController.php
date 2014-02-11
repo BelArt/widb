@@ -425,12 +425,21 @@ class CollectionsController extends Controller
 
 		if(isset($_POST['Collections']))
 		{
+            $movePreviews = false;
+            if (!empty($_POST['Collections']['code']) && $model->code != $_POST['Collections']['code']) {
+                $oldCollection = clone $model;
+                $movePreviews = true;
+            }
+
 			$model->attributes = $_POST['Collections'];
 
             $transaction = Yii::app()->db->beginTransaction();
 
             try {
                 if ($model->save()) {
+                    if ($movePreviews) {
+                        PreviewHelper::changePreviewPath($oldCollection, $_POST['Collections']['code']);
+                    }
                     $transaction->commit();
                     $this->redirect(array('view','id'=>$model->id));
                 } else {
@@ -480,12 +489,21 @@ class CollectionsController extends Controller
 
         if(isset($_POST['Collections']))
         {
+            $movePreviews = false;
+            if (!empty($_POST['Collections']['code']) && $model->code != $_POST['Collections']['code']) {
+                $oldCollection = clone $model;
+                $movePreviews = true;
+            }
+
             $model->attributes = $_POST['Collections'];
 
             $transaction = Yii::app()->db->beginTransaction();
 
             try {
                 if ($model->save()) {
+                    if ($movePreviews) {
+                        PreviewHelper::changePreviewPath($oldCollection, $_POST['Collections']['code']);
+                    }
                     $transaction->commit();
                     $this->redirect(array('viewTemp','id'=>$model->id));
                 } else {

@@ -305,12 +305,21 @@ class ObjectsController extends Controller
 
         if(isset($_POST['Objects']))
         {
+            $movePreviews = false;
+            if (!empty($_POST['Objects']['code']) && $Object->code != $_POST['Objects']['code']) {
+                $oldObject = clone $Object;
+                $movePreviews = true;
+            }
+
             $Object->attributes = $_POST['Objects'];
 
             $transaction = Yii::app()->db->beginTransaction();
 
             try {
                 if ($Object->save()) {
+                    if ($movePreviews) {
+                        PreviewHelper::changePreviewPath($oldObject, $_POST['Objects']['code']);
+                    }
                     $transaction->commit();
                     $this->redirect(array('view','id'=>$Object->id));
                 } else {
