@@ -77,23 +77,18 @@ class Images extends ActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'id' => 'ID',
-			'object_id' => 'Object',
-			'photo_type_id' => 'Photo Type',
-			'description' => 'Description',
-			'has_preview' => 'Has Preview',
-			'width' => 'Width',
-			'height' => 'Height',
-			'dpi' => 'Dpi',
-			'original' => 'Original',
-			'source' => 'Source',
-			'deepzoom' => 'Deepzoom',
-			'request' => 'Request',
-			'date_create' => 'Date Create',
-			'date_modify' => 'Date Modify',
-			'date_delete' => 'Date Delete',
-			'sort' => 'Sort',
-			'deleted' => 'Deleted',
+			'object_id' => Yii::t('images', 'Объект'),
+			'photo_type_id' => Yii::t('images', 'Тип съемки'),
+            'description' => Yii::t('common', 'Описание'),
+            'has_preview' => Yii::t('common', 'Есть превью'),
+			'width' => Yii::t('images', 'Ширина'),
+			'height' => Yii::t('images', 'Высота'),
+			'dpi' => Yii::t('images', 'dpi'),
+			'original' => Yii::t('images', 'Путь хранения оригинала'),
+			'source' => Yii::t('images', 'Путь хранения исходника'),
+			'deepzoom' => Yii::t('images', 'Есть DeepZoom'),
+			'request' => Yii::t('images', 'Заявка'),
+            'code' => Yii::t('common', 'Код'),
 		);
 	}
 
