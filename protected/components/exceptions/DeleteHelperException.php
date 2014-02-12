@@ -1,5 +1,5 @@
 <?php
-class DeleteHelperException extends CustomException
+class DeleteHelperException extends MException
 {
 
 }

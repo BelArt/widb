@@ -21,6 +21,8 @@
  * @property string $date_delete
  * @property string $sort
  * @property integer $deleted
+ * @property string $code
+ * @property string $date_photo
  */
 class Images extends ActiveRecord
 {
@@ -45,14 +47,27 @@ class Images extends ActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('has_preview, deepzoom, deleted', 'numerical', 'integerOnly'=>true),
-			array('object_id, photo_type_id, sort', 'length', 'max'=>10),
-			array('width, height, dpi', 'length', 'max'=>8),
-			array('original, source, request', 'length', 'max'=>150),
-			array('description, date_create, date_modify, date_delete', 'safe'),
-			// The following rule is used by search().
-			// @todo Please remove those attributes that should not be searched.
-			array('id, object_id, photo_type_id, description, has_preview, width, height, dpi, original, source, deepzoom, request, date_create, date_modify, date_delete, sort, deleted', 'safe', 'on'=>'search'),
+
+            // сначала формат
+            array('object_id', 'application.components.validators.IntegerValidator', 'required' => true, 'length' => 10),
+            array('photo_type_id', 'application.components.validators.IntegerValidator', 'required' => true, 'length' => 10),
+            array('has_preview', 'application.components.validators.BooleanValidator'),
+            array('width', 'application.components.validators.IntegerValidator', 'required' => true, 'length' => 8),
+            array('height', 'application.components.validators.IntegerValidator', 'required' => true, 'length' => 8),
+            array('dpi', 'application.components.validators.IntegerValidator', 'required' => true, 'length' => 8),
+            array('original', 'application.components.validators.UniversalValidator', 'required' => true, 'length' => 150),
+            array('source', 'application.components.validators.UniversalValidator', 'required' => true, 'length' => 150),
+            array('deepzoom', 'application.components.validators.BooleanValidator'),
+            array('request', 'application.components.validators.UniversalValidator', 'required' => true, 'length' => 150),
+            array('sort', 'application.components.validators.IntegerValidator', 'length' => 10),
+            array('code', 'application.components.validators.UniversalValidator', 'length' => 150),
+            array('date_photo', 'application.components.validators.DateTimeValidator'),
+
+            // затем логика
+            array('code', 'application.components.validators.CodeValidator'),
+
+            // безопасные
+            array('description', 'safe'),
 		);
 	}
 
@@ -89,6 +104,8 @@ class Images extends ActiveRecord
 			'deepzoom' => Yii::t('images', 'Есть DeepZoom'),
 			'request' => Yii::t('images', 'Заявка'),
             'code' => Yii::t('common', 'Код'),
+            'date_photo' => Yii::t('images', 'Дата съемки'),
+            'sort' => Yii::t('common', 'Сортировка'),
 		);
 	}
 

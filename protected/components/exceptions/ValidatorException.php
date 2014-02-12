@@ -1,6 +1,6 @@
 <?php
 
-class ValidatorException extends CustomException
+class ValidatorException extends MException
 {
 
 }

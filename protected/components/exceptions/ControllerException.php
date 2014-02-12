@@ -1,5 +1,5 @@
 <?php
-class ControllerException extends CustomException
+class ControllerException extends MException
 {
 
 }
