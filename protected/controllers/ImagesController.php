@@ -13,7 +13,6 @@ class ImagesController extends Controller
 	{
 		return array(
 			'accessControl', // perform access control for CRUD operations
-			//'forActionCreate + create',
 		);
 	}
 
@@ -25,10 +24,10 @@ class ImagesController extends Controller
     public function accessRules()
     {
         return array(
-            /*array('allow',
+            array('allow',
                 'actions' => array('create'),
-                'roles' => array('oObjectCreate'),
-            ),*/
+                'roles' => array('oImageCreate'),
+            ),
             array('allow',
                 'actions' => array('view'),
                 'roles' => array(
@@ -50,71 +49,6 @@ class ImagesController extends Controller
             ),
         );
     }
-
-	/**
-     * Создание объекта
-	 */
-	/*public function actionCreate($ci)
-	{
-		$model = new Objects();
-
-        Yii::import( "xupload.models.XUploadForm" );
-        $PhotoUploadModel = new MyXUploadForm;
-
-        $view = '_formObject';
-
-		// Uncomment the following line if AJAX validation is needed
-		// $this->performAjaxValidation($model);
-
-        if(isset($_POST['Objects']))
-        {
-            $model->attributes = $_POST['Objects'];
-            $model->collection_id = $ci;
-
-            $transaction = Yii::app()->db->beginTransaction();
-
-            try {
-                if ($model->save()) {
-                    $transaction->commit();
-                    $this->redirect(array('collections/view', 'id' => $ci));
-                } else {
-                    $transaction->rollback();
-                    PreviewHelper::clearUserPreviewsUploads();
-                }
-            } catch (Exception $e) {
-                $transaction->rollback();
-                PreviewHelper::clearUserPreviewsUploads();
-                throw $e;
-            }
-        }
-
-        $Collection = Collections::model()->findByPk($ci);
-
-        // параметры страницы
-        $this->pageTitle = array($Collection->name, Yii::t('objects', 'Создание объекта'));
-        $this->breadcrumbs = array($Collection->name => array('collections/view', 'id' => $ci), Yii::t('objects', 'Создание объекта'));
-        $this->pageName = Yii::t('objects', 'Создание объекта');
-
-		$this->render('create',array(
-			'model' => $model,
-            'photoUploadModel' => $PhotoUploadModel,
-            'view' => $view
-		));
-	}*/
-
-    /*public function filterForActionCreate($filterChain)
-    {
-        $collectionId = Yii::app()->request->getQuery('ci');
-
-        $Collection = Collections::model()->findByPk($collectionId);
-
-        if (empty($Collection) || $Collection->temporary == 1) {
-            throw new ObjectsControllerException();
-        }
-
-        $filterChain->run();
-    }*/
-
 
     public function loadImage($id)
     {
@@ -289,6 +223,61 @@ class ImagesController extends Controller
                 'attributes' => $attributes
             )
         );
+    }
+
+    /**
+     * Создание bpj
+     */
+    public function actionCreate($oi)
+    {
+        $Object = Objects::model()->findByPk($oi);
+        if (empty($Object)) {
+            throw new ObjectsControllerException();
+        }
+
+        $Image = new Images();
+
+        Yii::import( "xupload.models.XUploadForm" );
+        $PhotoUploadModel = new MyXUploadForm;
+
+        // Uncomment the following line if AJAX validation is needed
+        // $this->performAjaxValidation($model);
+
+        if(isset($_POST['Images']))
+        {
+            $Image->attributes = $_POST['Objects'];
+            $Image->object_id = $oi;
+
+            $Transaction = Yii::app()->db->beginTransaction();
+
+            try {
+                if ($Image->save()) {
+                    $Transaction->commit();
+                    $this->redirect(array('objects/view', 'id' => $oi));
+                } else {
+                    $Transaction->rollback();
+                    PreviewHelper::clearUserPreviewsUploads();
+                }
+            } catch (Exception $Exception) {
+                $Transaction->rollback();
+                PreviewHelper::clearUserPreviewsUploads();
+                throw $Exception;
+            }
+        }
+
+        // параметры страницы
+        $this->pageTitle = array($Object->collection->name, $Object->name, Yii::t('images', 'Создание изображения'));
+        $this->breadcrumbs = array(
+            $Object->collection->name => array('collections/view', 'id' => $Object->collection->id),
+            $Object->name => array('objects/view', 'id' => $oi),
+            Yii::t('images', 'Создание изображения')
+        );
+        $this->pageName = Yii::t('images', 'Создание изображения');
+
+        $this->render('create',array(
+            'Image' => $Image,
+            'photoUploadModel' => $PhotoUploadModel,
+        ));
     }
 
     /**

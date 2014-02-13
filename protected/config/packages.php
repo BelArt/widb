@@ -74,4 +74,10 @@ return array(
         'js'=>array('js/image-view.js'),
         'depends' => array('global')
     ),
+    'imageForm' => array(
+        'basePath'=>'application.assets',
+        'js'=>array('js/image-form.js'),
+        'css'=>array('css/image-form.css'),
+        'depends' => array('global')
+    ),
 );
