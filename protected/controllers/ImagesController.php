@@ -199,6 +199,57 @@ class ImagesController extends Controller
 
         $imageName = $Image->width.' х '.$Image->height.' ['.$Image->dpi.']';
 
+        $attributes = array();
+        //$attributes[] = array('label' => $Image->getAttributeLabel('object_id'), 'value' => CHtml::encode($Image->object->name));
+        $attributes[] = array(
+            'label' => $Image->getAttributeLabel('date_photo'),
+            'value' => CHtml::encode($Image->date_photo != '0000-00-00' ? $Image->date_photo : '')
+        );
+        $attributes[] = array(
+            'label' => $Image->getAttributeLabel('photo_type_id'),
+            'value' => CHtml::encode(!empty($Image->photoType->name) ? $Image->photoType->name : '')
+        );
+        $attributes[] = array(
+            'label' => $Image->getAttributeLabel('description'),
+            'value' => CHtml::encode(!empty($Image->description) ? $Image->description : '')
+        );
+        $attributes[] = array(
+            'label' => $Image->getAttributeLabel('width'),
+            'value' => CHtml::encode(!empty($Image->width) ? $Image->width.' '.Yii::t('common', 'px') : '')
+        );
+        $attributes[] = array(
+            'label' => $Image->getAttributeLabel('height'),
+            'value' => CHtml::encode(!empty($Image->height) ? $Image->height.' '.Yii::t('common', 'px') : '')
+        );
+        $attributes[] = array(
+            'label' => $Image->getAttributeLabel('dpi'),
+            'value' => CHtml::encode(!empty($Image->dpi) ? $Image->dpi.' '.Yii::t('common', 'px') : '')
+        );
+        $attributes[] = array(
+            'label' => $Image->getAttributeLabel('original'),
+            'value' => CHtml::encode(!empty($Image->original) ? $Image->original : '')
+        );
+        $attributes[] = array(
+            'label' => $Image->getAttributeLabel('source'),
+            'value' => CHtml::encode(!empty($Image->source) ? $Image->source : '')
+        );
+        $attributes[] = array(
+            'label' => $Image->getAttributeLabel('deepzoom'),
+            'value' => CHtml::encode($Image->deepzoom ? Yii::t('common', 'Да') : Yii::t('common', 'Нет'))
+        );
+        $attributes[] = array(
+            'label' => $Image->getAttributeLabel('request'),
+            'value' => CHtml::encode(!empty($Image->request) ? $Image->request : '')
+        );
+        $attributes[] = array(
+            'label' => $Image->getAttributeLabel('code'),
+            'value' => CHtml::encode(!empty($Image->code) ? $Image->code : '')
+        );
+        $attributes[] = array(
+            'label' => $Image->getAttributeLabel('sort'),
+            'value' => CHtml::encode(!empty($Image->sort) ? $Image->sort : '')
+        );
+
         // параметры страницы
         $this->pageTitle = array($Collection->name, $Object->name, $imageName);
         $this->breadcrumbs = array(
@@ -234,7 +285,8 @@ class ImagesController extends Controller
             'view',
             array(
                 'Image' => $Image,
-                'imageName' => $imageName
+                'imageName' => $imageName,
+                'attributes' => $attributes
             )
         );
     }
