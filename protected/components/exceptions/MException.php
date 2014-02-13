@@ -3,7 +3,7 @@
  * Базовый класс кастомных исключений проекта
  */
 
-class CustomException extends CException
+class MException extends CException
 {
     public function __construct(Exception $previous = null, $message = "", $code = 0)
     {

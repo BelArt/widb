@@ -1,5 +1,5 @@
 <?php
 
-class NestedPDOException extends CustomException {
+class NestedPDOException extends MException {
 
 } 

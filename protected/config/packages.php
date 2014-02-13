@@ -68,4 +68,10 @@ return array(
         'js'=>array('js/object-view.js'),
         'depends' => array('global')
     ),
+    'imageView' => array(
+        'basePath'=>'application.assets',
+        //'css'=>array('css/object-view.css'),
+        'js'=>array('js/image-view.js'),
+        'depends' => array('global')
+    ),
 );

@@ -1,5 +1,5 @@
 <?php
-class ActiveRecordException extends CustomException
+class ActiveRecordException extends MException
 {
 
 }
