@@ -5,7 +5,7 @@ abstract class MValidator extends CValidator
     public $required = false;
     public $length;
 
-    protected $skipOnError = true;
+    public $skipOnError = true;
     protected $emptyValues = array(
         'boolean' => array(
             null,

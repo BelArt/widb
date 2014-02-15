@@ -4,7 +4,7 @@
 /* @var $photoUploadModel XUploadForm */
 /* @var $form CActiveForm */
 
-/*Yii::app()->clientScript->registerPackage('imageForm');
+Yii::app()->clientScript->registerPackage('imageForm');
 Yii::app()->clientScript->registerPackage('uploadFiles');
 
 $form = $this->beginWidget(
@@ -23,76 +23,75 @@ $form = $this->beginWidget(
 echo $form->select2Row($Image,'photo_type_id',
     array(
         'asDropDownList' => true,
-        'data' => $Image->getArrayOfPossibleAuthors(),
-        'class' => 'input-xlarge _objectForm_hideErrorsChange',
+        'data' => $Image->getArrayOfPhotoTypes(),
+        'class' => 'input-xlarge _imageForm_hideErrorsChange',
     )
 );
 
 echo $form->textAreaRow($Image,'description',array(
-    'class' => 'input-xxlarge _objectForm_hideErrorsKeypress',
+    'class' => 'input-xxlarge _imageForm_hideErrorsKeypress',
     'rows' => 5
 ));
 
+echo $form->checkBoxRow($Image,'has_preview', array('class' => '_imageForm_hideErrorsChange _hasPreviewCheckbox'));
 
+echo $form->textFieldRow($Image,'width', array(
+    'class' => 'input-small _imageForm_hideErrorsKeypress',
+    'value' => $Image->width == '0' ? '' : null,
+    'append' => Yii::t('common', 'px')
+));
 
-echo $form->select2Row($model,'type_id',
-    array(
-        'asDropDownList' => true,
-        'data' => $model->getArrayOfPossibleObjectTypes(),
-        'class' => 'input-medium _objectForm_hideErrorsChange',
+echo $form->textFieldRow($Image,'height', array(
+    'class' => 'input-small _imageForm_hideErrorsKeypress',
+    'value' => $Image->height == '0' ? '' : null,
+    'append' => Yii::t('common', 'px')
+));
+
+echo $form->textFieldRow($Image,'dpi', array(
+    'class' => 'input-small _imageForm_hideErrorsKeypress',
+    'value' => $Image->dpi == '0' ? '' : null,
+    //'append' => Yii::t('common', 'dpi')
+));
+
+echo $form->textFieldRow($Image,'original', array(
+    'class' => 'input-xlarge _imageForm_hideErrorsKeypress'
+));
+
+echo $form->textFieldRow($Image,'source', array(
+    'class' => 'input-xlarge _imageForm_hideErrorsKeypress'
+));
+
+echo $form->checkBoxRow($Image,'deepzoom', array('class' => '_imageForm_hideErrorsChange'));
+
+echo $form->textFieldRow($Image,'request', array(
+    'class' => 'input-large _imageForm_hideErrorsKeypress'
+));
+
+echo $form->textFieldRow($Image,'code', array(
+    'class' => 'input-small _imageForm_hideErrorsKeypress'
+));
+
+echo $form->textFieldRow($Image,'sort', array(
+    'class' => 'input-small _imageForm_hideErrorsKeypress',
+    'value' => empty($Image->sort) ? '' : null
+));
+
+echo $form->datepickerRow($Image, 'date_photo', array(
+        'value' => $Image->date_photo == '0000-00-00' ? date('d.m.Y') : null,
+        'prepend' => '<i class="icon-calendar"></i>',
+        'options' => array(
+            'format' => 'dd.mm.yyyy',
+            'language' => 'ru',
+            'autoclose' => true,
+        ),
     )
 );
 
-echo $form->textFieldRow($model,'period', array(
-    'class' => 'input-large _objectForm_hideErrorsKeypress'
-));
-
-echo $form->textFieldRow($model,'inventory_number', array(
-    'class' => 'input-small _objectForm_hideErrorsKeypress'
-));
-
-echo $form->textFieldRow($model,'code', array(
-    'class' => 'input-small _objectForm_hideErrorsKeypress'
-));
-
-echo $form->textFieldRow($model,'width', array(
-    'class' => 'input-small _objectForm_hideErrorsKeypress',
-    'value' => $model->width == '0.00' ? '' : null,
-    'append' => Yii::t('common', 'см')
-));
-
-echo $form->textFieldRow($model,'height', array(
-    'class' => 'input-small _objectForm_hideErrorsKeypress',
-    'value' => $model->height == '0.00' ? '' : null,
-    'append' => Yii::t('common', 'см')
-));
-
-echo $form->textFieldRow($model,'depth', array(
-    'class' => 'input-small _objectForm_hideErrorsKeypress',
-    'value' => $model->depth == '0.00' ? '' : null,
-    'append' => Yii::t('common', 'см')
-));
-
-echo $form->checkBoxRow($model,'has_preview', array('class' => '_objectForm_hideErrorsChange _hasPreviewCheckbox'));
-
-echo $form->textFieldRow($model,'department', array(
-    'class' => 'input-xxlarge _objectForm_hideErrorsKeypress'
-));
-
-echo $form->textFieldRow($model,'keeper', array(
-    'class' => 'input-large _objectForm_hideErrorsKeypress'
-));
-
-echo $form->textFieldRow($model,'sort', array(
-    'class' => 'input-small _objectForm_hideErrorsKeypress',
-    'value' => empty($model->sort) ? '' : null
-));
-
 $this->renderPartial('application.views.common._uploadPreviewForm', array(
-    'model' => $model,
+    'model' => $Image,
     'photoUploadModel' => $photoUploadModel,
-    'type' => 'object',
-    'formId' => 'object-form'
+    'type' => 'image',
+    'formId' => 'image-form'
 ));
 
 echo CHtml::openTag('div', array(
@@ -104,7 +103,7 @@ $this->widget(
     array(
         'buttonType' => 'submit',
         'type' => 'primary',
-        'label' => $model->isNewRecord ? Yii::t('common', 'Создать') : Yii::t('common', 'Сохранить'),
+        'label' => $Image->isNewRecord ? Yii::t('common', 'Создать') : Yii::t('common', 'Сохранить'),
         'htmlOptions' => array(
             'class' => 'formButton'
         )
@@ -117,7 +116,7 @@ $this->widget(
         'buttonType' => 'reset',
         'label' => 'Сбросить',
         'htmlOptions' => array(
-            'class' => '_objectForm_resetButton formButton'
+            'class' => '_imageForm_resetButton formButton'
         )
     )
 );
@@ -136,17 +135,6 @@ $this->widget(
 
 echo CHtml::closeTag('div');
 
-/*
-
-
-
-
-
-
-*/*/?><!--
-
---><?php
-/*
 $this->endWidget();
-unset($form);*/
+unset($form);
 

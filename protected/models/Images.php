@@ -49,7 +49,7 @@ class Images extends ActiveRecord
 		return array(
 
             // сначала формат
-            array('object_id', 'application.components.validators.IntegerValidator', 'required' => true, 'length' => 10),
+            /*array('object_id', 'application.components.validators.IntegerValidator', 'required' => true, 'length' => 10),
             array('photo_type_id', 'application.components.validators.IntegerValidator', 'required' => true, 'length' => 10),
             array('has_preview', 'application.components.validators.BooleanValidator'),
             array('width', 'application.components.validators.IntegerValidator', 'required' => true, 'length' => 8),
@@ -67,7 +67,7 @@ class Images extends ActiveRecord
             array('code', 'application.components.validators.CodeValidator'),
 
             // безопасные
-            array('description', 'safe'),
+            array('description', 'safe'),*/
 		);
 	}
 
@@ -106,6 +106,7 @@ class Images extends ActiveRecord
             'code' => Yii::t('common', 'Код'),
             'date_photo' => Yii::t('images', 'Дата съемки'),
             'sort' => Yii::t('common', 'Сортировка'),
+            'preview' => Yii::t('common', 'Превью'),
 		);
 	}
 
@@ -183,6 +184,25 @@ class Images extends ActiveRecord
         }
 
         return $this->name;
+    }
+
+    public function getArrayOfPhotoTypes()
+    {
+        $Criteria = new CDbCriteria;
+        $Criteria->select = 'id, name';
+        $Criteria->order = 'sort ASC';
+
+        $photoTypes = PhotoTypes::model()->findAll($Criteria);
+
+        $result = array(
+            0 => Yii::t('images', 'Тип съемки неизвестен')
+        );
+
+        foreach ($photoTypes as $PhotoType) {
+            $result[$PhotoType->id] = $PhotoType->name;
+        }
+
+        return $result;
     }
 
 }

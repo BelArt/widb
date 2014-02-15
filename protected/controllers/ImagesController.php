@@ -230,6 +230,8 @@ class ImagesController extends Controller
      */
     public function actionCreate($oi)
     {
+        ini_set('display_errors', 'on');
+
         $Object = Objects::model()->findByPk($oi);
         if (empty($Object)) {
             throw new ObjectsControllerException();

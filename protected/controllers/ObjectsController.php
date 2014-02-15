@@ -256,7 +256,7 @@ class ObjectsController extends Controller
         if (Yii::app()->user->checkAccess('oImageCreate')) {
             $pageMenu[] = array(
                 'label' => Yii::t('images', 'Создать изображение'),
-                'url' => $this->createUrl('images/create', array('id' => $id)),
+                'url' => $this->createUrl('images/create', array('oi' => $id)),
             );
         }
 
