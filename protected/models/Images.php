@@ -47,26 +47,22 @@ class Images extends ActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-
-            // сначала формат
-            array('object_id', 'application.components.validators.IntegerValidator', 'required' => true, 'length' => 10),
-            array('photo_type_id', 'application.components.validators.IntegerValidator', 'required' => true, 'length' => 10),
-            array('has_preview', 'application.components.validators.BooleanValidator'),
-            array('width', 'application.components.validators.IntegerValidator', 'required' => true, 'length' => 8),
-            array('height', 'application.components.validators.IntegerValidator', 'required' => true, 'length' => 8),
-            array('dpi', 'application.components.validators.IntegerValidator', 'required' => true, 'length' => 8),
-            array('original', 'application.components.validators.UniversalValidator', 'required' => true, 'length' => 150),
-            array('source', 'application.components.validators.UniversalValidator', 'required' => true, 'length' => 150),
-            array('deepzoom', 'application.components.validators.BooleanValidator'),
-            array('request', 'application.components.validators.UniversalValidator', 'required' => true, 'length' => 150),
-            array('sort', 'application.components.validators.IntegerValidator', 'length' => 10),
-            array('code', 'application.components.validators.UniversalValidator', 'length' => 150),
-            array('date_photo', 'application.components.validators.DateTimeValidator'),
-
-            // затем логика
-            array('code', 'application.components.validators.CodeValidator'),
-
-            // безопасные
+            // сначала обязательные
+            array('photo_type_id, width, height, dpi, original, source, request, code, date_photo', 'required'),
+            // потом общие проверки на формат, тип данных и т.д.
+            // общий принцип - если атрибут указан в обязательных, то свойство allowEmpty должно быть false, иначе - true
+            // поэтому все самописные валидаторы по умолчанию имеют allowEmpty=false
+            array('photo_type_id', 'application.components.validators.IntegerValidator', 'skipOnError' => true),
+            array('has_preview, deepzoom', 'boolean', 'strict' => true, 'skipOnError' => true),
+            array('width, height, dpi', 'application.components.validators.IntegerValidator', 'skipOnError' => true),
+            array('sort', 'application.components.validators.IntegerValidator', 'skipOnError' => true, 'allowEmpty' => true),
+            array('code', 'application.components.validators.CodeValidator', 'skipOnError' => true),
+            array('date_photo', 'date', 'skipOnError' => true, 'allowEmpty' => false, 'format' => 'dd.MM.yyyy'),
+            // потом отдельно на длину
+            array('photo_type_id, sort', 'length', 'max'=>10),
+            array('width, height, dpi', 'length', 'max'=>8),
+            array('original, source, request, code', 'length', 'max'=>150),
+            // и безопасные
             array('description', 'safe'),
 		);
 	}
@@ -106,6 +102,7 @@ class Images extends ActiveRecord
             'code' => Yii::t('common', 'Код'),
             'date_photo' => Yii::t('images', 'Дата съемки'),
             'sort' => Yii::t('common', 'Сортировка'),
+            'preview' => Yii::t('common', 'Превью'),
 		);
 	}
 
@@ -129,6 +126,20 @@ class Images extends ActiveRecord
 
         // создаем фиктивный атрибут Имя
         $this->setName();
+    }
+
+    public function afterSave()
+    {
+        /* @@WIDB-79
+        // проверяем на сценарий для исключения рекурсивного вызова этой функции в afterSave() после сохранения данных о превью
+        if ($this->scenario != PreviewHelper::SCENARIO_SAVE_PREVIEWS) {
+        PreviewHelper::savePreviews($this);
+        }
+         */
+
+        PreviewHelper::savePreviews($this);
+
+        parent::afterSave();
     }
 
     /**
@@ -183,6 +194,25 @@ class Images extends ActiveRecord
         }
 
         return $this->name;
+    }
+
+    public function getArrayOfPhotoTypes()
+    {
+        $Criteria = new CDbCriteria;
+        $Criteria->select = 'id, name';
+        $Criteria->order = 'sort ASC';
+
+        $photoTypes = PhotoTypes::model()->findAll($Criteria);
+
+        $result = array(
+            0 => Yii::t('images', 'Тип съемки неизвестен')
+        );
+
+        foreach ($photoTypes as $PhotoType) {
+            $result[$PhotoType->id] = $PhotoType->name;
+        }
+
+        return $result;
     }
 
 }

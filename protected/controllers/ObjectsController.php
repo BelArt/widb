@@ -67,12 +67,11 @@ class ObjectsController extends Controller
 
         if(isset($_POST['Objects']))
         {
-            $model->attributes = $_POST['Objects'];
-            $model->collection_id = $ci;
-
             $transaction = Yii::app()->db->beginTransaction();
 
             try {
+                $model->attributes = $_POST['Objects'];
+                $model->collection_id = $ci;
                 if ($model->save()) {
                     $transaction->commit();
                     $this->redirect(array('collections/view', 'id' => $ci));
@@ -250,6 +249,13 @@ class ObjectsController extends Controller
                     'data-dialog-title' => CHtml::encode(Yii::t('objects', 'Выберите коллекцию, в которую хотите переместить объект/объекты')),
                     'data-dialog-message' => CHtml::encode($this->renderPartial('_collectionsToMoveToSelect', array('Object' => $Object, 'collectionsToMoveTo' => $collectionsToMoveTo), true)),
                 )
+            );
+        }
+
+        if (Yii::app()->user->checkAccess('oImageCreate')) {
+            $pageMenu[] = array(
+                'label' => Yii::t('images', 'Создать изображение'),
+                'url' => $this->createUrl('images/create', array('oi' => $id)),
             );
         }
 

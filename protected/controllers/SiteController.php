@@ -51,27 +51,6 @@ class SiteController extends Controller
     }
 
 	/**
-	 * This is the action to handle external exceptions.
-	 */
-	/*public function actionError()
-	{
-		if($error=Yii::app()->errorHandler->error)
-		{
-			if (Yii::app()->request->isAjaxRequest) {
-				echo $error['message'];
-            } else {
-
-                // параметры страницы
-                //$this->pageTitle = array($error['message']);
-                //$this->breadcrumbs = array();
-                //$this->pageName = $error['message'];
-
-				$this->render('error', $error);
-            }
-		}
-	}*/
-
-	/**
 	 * Displays the contact page
      * @todo убрать
 	 */
