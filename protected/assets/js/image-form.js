@@ -1,22 +1,22 @@
 $(function(){
 
     // Сброс формы
-    $('._objectForm_resetButton').click(function(event){
+    $('._imageForm_resetButton').click(function(event){
 
         event.preventDefault();
 
-        var $form = $(this).parents('._objectForm_form');
+        var $form = $(this).parents('._imageForm_form');
 
         // сбрасываем форму
         $form.get(0).reset();
 
         // сбрасываем ошибки
-        $form.children('._objectForm_hideErrorsKeypress').trigger('keypress');
-        $form.children('._objectForm_hideErrorsChange').trigger('change');
+        $form.children('._imageForm_hideErrorsKeypress').trigger('keypress');
+        $form.children('._imageForm_hideErrorsChange').trigger('change');
     });
 
     // Сбрасывает ошибки поля в случае ввода данных в поле
-    $('._objectForm_hideErrorsKeypress').keypress(function(){
+    $('._imageForm_hideErrorsKeypress').keypress(function(){
         $Obj = $(this);
         $Obj.removeClass('error');
         $Obj.parents('.controls').find('span.error').remove();
@@ -24,7 +24,7 @@ $(function(){
     });
 
     // Сбрасывает ошибки поля в случае onchange
-    $('._objectForm_hideErrorsChange').change(function(){
+    $('._imageForm_hideErrorsChange').change(function(){
         $Obj = $(this);
         $Obj.removeClass('error');
         $Obj.parents('.controls').find('span.error').remove();
@@ -32,7 +32,7 @@ $(function(){
     });
 
     // при отправке формы - сбрасываем обработчик onbeforeunload, см. upload-files.js
-    $('._objectForm_form').submit(function(){
+    $('._imageForm_form').submit(function(){
         window.onbeforeunload = null;
     });
 

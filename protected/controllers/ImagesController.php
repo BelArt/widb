@@ -137,7 +137,7 @@ class ImagesController extends Controller
         //$attributes[] = array('label' => $Image->getAttributeLabel('object_id'), 'value' => CHtml::encode($Image->object->name));
         $attributes[] = array(
             'label' => $Image->getAttributeLabel('date_photo'),
-            'value' => CHtml::encode($Image->date_photo != '0000-00-00' ? $Image->date_photo : '')
+            'value' => CHtml::encode($Image->date_photo != '0000-00-00' ? Yii::app()->dateFormatter->formatDateTime(strtotime($Image->date_photo), 'medium', null) : '')
         );
         $attributes[] = array(
             'label' => $Image->getAttributeLabel('photo_type_id'),
@@ -157,7 +157,7 @@ class ImagesController extends Controller
         );
         $attributes[] = array(
             'label' => $Image->getAttributeLabel('dpi'),
-            'value' => CHtml::encode(!empty($Image->dpi) ? $Image->dpi.' '.Yii::t('common', 'px') : '')
+            'value' => CHtml::encode(!empty($Image->dpi) ? $Image->dpi : '')
         );
         $attributes[] = array(
             'label' => $Image->getAttributeLabel('original'),
@@ -230,8 +230,6 @@ class ImagesController extends Controller
      */
     public function actionCreate($oi)
     {
-        ini_set('display_errors', 'on');
-
         $Object = Objects::model()->findByPk($oi);
         if (empty($Object)) {
             throw new ObjectsControllerException();
@@ -247,12 +245,11 @@ class ImagesController extends Controller
 
         if(isset($_POST['Images']))
         {
-            $Image->attributes = $_POST['Objects'];
-            $Image->object_id = $oi;
-
             $Transaction = Yii::app()->db->beginTransaction();
 
             try {
+                $Image->attributes = $_POST['Images'];
+                $Image->object_id = $oi;
                 if ($Image->save()) {
                     $Transaction->commit();
                     $this->redirect(array('objects/view', 'id' => $oi));

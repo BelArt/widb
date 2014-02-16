@@ -1,9 +1,8 @@
 <?php
 
-class IntegerValidator extends MValidator
+class IntegerValidator extends CValidator
 {
-    const TYPE = 'integer';
-
+    public $allowEmpty = false;
     public $onlyPositive = true;
 
     protected $positiveIntegerPattern = '/^[1-9]{1}\d*$/';
@@ -11,9 +10,12 @@ class IntegerValidator extends MValidator
 
     protected function validateAttribute($object, $attribute)
     {
-        parent::validateAttribute($object, $attribute);
-
         $value = $object->$attribute;
+
+        if ($this->allowEmpty && $this->isEmpty($value, true))
+        {
+            return;
+        }
 
         $pattern = $this->onlyPositive ? $this->positiveIntegerPattern : $this->integerPattern;
 
@@ -21,4 +23,5 @@ class IntegerValidator extends MValidator
             $this->addError($object, $attribute, Yii::t('common', 'У поля {attribute} задано неверное значение!'));
         }
     }
-} 
+
+}

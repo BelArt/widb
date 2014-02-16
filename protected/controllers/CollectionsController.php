@@ -321,11 +321,10 @@ class CollectionsController extends Controller
 
         if(isset($_POST['Collections']))
         {
-            $model->attributes = $_POST['Collections'];
-
             $transaction = Yii::app()->db->beginTransaction();
 
             try {
+                $model->attributes = $_POST['Collections'];
                 if ($model->save()) {
                     $transaction->commit();
                     $this->redirect(array('index'));
@@ -370,11 +369,10 @@ class CollectionsController extends Controller
 
         if(isset($_POST['Collections']))
         {
-            $model->attributes = $_POST['Collections'];
-
             $transaction = Yii::app()->db->beginTransaction();
 
             try {
+                $model->attributes = $_POST['Collections'];
                 if ($model->save()) {
                     $transaction->commit();
                     $this->redirect(array('index'));

@@ -3,7 +3,7 @@
 class CodeValidator extends CValidator
 {
     public $pattern = '/^[a-z0-9_]{3,}$/';
-    /*public $allowEmpty = true;*/
+    public $allowEmpty = false;
 
     /**
      * Validates the attribute of the object.
@@ -14,24 +14,32 @@ class CodeValidator extends CValidator
      */
     protected function validateAttribute($object, $attribute)
     {
-        /*if ($this->allowEmpty && empty($object->$attribute)) {
+        $value = $object->$attribute;
+
+        if ($this->allowEmpty && $this->isEmpty($value, true))
+        {
             return;
-        }*/
+        }
 
         if(!preg_match($this->pattern, $object->$attribute))
         {
             $this->addError($object, $attribute, Yii::t('common', 'Значение должно содержать только символы a-z, 0-9 и _'));
         }
 
+        $condition = '';
+        if (!$object->isNewRecord) {
+            $condition = 'id <> '.$object->id;
+        }
+
         switch (get_class($object)) {
             case 'Collections':
-                $Record = Collections::model()->findByAttributes(array('code' => $object->$attribute), 'id <> '.$object->id);
+                $Record = Collections::model()->findByAttributes(array('code' => $object->$attribute), $condition);
                 break;
             case 'Objects':
-                $Record = Objects::model()->findByAttributes(array('code' => $object->$attribute), 'id <> '.$object->id);
+                $Record = Objects::model()->findByAttributes(array('code' => $object->$attribute), $condition);
                 break;
             case 'Images':
-                $Record = Images::model()->findByAttributes(array('code' => $object->$attribute), 'id <> '.$object->id);
+                $Record = Images::model()->findByAttributes(array('code' => $object->$attribute), $condition);
                 break;
             default:
                 throw new ValidatorException();

@@ -67,12 +67,11 @@ class ObjectsController extends Controller
 
         if(isset($_POST['Objects']))
         {
-            $model->attributes = $_POST['Objects'];
-            $model->collection_id = $ci;
-
             $transaction = Yii::app()->db->beginTransaction();
 
             try {
+                $model->attributes = $_POST['Objects'];
+                $model->collection_id = $ci;
                 if ($model->save()) {
                     $transaction->commit();
                     $this->redirect(array('collections/view', 'id' => $ci));

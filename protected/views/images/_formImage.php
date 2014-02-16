@@ -77,7 +77,7 @@ echo $form->textFieldRow($Image,'sort', array(
 ));
 
 echo $form->datepickerRow($Image, 'date_photo', array(
-        'value' => $Image->date_photo == '0000-00-00' ? date('d.m.Y') : null,
+        'value' => $Image->date_photo == '0000-00-00' ? CHtml::encode(Yii::app()->dateFormatter->formatDateTime(time(), 'medium', null)) : null,
         'prepend' => '<i class="icon-calendar"></i>',
         'options' => array(
             'format' => 'dd.mm.yyyy',
