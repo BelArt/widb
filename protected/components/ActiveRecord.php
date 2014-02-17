@@ -7,41 +7,41 @@ class ActiveRecord extends CActiveRecord
 {
     public function beforeSave()
     {
-        if (!parent::beforeSave()) {
-            return false;
-        }
-
         /*
          * Обрабатываем запись в поля date_... и user_...
          */
 
-        $now = new CDbExpression('NOW()');
-        $userId = Yii::app()->user->id;
-
-        switch ($this->scenario) {
-            case 'insert':
-                $this->date_create = $now;
-                $this->date_modify = $now;
-                $this->user_create = $userId;
-                $this->user_modify = $userId;
-                break;
-            case 'update':
-                $this->date_modify = $now;
-                $this->user_modify = $userId;
-                break;
-            case PreviewHelper::SCENARIO_SAVE_PREVIEWS:
-                break;
-            case 'delete':
-                $this->date_delete = $now;
-                $this->date_modify = $now;
-                $this->user_delete = $userId;
-                $this->user_modify = $userId;
-                break;
-            default:
-                throw new ActiveRecordException();
+        try {
+            $now = new CDbExpression('NOW()');
+            $userId = Yii::app()->user->id;
+            switch ($this->scenario) {
+                case 'insert':
+                    $this->date_create = $now;
+                    $this->date_modify = $now;
+                    $this->user_create = $userId;
+                    $this->user_modify = $userId;
+                    break;
+                case 'update':
+                    $this->date_modify = $now;
+                    $this->user_modify = $userId;
+                    break;
+                case PreviewHelper::SCENARIO_SAVE_PREVIEWS:
+                    break;
+                case 'delete':
+                    $this->date_delete = $now;
+                    $this->date_modify = $now;
+                    $this->user_delete = $userId;
+                    $this->user_modify = $userId;
+                    break;
+                default:
+                    throw new ActiveRecordException();
+            }
+            return parent::beforeSave();
+        } catch (ActiveRecordException $Exception) {
+            throw $Exception;
+        } catch (Exception $Exception) {
+            throw new ActiveRecordException($Exception);
         }
-
-        return true;
     }
 
     /**

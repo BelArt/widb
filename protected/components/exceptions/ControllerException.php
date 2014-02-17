@@ -1,5 +1,5 @@
 <?php
-class ControllerException extends MException
+class ControllerException extends MyException
 {
 
 }
