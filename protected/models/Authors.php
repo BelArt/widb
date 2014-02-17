@@ -60,16 +60,11 @@ class Authors extends ActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'id' => 'ID',
-			'surname' => 'Surname',
-			'name' => 'Name',
-			'middlename' => 'Middlename',
-			'initials' => 'Initials',
-			'date_create' => 'Date Create',
-			'date_modify' => 'Date Modify',
-			'date_delete' => 'Date Delete',
-			'sort' => 'Sort',
-			'deleted' => 'Deleted',
+			'surname' => Yii::t('admin', 'Фамилия'),
+			'name' => Yii::t('admin', 'Имя'),
+			'middlename' => Yii::t('admin', 'Отчество'),
+			'initials' => Yii::t('admin', 'ФИО'),
+            'sort' => Yii::t('common', 'Сортировка'),
 		);
 	}
 

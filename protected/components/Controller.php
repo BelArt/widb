@@ -53,4 +53,22 @@ class Controller extends CController
         array_unshift($value, Yii::app()->name);
         $this->_pageTitle = $value;
     }
+
+    public function getAdminMenu()
+    {
+        try {
+            $adminMenu = array();
+            if (Yii::app()->user->checkAccess('oDictionariesView')) {
+                $adminMenu[] = array(
+                    'label' => Yii::t('admin', 'Справочники'),
+                    'url' => $this->createUrl('dictionaries/view'),
+                );
+            }
+            return $adminMenu;
+        } catch (ControllerException $Exception) {
+            throw $Exception;
+        } catch (Exception $Exception) {
+            throw new ControllerException($Exception);
+        }
+    }
 }
