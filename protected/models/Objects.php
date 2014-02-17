@@ -49,13 +49,13 @@ class Objects extends ActiveRecord
 	{
 		return array(
 
-            array('name, description, type_id, inventory_number, code', 'required'),
-            array('has_preview', 'boolean'),
-            array('author_id, type_id, sort', 'application.components.validators.EmptyOrPositiveIntegerValidator', 'skipOnError' => true),
-            array('period, code, department, keeper', 'length', 'max'=>150),
-            array('inventory_number', 'length', 'max'=>50),
-            array('width, height, depth', 'numerical', 'numberPattern' => '/^\d\d{0,2}(\.\d{1,2})?$/', 'message' => Yii::t('objects', 'значение должно быть в формате xxx.xx'), 'allowEmpty' => true),
-            array('code', 'application.components.validators.CodeValidator', 'skipOnError' => true),
+            array('name, description, type_id, inventory_number, code', 'required', 'except' => 'delete'),
+            array('has_preview', 'boolean', 'except' => 'delete'),
+            array('author_id, type_id, sort', 'application.components.validators.EmptyOrPositiveIntegerValidator', 'skipOnError' => true, 'except' => 'delete'),
+            array('period, code, department, keeper', 'length', 'max'=>150, 'except' => 'delete'),
+            array('inventory_number', 'length', 'max'=>50, 'except' => 'delete'),
+            array('width, height, depth', 'numerical', 'numberPattern' => '/^\d\d{0,2}(\.\d{1,2})?$/', 'message' => Yii::t('objects', 'значение должно быть в формате xxx.xx'), 'allowEmpty' => true, 'except' => 'delete'),
+            array('code', 'application.components.validators.CodeValidator', 'skipOnError' => true, 'except' => 'delete'),
 
 
 			// The following rule is used by search().

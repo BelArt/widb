@@ -5,6 +5,25 @@
 
 class DeleteHelper extends CApplicationComponent
 {
+    /**
+     * Удаляет изображение
+     * @param $id айди изображения
+     * @throws DeleteHelperException
+     */
+    public static function deleteImage($id)
+    {
+        try {
+            $Image = Images::model()->findByPk($id);
+            if (empty($Image)) {
+                throw new DeleteHelperException();
+            }
+            $Image->deleteImage();
+        } catch (DeleteHelperException $Exception) {
+            throw $Exception;
+        } catch (Exception $Exception) {
+            throw new DeleteHelperException($Exception);
+        }
+    }
 
     /**
      * Удаляет объекты из обычной коллекции

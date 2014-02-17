@@ -7,36 +7,36 @@ class ActiveRecord extends CActiveRecord
 {
     public function beforeSave()
     {
-        /*
-         * Обрабатываем запись в поля date_... и user_...
-         */
-
         try {
-            $now = new CDbExpression('NOW()');
-            $userId = Yii::app()->user->id;
-            switch ($this->scenario) {
-                case 'insert':
-                    $this->date_create = $now;
-                    $this->date_modify = $now;
-                    $this->user_create = $userId;
-                    $this->user_modify = $userId;
-                    break;
-                case 'update':
-                    $this->date_modify = $now;
-                    $this->user_modify = $userId;
-                    break;
-                case PreviewHelper::SCENARIO_SAVE_PREVIEWS:
-                    break;
-                case 'delete':
-                    $this->date_delete = $now;
-                    $this->date_modify = $now;
-                    $this->user_delete = $userId;
-                    $this->user_modify = $userId;
-                    break;
-                default:
-                    throw new ActiveRecordException();
+            if (parent::beforeSave()) {
+                $now = new CDbExpression('NOW()');
+                $userId = Yii::app()->user->id;
+                switch ($this->scenario) {
+                    case 'insert':
+                        $this->date_create = $now;
+                        $this->date_modify = $now;
+                        $this->user_create = $userId;
+                        $this->user_modify = $userId;
+                        break;
+                    case 'update':
+                        $this->date_modify = $now;
+                        $this->user_modify = $userId;
+                        break;
+                    case PreviewHelper::SCENARIO_SAVE_PREVIEWS:
+                        break;
+                    case 'delete':
+                        $this->date_delete = $now;
+                        $this->date_modify = $now;
+                        $this->user_delete = $userId;
+                        $this->user_modify = $userId;
+                        break;
+                    default:
+                        throw new ActiveRecordException();
+                }
+                return true;
+            } else {
+                return false;
             }
-            return parent::beforeSave();
         } catch (ActiveRecordException $Exception) {
             throw $Exception;
         } catch (Exception $Exception) {
@@ -58,17 +58,32 @@ class ActiveRecord extends CActiveRecord
     }
 
     /**
-     * Удаляет запись в таблицах проекта.
-     * Т.е. ставит в ней флаг, что запись удалена, но не удаляет ее из таблицы
+     * Удаляет запись в таблицах проекта
+     * Cтавит в ней флаг, что запись удалена, но не удаляет ее из таблицы
      * @throws ActiveRecordException
      */
     public function deleteRecord()
     {
-        $this->scenario = 'delete';
-        $this->deleted = 1;
-
-        if (!$this->save()) {
-            throw new ActiveRecordException();
+        try {
+            $this->scenario = 'delete';
+            $this->deleted = 1;
+            $Transaction = Yii::app()->db->beginTransaction();
+            try {
+                if (!$this->save()) {
+                    throw new ActiveRecordException();
+                }
+                $Transaction->commit();
+            } catch (ActiveRecordException $Exception) {
+                $Transaction->rollback();
+                throw $Exception;
+            }catch (Exception $Exception) {
+                $Transaction->rollback();
+                throw new ActiveRecordException($Exception);
+            }
+        } catch (ActiveRecordException $Exception) {
+            throw $Exception;
+        } catch (Exception $Exception) {
+            throw new ActiveRecordException($Exception);
         }
     }
 

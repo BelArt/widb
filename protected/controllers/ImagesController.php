@@ -40,11 +40,11 @@ class ImagesController extends Controller
                 'actions' => array('update'),
                 'roles' => array('oImageEdit'),
             ),
-            /*
+
             array('allow',
                 'actions' => array('delete'),
-                'roles' => array('oObjectDelete'),
-            ),*/
+                'roles' => array('oImageDelete'),
+            ),
             array('deny',  // deny all users
                 'users'=>array('*'),
             ),
@@ -73,7 +73,7 @@ class ImagesController extends Controller
      * Возвращает объект, к которому принадлежит изображение
      * @param int $id айди изображения
      * @return Objects|null
-     * @throws ObjectsControllerException
+     * @throws ImagesControllerException
      */
     public function loadObject($id)
 	{
@@ -88,7 +88,7 @@ class ImagesController extends Controller
             $this->object = $Image->object;
 
             if (empty($this->object)) {
-                throw new ObjectsControllerException();
+                throw new ImagesControllerException();
             }
         }
 
@@ -99,7 +99,7 @@ class ImagesController extends Controller
      * Возвращает коллекцию, к которой принадлежит объект, к которому принадлежит изображение
      * @param int $id айди изображения
      * @return Collections|null
-     * @throws ObjectsControllerException
+     * @throws ImagesControllerException
      */
     public function loadCollection($id)
     {
@@ -114,7 +114,7 @@ class ImagesController extends Controller
             $this->collection = $Object->collection;
 
             if (empty($this->collection)) {
-                throw new ObjectsControllerException();
+                throw new ImagesControllerException();
             }
         }
 
@@ -132,7 +132,7 @@ class ImagesController extends Controller
         $Object = $this->loadObject($id);
         $Collection = $this->loadCollection($id);
 
-        $imageName = $Image->width.' х '.$Image->height.' ['.$Image->dpi.']';
+        $imageName = $Image->width.' х '.$Image->height.' '.Yii::t('common', 'px').' ['.$Image->dpi.' '.Yii::t('common', 'dpi').']';
 
         $attributes = array();
         //$attributes[] = array('label' => $Image->getAttributeLabel('object_id'), 'value' => CHtml::encode($Image->object->name));
@@ -192,7 +192,7 @@ class ImagesController extends Controller
             $Object->name => array('objects/view', 'id' => $Object->id),
             $imageName
         );
-        //$this->pageName = $imageName;
+        $this->pageName = $imageName;
 
         $pageMenu = array();
 
@@ -202,18 +202,18 @@ class ImagesController extends Controller
                 'url' => $this->createUrl('update', array('id' => $id)),
             );
         }
-        /*
+
         if (Yii::app()->user->checkAccess('oImageDelete')) {
             $pageMenu[] = array(
                 'label' => Yii::t('images', 'Удалить изображение'),
                 'url' => $this->createUrl('delete', array('id' => $id)),
                 'itemOptions' => array(
-                    'class' => '_deleteObject',
-                    'data-dialog-title' => CHtml::encode(Yii::t('objects', 'Удалить объект?')),
-                    'data-dialog-message' => CHtml::encode(Yii::t('objects', 'Вы уверены, что хотите удалить объект? Его нельзя будет восстановить!')),
+                    'class' => '_deleteImage',
+                    'data-dialog-title' => CHtml::encode(Yii::t('images', 'Удалить изображение?')),
+                    'data-dialog-message' => CHtml::encode(Yii::t('images', 'Вы уверены, что хотите удалить изображение? Его нельзя будет восстановить!')),
                 )
             );
-        }*/
+        }
 
         $this->pageMenu = $pageMenu;
 
@@ -284,9 +284,9 @@ class ImagesController extends Controller
     }
 
     /**
-     * Редактирование объекта
-     * @param int $id айди объекта
-     * @throws Exception
+     * Редактирование изображения
+     * @param $id айди изобржаения
+     * @throws ImagesControllerException
      */
     public function actionUpdate($id)
     {
@@ -342,6 +342,7 @@ class ImagesController extends Controller
         );
         $this->pageName = $imageName;
 
+        // рендеринг
         $this->render('update',array(
             'Image' => $Image,
             'photoUploadModel' => $PhotoUploadModel,
@@ -349,82 +350,24 @@ class ImagesController extends Controller
     }
 
     /**
-     * Удаляет объект
-     * @param integer $id айди объекта
+     * Удаление изображения
+     * @param $id айди изображения
+     * @throws ImagesControllerException
      */
-    /*public function actionDelete($id)
+    public function actionDelete($id)
     {
-        $Collection = $this->loadCollection($id);
-
-        if (DeleteHelper::deleteObjectFromNormalCollection($id)) {
-            Yii::app()->user->setFlash(
-                'success',
-                Yii::t('objects', 'Объект удален')
-            );
-            $this->redirect(array('collections/view', 'id' => $Collection->id));
-        } else {
-            Yii::app()->user->setFlash(
-                'error',
-                Yii::t('objects', 'Объект не удален. У объекта не должно быть относящихся к нему изображений, чтобы его можно было удалить')
-            );
-            $this->redirect(Yii::app()->request->urlReferrer);
+        try {
+            $Object = $this->loadObject($id);
+            DeleteHelper::deleteImage($id);
+            Yii::app()->user->setFlash('success', Yii::t('images', 'Изображение удалено'));
+            $this->redirect(array('objects/view', 'id' => $Object->id));
+        } catch (ImagesControllerException $Exception) {
+            Yii::app()->user->setFlash('success', null);
+            throw $Exception;
+        } catch (Exception $Exception) {
+            Yii::app()->user->setFlash('success', null);
+            throw new ImagesControllerException($Exception);
         }
-    }*/
+    }
 
-    /**
-     * Редактирование объекта
-     * @param int $id айди объекта
-     * @throws Exception
-     */
-    /*public function actionUpdate($id)
-    {
-        $Object = $this->loadObject($id);
-        $Collection = $this->loadCollection($id);
-
-        Yii::import( "xupload.models.XUploadForm" );
-        $PhotoUploadModel = new MyXUploadForm;
-
-        $view = '_formObject';
-
-        if(isset($_POST['Objects']))
-        {
-            $movePreviews = false;
-            if (!empty($_POST['Objects']['code']) && $Object->code != $_POST['Objects']['code']) {
-                $oldObject = clone $Object;
-                $movePreviews = true;
-            }
-
-            $Object->attributes = $_POST['Objects'];
-
-            $transaction = Yii::app()->db->beginTransaction();
-
-            try {
-                if ($Object->save()) {
-                    if ($movePreviews) {
-                        PreviewHelper::changePreviewPath($oldObject, $_POST['Objects']['code']);
-                    }
-                    $transaction->commit();
-                    $this->redirect(array('view','id'=>$Object->id));
-                } else {
-                    $transaction->rollback();
-                    PreviewHelper::clearUserPreviewsUploads();
-                }
-            } catch (Exception $e) {
-                $transaction->rollback();
-                PreviewHelper::clearUserPreviewsUploads();
-                throw $e;
-            }
-        }
-
-        // параметры страницы
-        $this->pageTitle = array($Collection->name, $Object->name, Yii::t('objects', 'Редактирование объекта'));
-        $this->breadcrumbs = array($Collection->name => array('collections/view', 'id' => $Collection->id), $Object->name => array('objects/view', 'id' => $Object->id), Yii::t('objects', 'Редактирование объекта'));
-        $this->pageName = $Object->name;
-
-        $this->render('update',array(
-            'Object' => $Object,
-            'photoUploadModel' => $PhotoUploadModel,
-            'view' => $view
-        ));
-    }*/
 }

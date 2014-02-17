@@ -50,12 +50,12 @@ class Collections extends ActiveRecord
 	public function rules()
 	{
 		return array(
-            array('temporary_public, parent_id', 'application.components.validators.TempCollectionValidator', 'skipOnError' => true),
-            array('name, code, description', 'required'),
-			array('temporary, has_preview, temporary_public', 'boolean'),
-            array('parent_id, sort', 'application.components.validators.EmptyOrPositiveIntegerValidator', 'skipOnError' => true),
-            array('name, code', 'length', 'max' => 150),
-            array('code', 'application.components.validators.CodeValidator', 'skipOnError' => true),
+            array('temporary_public, parent_id', 'application.components.validators.TempCollectionValidator', 'skipOnError' => true, 'except' => 'delete'),
+            array('name, code, description', 'required', 'except' => 'delete'),
+			array('temporary, has_preview, temporary_public', 'boolean', 'except' => 'delete'),
+            array('parent_id, sort', 'application.components.validators.EmptyOrPositiveIntegerValidator', 'skipOnError' => true, 'except' => 'delete'),
+            array('name, code', 'length', 'max' => 150, 'except' => 'delete'),
+            array('code', 'application.components.validators.CodeValidator', 'skipOnError' => true, 'except' => 'delete'),
 
 
 			// The following rule is used by search().

@@ -48,20 +48,20 @@ class Images extends ActiveRecord
 		// will receive user inputs.
 		return array(
             // сначала обязательные
-            array('photo_type_id, width, height, dpi, original, source, request, code, date_photo', 'required'),
+            array('photo_type_id, width, height, dpi, original, source, request, code, date_photo', 'required', 'except' => 'delete'),
             // потом общие проверки на формат, тип данных и т.д.
             // общий принцип - если атрибут указан в обязательных, то свойство allowEmpty должно быть false, иначе - true
             // поэтому все самописные валидаторы по умолчанию имеют allowEmpty=false
-            array('photo_type_id', 'application.components.validators.IntegerValidator', 'skipOnError' => true),
-            array('has_preview, deepzoom', 'boolean', 'strict' => true, 'skipOnError' => true),
-            array('width, height, dpi', 'application.components.validators.IntegerValidator', 'skipOnError' => true),
-            array('sort', 'application.components.validators.IntegerValidator', 'skipOnError' => true, 'allowEmpty' => true),
-            array('code', 'application.components.validators.CodeValidator', 'skipOnError' => true),
-            array('date_photo', 'date', 'skipOnError' => true, 'allowEmpty' => false, 'format' => 'dd.MM.yyyy'),
+            array('photo_type_id', 'application.components.validators.IntegerValidator', 'skipOnError' => true, 'except' => 'delete'),
+            array('has_preview, deepzoom', 'boolean', 'strict' => true, 'skipOnError' => true, 'except' => 'delete'),
+            array('width, height, dpi', 'application.components.validators.IntegerValidator', 'skipOnError' => true, 'except' => 'delete'),
+            array('sort', 'application.components.validators.IntegerValidator', 'skipOnError' => true, 'allowEmpty' => true, 'except' => 'delete'),
+            array('code', 'application.components.validators.CodeValidator', 'skipOnError' => true, 'except' => 'delete'),
+            array('date_photo', 'date', 'skipOnError' => true, 'allowEmpty' => false, 'format' => 'dd.MM.yyyy', 'except' => 'delete'),
             // потом отдельно на длину
-            array('photo_type_id, sort', 'length', 'max'=>10),
-            array('width, height, dpi', 'length', 'max'=>8),
-            array('original, source, request, code', 'length', 'max'=>150),
+            array('photo_type_id, sort', 'length', 'max'=>10, 'except' => 'delete'),
+            array('width, height, dpi', 'length', 'max'=>8, 'except' => 'delete'),
+            array('original, source, request, code', 'length', 'max'=>150, 'except' => 'delete'),
             // и безопасные
             array('description', 'safe'),
 		);
@@ -131,8 +131,12 @@ class Images extends ActiveRecord
     public function beforeSave()
     {
         try {
-            $this->formatDatePhotoFieldForSavingToDB();
-            return parent::beforeSave();
+            if (parent::beforeSave()) {
+                $this->formatDatePhotoFieldForSavingIntoDB();
+                return true;
+            } else {
+                return false;
+            }
         } catch (ImagesException $Exception) {
             throw $Exception;
         } catch (Exception $Exception) {
@@ -140,7 +144,7 @@ class Images extends ActiveRecord
         }
     }
 
-    private function formatDatePhotoFieldForSavingToDB()
+    private function formatDatePhotoFieldForSavingIntoDB()
     {
         if (!empty($this->date_photo)) {
             $this->date_photo = Yii::app()->dateFormatter->format('yyyy-MM-dd', strtotime($this->date_photo));
@@ -232,6 +236,35 @@ class Images extends ActiveRecord
         }
 
         return $result;
+    }
+
+    /**
+     * Удаляет изображение
+     * @throws ImagesException
+     */
+    public function deleteImage()
+    {
+        try {
+            if ($this->isNewRecord) {
+                throw new ImagesException();
+            }
+            $Transaction = Yii::app()->db->beginTransaction();
+            try {
+                $this->deleteRecord();
+                PreviewHelper::deletePreview($this);
+                $Transaction->commit();
+            } catch (ImagesException $Exception) {
+                $Transaction->rollback();
+                throw $Exception;
+            } catch (Exception $Exception) {
+                $Transaction->rollback();
+                throw new ImagesException($Exception);
+            }
+        } catch (ImagesException $Exception) {
+            throw $Exception;
+        } catch (Exception $Exception) {
+            throw new ImagesException($Exception);
+        }
     }
 
 }
