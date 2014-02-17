@@ -36,10 +36,11 @@ class ImagesController extends Controller
                     )
                 ),
             ),
-            /*array('allow',
+            array('allow',
                 'actions' => array('update'),
-                'roles' => array('oObjectEdit'),
+                'roles' => array('oImageEdit'),
             ),
+            /*
             array('allow',
                 'actions' => array('delete'),
                 'roles' => array('oObjectDelete'),
@@ -195,12 +196,13 @@ class ImagesController extends Controller
 
         $pageMenu = array();
 
-        /*if (Yii::app()->user->checkAccess('oImageEdit')) {
+        if (Yii::app()->user->checkAccess('oImageEdit')) {
             $pageMenu[] = array(
                 'label' => Yii::t('images', 'Редактировать изображение'),
                 'url' => $this->createUrl('update', array('id' => $id)),
             );
         }
+        /*
         if (Yii::app()->user->checkAccess('oImageDelete')) {
             $pageMenu[] = array(
                 'label' => Yii::t('images', 'Удалить изображение'),
@@ -226,13 +228,15 @@ class ImagesController extends Controller
     }
 
     /**
-     * Создание bpj
+     * Создание изображения
+     * @param string $oi айди объекта, к которому относится изображение
+     * @throws ImagesControllerException
      */
     public function actionCreate($oi)
     {
         $Object = Objects::model()->findByPk($oi);
         if (empty($Object)) {
-            throw new ObjectsControllerException();
+            throw new ImagesControllerException();
         }
 
         $Image = new Images();
@@ -260,7 +264,7 @@ class ImagesController extends Controller
             } catch (Exception $Exception) {
                 $Transaction->rollback();
                 PreviewHelper::clearUserPreviewsUploads();
-                throw $Exception;
+                throw new ImagesControllerException($Exception);
             }
         }
 
@@ -274,6 +278,71 @@ class ImagesController extends Controller
         $this->pageName = Yii::t('images', 'Создание изображения');
 
         $this->render('create',array(
+            'Image' => $Image,
+            'photoUploadModel' => $PhotoUploadModel,
+        ));
+    }
+
+    /**
+     * Редактирование объекта
+     * @param int $id айди объекта
+     * @throws Exception
+     */
+    public function actionUpdate($id)
+    {
+        $Image = $this->loadImage($id);
+        $Object = $this->loadObject($id);
+        $Collection = $this->loadCollection($id);
+
+        $imageName = $Image->width.' х '.$Image->height.' ['.$Image->dpi.']';
+
+        Yii::import( "xupload.models.XUploadForm" );
+        $PhotoUploadModel = new MyXUploadForm;
+
+        if(isset($_POST['Images']))
+        {
+            $movePreviews = false;
+            if (!empty($_POST['Images']['code']) && $Image->code != $_POST['Images']['code']) {
+                $oldImage = clone $Image;
+                $movePreviews = true;
+            }
+
+            $transaction = Yii::app()->db->beginTransaction();
+
+            try {
+                $Image->attributes = $_POST['Images'];
+                if ($Image->save()) {
+                    if ($movePreviews) {
+                        PreviewHelper::changePreviewPath($oldImage, $_POST['Images']['code']);
+                    }
+                    $transaction->commit();
+                    $this->redirect(array('view','id'=>$Image->id));
+                } else {
+                    $transaction->rollback();
+                    PreviewHelper::clearUserPreviewsUploads();
+                }
+            } catch (ImagesControllerException $Exception) {
+                $transaction->rollback();
+                PreviewHelper::clearUserPreviewsUploads();
+                throw $Exception;
+            } catch (Exception $e) {
+                $transaction->rollback();
+                PreviewHelper::clearUserPreviewsUploads();
+                throw new ImagesControllerException($e);
+            }
+        }
+
+        // параметры страницы
+        $this->pageTitle = array($Collection->name, $Object->name, $imageName, Yii::t('images', 'Редактирование изображения'));
+        $this->breadcrumbs = array(
+            $Collection->name => array('collections/view', 'id' => $Collection->id),
+            $Object->name => array('objects/view', 'id' => $Object->id),
+            $imageName => array('images/view', 'id' => $id),
+            Yii::t('images', 'Редактирование изображения')
+        );
+        $this->pageName = $imageName;
+
+        $this->render('update',array(
             'Image' => $Image,
             'photoUploadModel' => $PhotoUploadModel,
         ));

@@ -128,6 +128,25 @@ class Images extends ActiveRecord
         $this->setName();
     }
 
+    public function beforeSave()
+    {
+        try {
+            $this->formatDatePhotoFieldForSavingToDB();
+            return parent::beforeSave();
+        } catch (ImagesException $Exception) {
+            throw $Exception;
+        } catch (Exception $Exception) {
+            throw new ImagesException($Exception);
+        }
+    }
+
+    private function formatDatePhotoFieldForSavingToDB()
+    {
+        if (!empty($this->date_photo)) {
+            $this->date_photo = Yii::app()->dateFormatter->format('yyyy-MM-dd', strtotime($this->date_photo));
+        }
+    }
+
     public function afterSave()
     {
         /* @@WIDB-79

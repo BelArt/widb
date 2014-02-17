@@ -1,5 +1,5 @@
 <?php
-class PreviewHelperException extends MException
+class PreviewHelperException extends MyException
 {
 
 }
