@@ -173,6 +173,10 @@ class ImagesController extends Controller
             'value' => CHtml::encode($Image->deepzoom ? Yii::t('common', 'Да') : Yii::t('common', 'Нет'))
         );
         $attributes[] = array(
+            'label' => $Image->getAttributeLabel('has_preview'),
+            'value' => CHtml::encode($Image->has_preview ? Yii::t('common', 'Да') : Yii::t('common', 'Нет'))
+        );
+        $attributes[] = array(
             'label' => $Image->getAttributeLabel('request'),
             'value' => CHtml::encode(!empty($Image->request) ? $Image->request : '')
         );
