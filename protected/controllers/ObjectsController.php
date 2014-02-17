@@ -169,106 +169,196 @@ class ObjectsController extends Controller
      * Просмотр объекта
      * @param string $id айди объекта
      * @param string $iv как отображать изображения: th - картинками, ls - списком, tb - таблицей
+     * @throws ObjectsControllerException
      */
     public function actionView($id, $iv = 'th')
     {
-        $Object = $this->loadObject($id);
-        $Collection = $this->loadCollection($id);
-
-        // как отображать изображения
-        switch ($iv) {
-            case 'th': // картинками
-                $renderViewImages = '_viewImagesThumbnails';
-                break;
-            case 'ls': // списком
-                $renderViewImages = '_viewImagesList';
-                break;
-            case 'tb': // таблицей
-                $renderViewImages = '_viewImagesTable';
-                break;
-            default: // картинками
-                $renderViewImages = '_viewImagesThumbnails';
-        }
-
-        $ImagesDataProvider = new CActiveDataProvider(
-            'Images',
-            array(
+        try {
+            $ImagesDataProvider = new CActiveDataProvider('Images', array(
                 'criteria' => array(
                     'condition' => 'object_id = :object_id',
                     'params' => array(':object_id' => $id),
                     'with' => array('photoType'),
                 ),
-            )
-        );
-
-        // параметры страницы
-        $this->pageTitle = array($Collection->name, $Object->name);
-        $this->breadcrumbs = array($Collection->name => array('collections/view', 'id' => $Collection->id), $Object->name);
-        $this->pageName = $Object->name;
-
-        $pageMenu = array();
-
-        if (Yii::app()->user->checkAccess('oObjectEdit')) {
-            $pageMenu[] = array(
-                'label' => Yii::t('objects', 'Редактировать объект'),
-                'url' => $this->createUrl('update', array('id' => $id)),
-            );
+            ));
+            $this->setPageParamsForActionView($id);
+            $this->render('view', array(
+                'Object' => $this->loadObject($id),
+                'renderViewImages' => $this->getObjectsImagesViewName($iv),
+                'ImagesDataProvider' => $ImagesDataProvider,
+                'attributesForDetailViewWidget' => $this->getAttributesForTbDetailViewWidget($id),
+            ));
+        } catch (ObjectsControllerException $Exception) {
+            throw $Exception;
+        } catch (Exception $Exception) {
+            throw new ObjectsControllerException($Exception);
         }
-        if (Yii::app()->user->checkAccess('oObjectDelete')) {
-            $pageMenu[] = array(
-                'label' => Yii::t('objects', 'Удалить объект'),
-                'url' => $this->createUrl('delete', array('id' => $id)),
-                'itemOptions' => array(
-                    'class' => '_deleteObject',
-                    'data-dialog-title' => CHtml::encode(Yii::t('objects', 'Удалить объект?')),
-                    'data-dialog-message' => CHtml::encode(Yii::t('objects', 'Вы уверены, что хотите удалить объект? Его нельзя будет восстановить!')),
-                )
+    }
+
+    /**
+     * Возвращает массив с данными для виджета TbDetailView, который используется при рендеринге страницы объекта
+     * @param string $id айди объекта
+     * @return array массив с данными для виджета TbDetailView
+     * @throws ObjectsControllerException
+     */
+    private function getAttributesForTbDetailViewWidget($id)
+    {
+        try {
+            $Object = $this->loadObject($id);
+            $attributes = array(
+                array(
+                    'label' => $Object->getAttributeLabel('author_id'),
+                    'value' => !empty($Object->author->initials) ? CHtml::encode($Object->author->initials) : ''
+                ),
+                array(
+                    'label' => $Object->getAttributeLabel('type_id'),
+                    'value' => !empty($Object->type->name) ? CHtml::encode($Object->type->name) : ''
+                ),
+                array(
+                    'label' => $Object->getAttributeLabel('description'),
+                    'value' => !empty($Object->description) ? CHtml::encode($Object->description) : ''
+                ),
+                array(
+                    'label' => $Object->getAttributeLabel('inventory_number'),
+                    'value' => !empty($Object->inventory_number) ? CHtml::encode($Object->inventory_number) : ''
+                ),
+                array(
+                    'label' => $Object->getAttributeLabel('code'),
+                    'value' => !empty($Object->code) ? CHtml::encode($Object->code) : ''
+                ),
+                array(
+                    'label' => $Object->getAttributeLabel('width'),
+                    'value' => $Object->width === '0.00' ? CHtml::encode(floatval($Object->width).' '.Yii::t('common', 'см')) : ''
+                ),
+                array(
+                    'label' => $Object->getAttributeLabel('height'),
+                    'value' => $Object->width === '0.00' ? CHtml::encode(floatval($Object->height).' '.Yii::t('common', 'см')) : ''
+                ),
+                array(
+                    'label' => $Object->getAttributeLabel('depth'),
+                    'value' => $Object->width === '0.00' ? CHtml::encode(floatval($Object->depth).' '.Yii::t('common', 'см')) : ''
+                ),
+                array(
+                    'label' => $Object->getAttributeLabel('has_preview'),
+                    'value' => !empty($Object->has_preview) ? CHtml::encode(Yii::t('common', 'Да')) : CHtml::encode(Yii::t('common', 'Нет'))
+                ),
+                array(
+                    'label' => $Object->getAttributeLabel('department'),
+                    'value' => !empty($Object->department) ? CHtml::encode($Object->department) : ''
+                ),
+                array(
+                    'label' => $Object->getAttributeLabel('keeper'),
+                    'value' => !empty($Object->keeper) ? CHtml::encode($Object->keeper) : ''
+                ),
+                array(
+                    'label' => $Object->getAttributeLabel('period'),
+                    'value' => !empty($Object->period) ? CHtml::encode($Object->period) : ''
+                ),
+                array(
+                    'label' => $Object->getAttributeLabel('sort'),
+                    'value' => !empty($Object->sort) ? CHtml::encode($Object->sort) : ''
+                ),
             );
+            return $attributes;
+        } catch (ObjectsControllerException $Exception) {
+            throw $Exception;
+        } catch (Exception $Exception) {
+            throw new ObjectsControllerException($Exception);
         }
+    }
 
-        $tempCollections = Collections::getTempCollectionsAllowedToUser(Yii::app()->user->id);
-        if (!empty($tempCollections)) {
-            $pageMenu[] = array(
-                'label' => Yii::t('objects', 'Добавить объект во временную коллекцию'),
-                'url' => '#',
-                'itemOptions' => array(
-                    'class' => '_addObjectToTempCollection',
-                    'data-dialog-title' => CHtml::encode(Yii::t('objects', 'Выберите временную коллекцию, в которую хотите добавить объект')),
-                    'data-dialog-message' => CHtml::encode($this->renderPartial('_tempCollectionsSelect', array('Object' => $Object, 'tempCollections' => $tempCollections), true)),
-                )
-            );
+    /**
+     * Возвращает название вьюхи, с помощью которой надо рендерить изображений объекта
+     * @param string $iv GET-параметр, определающий, как отображать изображения: th - картинками, ls - списком, tb - таблицей
+     * @return string имя вьюхи для рендеринга изображений объекта
+     */
+    private function getObjectsImagesViewName($iv)
+    {
+        switch ($iv) {
+            case 'th': // картинками
+                $objectsImagesViewName = '_viewImagesThumbnails';
+                break;
+            case 'ls': // списком
+                $objectsImagesViewName = '_viewImagesList';
+                break;
+            case 'tb': // таблицей
+                $objectsImagesViewName = '_viewImagesTable';
+                break;
+            default: // картинками
+                $objectsImagesViewName = '_viewImagesThumbnails';
         }
+        return $objectsImagesViewName;
+    }
 
-        if (Yii::app()->user->checkAccess('oChangeObjectsCollection')) {
-            $collectionsToMoveTo = Collections::getAllNormalCollectionsExcept($Collection->id);
-            $pageMenu[] = array(
-                'label' => Yii::t('objects', 'Переместить объект в другую коллекцию'),
-                'url' => '#',
-                'itemOptions' => array(
-                    'class' => '_moveObjectToOtherCollection',
-                    'data-dialog-title' => CHtml::encode(Yii::t('objects', 'Выберите коллекцию, в которую хотите переместить объект/объекты')),
-                    'data-dialog-message' => CHtml::encode($this->renderPartial('_collectionsToMoveToSelect', array('Object' => $Object, 'collectionsToMoveTo' => $collectionsToMoveTo), true)),
-                )
-            );
+    /**
+     * Устанавливает параметры страницы просмотра объекта (тайтл, хлебные крошки, заголовок, меню)
+     * @param string $id айди объекта
+     * @throws ObjectsControllerException
+     */
+    private function setPageParamsForActionView($id)
+    {
+        try {
+            $Object = $this->loadObject($id);
+            $Collection = $this->loadCollection($id);
+
+            $this->pageTitle = array($Collection->name, $Object->name);
+            $this->breadcrumbs = array($Collection->name => array('collections/view', 'id' => $Collection->id), $Object->name);
+            $this->pageName = $Object->name;
+
+            $pageMenu = array();
+            if (Yii::app()->user->checkAccess('oObjectEdit')) {
+                $pageMenu[] = array(
+                    'label' => Yii::t('objects', 'Редактировать объект'),
+                    'url' => $this->createUrl('update', array('id' => $id)),
+                );
+            }
+            if (Yii::app()->user->checkAccess('oObjectDelete')) {
+                $pageMenu[] = array(
+                    'label' => Yii::t('objects', 'Удалить объект'),
+                    'url' => $this->createUrl('delete', array('id' => $id)),
+                    'itemOptions' => array(
+                        'class' => '_deleteObject',
+                        'data-dialog-title' => CHtml::encode(Yii::t('objects', 'Удалить объект?')),
+                        'data-dialog-message' => CHtml::encode(Yii::t('objects', 'Вы уверены, что хотите удалить объект? Его нельзя будет восстановить!')),
+                    )
+                );
+            }
+            $tempCollections = Collections::getTempCollectionsAllowedToUser(Yii::app()->user->id);
+            if (!empty($tempCollections)) {
+                $pageMenu[] = array(
+                    'label' => Yii::t('objects', 'Добавить объект во временную коллекцию'),
+                    'url' => '#',
+                    'itemOptions' => array(
+                        'class' => '_addObjectToTempCollection',
+                        'data-dialog-title' => CHtml::encode(Yii::t('objects', 'Выберите временную коллекцию, в которую хотите добавить объект')),
+                        'data-dialog-message' => CHtml::encode($this->renderPartial('_tempCollectionsSelect', array('Object' => $Object, 'tempCollections' => $tempCollections), true)),
+                    )
+                );
+            }
+            if (Yii::app()->user->checkAccess('oChangeObjectsCollection')) {
+                $collectionsToMoveTo = Collections::getAllNormalCollectionsExcept($Collection->id);
+                $pageMenu[] = array(
+                    'label' => Yii::t('objects', 'Переместить объект в другую коллекцию'),
+                    'url' => '#',
+                    'itemOptions' => array(
+                        'class' => '_moveObjectToOtherCollection',
+                        'data-dialog-title' => CHtml::encode(Yii::t('objects', 'Выберите коллекцию, в которую хотите переместить объект/объекты')),
+                        'data-dialog-message' => CHtml::encode($this->renderPartial('_collectionsToMoveToSelect', array('Object' => $Object, 'collectionsToMoveTo' => $collectionsToMoveTo), true)),
+                    )
+                );
+            }
+            if (Yii::app()->user->checkAccess('oImageCreate')) {
+                $pageMenu[] = array(
+                    'label' => Yii::t('images', 'Создать изображение'),
+                    'url' => $this->createUrl('images/create', array('oi' => $id)),
+                );
+            }
+            $this->pageMenu = $pageMenu;
+        } catch (ObjectsControllerException $Exception) {
+            throw $Exception;
+        } catch (Exception $Exception) {
+            throw new ObjectsControllerException($Exception);
         }
-
-        if (Yii::app()->user->checkAccess('oImageCreate')) {
-            $pageMenu[] = array(
-                'label' => Yii::t('images', 'Создать изображение'),
-                'url' => $this->createUrl('images/create', array('oi' => $id)),
-            );
-        }
-
-        $this->pageMenu = $pageMenu;
-
-        $this->render(
-            'view',
-            array(
-                'Object' => $Object,
-                'renderViewImages' => $renderViewImages,
-                'ImagesDataProvider' => $ImagesDataProvider
-            )
-        );
     }
 
     /**
