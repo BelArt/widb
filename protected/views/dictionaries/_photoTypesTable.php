@@ -1,6 +1,6 @@
 <?php
 /* @var $this DictionariesController */
-/* @var $AuthorsDataProvider CActiveDataProvider */
+/* @var $PhotoTypesDataProvider CActiveDataProvider */
 ?>
 
 <?php
@@ -8,23 +8,15 @@ $this->widget(
     'bootstrap.widgets.TbGridView',
     array(
         'type' => 'striped bordered',
-        'dataProvider' => $AuthorsDataProvider,
+        'dataProvider' => $PhotoTypesDataProvider,
         'template' => "{items}",
         'columns' => array(
-            array(
-                'name' => 'surname',
-                'sortable' => false
-            ),
             array(
                 'name' => 'name',
                 'sortable' => false
             ),
             array(
-                'name' => 'middlename',
-                'sortable' => false
-            ),
-            array(
-                'name' => 'initials',
+                'name' => 'description',
                 'sortable' => false
             ),
             array(
@@ -36,7 +28,7 @@ $this->widget(
                 'header'=>'Действия',
                 'htmlOptions' => array('nowrap'=>'nowrap'),
                 'class'=>'bootstrap.widgets.TbButtonColumn',
-                'updateButtonUrl'=> 'Yii::app()->urlManager->createUrl("dictionaries/update", array("id" => $data->id, "type" => "authors"));',
+                'updateButtonUrl'=> 'Yii::app()->urlManager->createUrl("dictionaries/update", array("id" => $data->id, "type" => "photo_types"));',
                 'deleteButtonUrl' => null,
                 'buttons' => array(
                     'view' => array('visible' => 'false'),

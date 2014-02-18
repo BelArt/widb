@@ -32,14 +32,13 @@ class Authors extends ActiveRecord
 	{
 		return array(
             // сначала обязательные
-            array('initials', 'required', 'except' => 'delete'),
-            // потом общие проверки на формат, тип данных и т.д.
-            // общий принцип - если атрибут указан в обязательных, то свойство allowEmpty должно быть false, иначе - true
-            // поэтому все самописные валидаторы по умолчанию имеют allowEmpty=false
+            array('initials', 'required', 'except' => 'delete', 'skipOnError' => true),
+            // потом общие проверки на формат
+            // если атрибут не указан в обязательных, то свойство allowEmpty должно быть true
             array('sort', 'application.components.validators.IntegerValidator', 'skipOnError' => true, 'allowEmpty' => true, 'except' => 'delete'),
-            // потом отдельно на длину
-            array('surname, name, middlename, initials', 'length', 'max'=>150, 'except' => 'delete'),
-            array('sort', 'length', 'max'=>10, 'except' => 'delete'),
+            // потом отдельно на максимальную длину
+            array('surname, name, middlename, initials', 'length', 'max'=>150, 'except' => 'delete', 'skipOnError' => true),
+            array('sort', 'length', 'max'=>10, 'except' => 'delete', 'skipOnError' => true),
             // и безопасные
 		);
 	}

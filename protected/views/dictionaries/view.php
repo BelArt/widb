@@ -1,6 +1,8 @@
 <?php
 /* @var $this DictionariesController */
 /* @var $AuthorsDataProvider CActiveDataProvider */
+/* @var $ObjectTypesDataProvider CActiveDataProvider */
+/* @var $PhotoTypesDataProvider CActiveDataProvider */
 
 Yii::app()->clientScript->registerPackage('dictionariesView');
 ?>
@@ -16,6 +18,18 @@ $this->widget('bootstrap.widgets.TbTabs', array(
                     'AuthorsDataProvider' => $AuthorsDataProvider
                 ), true),
             'active' => true
+        ),
+        array(
+            'label' => Yii::t('admin', 'Типы объектов'),
+            'content' => $this->renderPartial('_objectTypesTable', array(
+                    'ObjectTypesDataProvider' => $ObjectTypesDataProvider
+                ), true),
+        ),
+        array(
+            'label' => Yii::t('admin', 'Типы съемки'),
+            'content' => $this->renderPartial('_photoTypesTable', array(
+                    'PhotoTypesDataProvider' => $PhotoTypesDataProvider
+                ), true),
         ),
     ),
 ));
