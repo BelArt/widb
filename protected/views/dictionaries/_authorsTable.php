@@ -27,17 +27,22 @@ $this->widget(
                 'name' => 'initials',
                 'sortable' => false
             ),
-            /*array(
+            array(
+                'value' => '!empty($data->sort) ? $data->sort : ""',
+                'header' => Yii::t('common', 'Сортировка'),
+                'sortable' => false
+            ),
+            array(
                 'header'=>'Действия',
                 'htmlOptions' => array('nowrap'=>'nowrap'),
                 'class'=>'bootstrap.widgets.TbButtonColumn',
-                'viewButtonUrl' => 'Yii::app()->urlManager->createUrl("objects/view", array("id" => $data->id));',
-                'updateButtonUrl'=> null,
+                //'viewButtonUrl' => 'Yii::app()->urlManager->createUrl("objects/view", array("id" => $data->id));',
+                'updateButtonUrl'=> 'Yii::app()->urlManager->createUrl("dictionaries/update", array("id" => $data->id, "type" => "authors"));',
                 'deleteButtonUrl' => null,
                 'buttons' => array(
-                    'delete' => array('visible' => 'false')
+                    'view' => array('visible' => 'false')
                 )
-            )*/
+            )
         ),
         'showTableOnEmpty' => false,
         'emptyText' => ''

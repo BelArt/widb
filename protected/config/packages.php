@@ -86,4 +86,10 @@ return array(
         //'js'=>array('js/image-view.js'),
         'depends' => array('global')
     ),
+    'dictionaryForm' => array(
+        'basePath'=>'application.assets',
+        'js'=>array('js/dictionary-form.js'),
+        'css'=>array('css/dictionary-form.css'),
+        'depends' => array('global')
+    ),
 );
