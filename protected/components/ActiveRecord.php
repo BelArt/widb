@@ -62,28 +62,17 @@ class ActiveRecord extends CActiveRecord
      * Cтавит в ней флаг, что запись удалена, но не удаляет ее из таблицы
      * @throws ActiveRecordException
      */
-    public function deleteRecord()
+    protected function deleteRecord()
     {
-        try {
-            $this->scenario = 'delete';
-            $this->deleted = 1;
-            $Transaction = Yii::app()->db->beginTransaction();
-            try {
-                if (!$this->save()) {
-                    throw new ActiveRecordException();
-                }
-                $Transaction->commit();
-            } catch (ActiveRecordException $Exception) {
-                $Transaction->rollback();
-                throw $Exception;
-            }catch (Exception $Exception) {
-                $Transaction->rollback();
-                throw new ActiveRecordException($Exception);
-            }
-        } catch (ActiveRecordException $Exception) {
-            throw $Exception;
-        } catch (Exception $Exception) {
-            throw new ActiveRecordException($Exception);
+        if ($this->isNewRecord) {
+            throw new ActiveRecordException();
+        }
+
+        $this->scenario = 'delete';
+        $this->deleted = 1;
+
+        if (!$this->save()) {
+            throw new ActiveRecordException();
         }
     }
 

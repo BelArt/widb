@@ -30,16 +30,16 @@ class Authors extends ActiveRecord
 	 */
 	public function rules()
 	{
-		// NOTE: you should only define rules for those attributes that
-		// will receive user inputs.
 		return array(
-			array('deleted', 'numerical', 'integerOnly'=>true),
-			array('surname, name, middlename, initials', 'length', 'max'=>150),
-			array('sort', 'length', 'max'=>10),
-			array('date_create, date_modify, date_delete', 'safe'),
-			// The following rule is used by search().
-			// @todo Please remove those attributes that should not be searched.
-			array('id, surname, name, middlename, initials, date_create, date_modify, date_delete, sort, deleted', 'safe', 'on'=>'search'),
+            // сначала обязательные
+            array('initials', 'required', 'except' => 'delete', 'skipOnError' => true),
+            // потом общие проверки на формат
+            // если атрибут не указан в обязательных, то свойство allowEmpty должно быть true
+            array('sort', 'application.components.validators.IntegerValidator', 'skipOnError' => true, 'allowEmpty' => true, 'except' => 'delete'),
+            // потом отдельно на максимальную длину
+            array('surname, name, middlename, initials', 'length', 'max'=>150, 'except' => 'delete', 'skipOnError' => true),
+            array('sort', 'length', 'max'=>10, 'except' => 'delete', 'skipOnError' => true),
+            // и безопасные
 		);
 	}
 
@@ -48,9 +48,12 @@ class Authors extends ActiveRecord
 	 */
 	public function relations()
 	{
-		// NOTE: you may need to adjust the relation name and the related
-		// class name for the relations automatically generated below.
 		return array(
+            'objects' => array(self::HAS_MANY, 'Objects', 'author_id'),
+
+            'userCreate' => array(self::BELONGS_TO, 'Users', 'user_create'),
+            'userModify' => array(self::BELONGS_TO, 'Users', 'user_modify'),
+            'userDelete' => array(self::BELONGS_TO, 'Users', 'user_delete'),
 		);
 	}
 
@@ -60,51 +63,12 @@ class Authors extends ActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'id' => 'ID',
-			'surname' => 'Surname',
-			'name' => 'Name',
-			'middlename' => 'Middlename',
-			'initials' => 'Initials',
-			'date_create' => 'Date Create',
-			'date_modify' => 'Date Modify',
-			'date_delete' => 'Date Delete',
-			'sort' => 'Sort',
-			'deleted' => 'Deleted',
+			'surname' => Yii::t('admin', 'Фамилия'),
+			'name' => Yii::t('admin', 'Имя'),
+			'middlename' => Yii::t('admin', 'Отчество'),
+			'initials' => Yii::t('admin', 'ФИО'),
+            'sort' => Yii::t('common', 'Сортировка'),
 		);
-	}
-
-	/**
-	 * Retrieves a list of models based on the current search/filter conditions.
-	 *
-	 * Typical usecase:
-	 * - Initialize the model fields with values from filter form.
-	 * - Execute this method to get CActiveDataProvider instance which will filter
-	 * models according to data in model fields.
-	 * - Pass data provider to CGridView, CListView or any similar widget.
-	 *
-	 * @return CActiveDataProvider the data provider that can return the models
-	 * based on the search/filter conditions.
-	 */
-	public function search()
-	{
-		// @todo Please modify the following code to remove attributes that should not be searched.
-
-		$criteria=new CDbCriteria;
-
-		$criteria->compare('id',$this->id,true);
-		$criteria->compare('surname',$this->surname,true);
-		$criteria->compare('name',$this->name,true);
-		$criteria->compare('middlename',$this->middlename,true);
-		$criteria->compare('initials',$this->initials,true);
-		$criteria->compare('date_create',$this->date_create,true);
-		$criteria->compare('date_modify',$this->date_modify,true);
-		$criteria->compare('date_delete',$this->date_delete,true);
-		$criteria->compare('sort',$this->sort,true);
-		$criteria->compare('deleted',$this->deleted);
-
-		return new CActiveDataProvider($this, array(
-			'criteria'=>$criteria,
-		));
 	}
 
 	/**
@@ -117,4 +81,47 @@ class Authors extends ActiveRecord
 	{
 		return parent::model($className);
 	}
+
+    /**
+     * Проверяет, можно ли удалять запись.
+     * Нельзя, если запись где-то используется.
+     * @return bool можно ли удалять запись
+     * @throws DictionariesException
+     */
+    public function isReadyToBeDeleted()
+    {
+        if ($this->isNewRecord) {
+            throw new DictionariesException();
+        }
+
+        $Criteria = new CDbCriteria;
+        $Criteria->select = 'id';
+        $Criteria->addCondition('author_id = :author_id');
+        $Criteria->params = array(':author_id' => $this->id);
+
+        $records = Objects::model()->findAll($Criteria);
+
+        if (!empty($records)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Удаляет запись
+     * @throws DictionariesException
+     */
+    public function deleteDictionaryRecord()
+    {
+        if ($this->isNewRecord) {
+            throw new DictionariesException();
+        }
+
+        try {
+            $this->deleteRecord();
+        } catch (ActiveRecordException $Exception) {
+            throw new DictionariesException($Exception);
+        }
+    }
 }

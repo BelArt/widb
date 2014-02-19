@@ -80,4 +80,16 @@ return array(
         'css'=>array('css/image-form.css'),
         'depends' => array('global')
     ),
+    'dictionariesView' => array(
+        'basePath'=>'application.assets',
+        //'css'=>array('css/object-view.css'),
+        'js'=>array('js/dictionary-view.js'),
+        'depends' => array('global')
+    ),
+    'dictionaryForm' => array(
+        'basePath'=>'application.assets',
+        'js'=>array('js/dictionary-form.js'),
+        'css'=>array('css/dictionary-form.css'),
+        'depends' => array('global')
+    ),
 );

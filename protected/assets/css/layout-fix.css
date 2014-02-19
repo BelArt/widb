@@ -23,6 +23,16 @@
     border: 1px solid #ddd;
     margin-bottom: 20px;
 }
+#admin-menu {
+    padding: 20px;
+    /*background-color: #F5F5F5;*/
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    behavior: url(PIE.htc);
+    border: 1px solid #ddd;
+    margin: 20px 0px 20px 0px;
+}
 #content {
     /*background-color: #F5F5F5;*/
     background-color: transparent;

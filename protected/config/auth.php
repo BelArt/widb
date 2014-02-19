@@ -38,13 +38,7 @@ return array(
     // Справочники
     'oDictionariesView' => array(
         'type' => CAuthItem::TYPE_OPERATION,
-        'description' => 'Просмотр списка всех Справочников',
-        'bizRule' => null,
-        'data' => null
-    ),
-    'oDictionaryView' => array(
-        'type' => CAuthItem::TYPE_OPERATION,
-        'description' => 'Просмотр Справочника',
+        'description' => 'Просмотр всех Справочников',
         'bizRule' => null,
         'data' => null
     ),
@@ -269,7 +263,6 @@ return array(
         'children' => array(
             // Справочники
             'oDictionariesView',
-            'oDictionaryView',
             'oDictionaryRecordCreate',
             'oDictionaryRecordEdit',
             'oDictionaryRecordDelete',

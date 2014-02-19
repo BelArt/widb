@@ -25,6 +25,17 @@
             ));
         ?>
     </div><!-- sidebar -->
+    <?php if ($this->getAdminMenu()): ?>
+        <div id="admin-menu">
+            <?php
+            $this->widget('bootstrap.widgets.TbMenu', array(
+                'type' => 'pills',
+                'stacked' => true,
+                'items' => $this->getAdminMenu(),
+            ));
+            ?>
+        </div>
+    <?php endif; ?>
 </div>
 <div class="span-21 last">
 	<div id="content">

@@ -28,17 +28,18 @@ class ObjectTypes extends ActiveRecord
 	 */
 	public function rules()
 	{
-		// NOTE: you should only define rules for those attributes that
-		// will receive user inputs.
-		return array(
-			array('deleted', 'numerical', 'integerOnly'=>true),
-			array('name', 'length', 'max'=>150),
-			array('sort', 'length', 'max'=>10),
-			array('description, date_create, date_modify, date_delete', 'safe'),
-			// The following rule is used by search().
-			// @todo Please remove those attributes that should not be searched.
-			array('id, name, description, date_create, date_modify, date_delete, sort, deleted', 'safe', 'on'=>'search'),
-		);
+        return array(
+            // сначала обязательные
+            array('name', 'required', 'except' => 'delete', 'skipOnError' => true),
+            // потом общие проверки на формат
+            // если атрибут не указан в обязательных, то свойство allowEmpty должно быть true
+            array('sort', 'application.components.validators.IntegerValidator', 'skipOnError' => true, 'allowEmpty' => true, 'except' => 'delete'),
+            // потом отдельно на максимальную длину
+            array('name', 'length', 'max'=>150, 'skipOnError' => true, 'except' => 'delete'),
+            array('sort', 'length', 'max'=>10, 'skipOnError' => true, 'except' => 'delete'),
+            // и безопасные
+            array('description', 'safe'),
+        );
 	}
 
 	/**
@@ -46,10 +47,13 @@ class ObjectTypes extends ActiveRecord
 	 */
 	public function relations()
 	{
-		// NOTE: you may need to adjust the relation name and the related
-		// class name for the relations automatically generated below.
-		return array(
-		);
+        return array(
+            'objects' => array(self::HAS_MANY, 'Objects', 'type_id'),
+
+            'userCreate' => array(self::BELONGS_TO, 'Users', 'user_create'),
+            'userModify' => array(self::BELONGS_TO, 'Users', 'user_modify'),
+            'userDelete' => array(self::BELONGS_TO, 'Users', 'user_delete'),
+        );
 	}
 
 	/**
@@ -57,48 +61,11 @@ class ObjectTypes extends ActiveRecord
 	 */
 	public function attributeLabels()
 	{
-		return array(
-			'id' => 'ID',
-			'name' => 'Name',
-			'description' => 'Description',
-			'date_create' => 'Date Create',
-			'date_modify' => 'Date Modify',
-			'date_delete' => 'Date Delete',
-			'sort' => 'Sort',
-			'deleted' => 'Deleted',
-		);
-	}
-
-	/**
-	 * Retrieves a list of models based on the current search/filter conditions.
-	 *
-	 * Typical usecase:
-	 * - Initialize the model fields with values from filter form.
-	 * - Execute this method to get CActiveDataProvider instance which will filter
-	 * models according to data in model fields.
-	 * - Pass data provider to CGridView, CListView or any similar widget.
-	 *
-	 * @return CActiveDataProvider the data provider that can return the models
-	 * based on the search/filter conditions.
-	 */
-	public function search()
-	{
-		// @todo Please modify the following code to remove attributes that should not be searched.
-
-		$criteria=new CDbCriteria;
-
-		$criteria->compare('id',$this->id,true);
-		$criteria->compare('name',$this->name,true);
-		$criteria->compare('description',$this->description,true);
-		$criteria->compare('date_create',$this->date_create,true);
-		$criteria->compare('date_modify',$this->date_modify,true);
-		$criteria->compare('date_delete',$this->date_delete,true);
-		$criteria->compare('sort',$this->sort,true);
-		$criteria->compare('deleted',$this->deleted);
-
-		return new CActiveDataProvider($this, array(
-			'criteria'=>$criteria,
-		));
+        return array(
+            'name' => Yii::t('common', 'Название'),
+            'description' => Yii::t('common', 'Описание'),
+            'sort' => Yii::t('common', 'Сортировка'),
+        );
 	}
 
 	/**
@@ -111,4 +78,47 @@ class ObjectTypes extends ActiveRecord
 	{
 		return parent::model($className);
 	}
+
+    /**
+     * Проверяет, можно ли удалять запись.
+     * Нельзя, если запись где-то используется.
+     * @return bool можно ли удалять запись
+     * @throws DictionariesException
+     */
+    public function isReadyToBeDeleted()
+    {
+        if ($this->isNewRecord) {
+            throw new DictionariesException();
+        }
+
+        $Criteria = new CDbCriteria;
+        $Criteria->select = 'id';
+        $Criteria->addCondition('type_id = :type_id');
+        $Criteria->params = array(':type_id' => $this->id);
+
+        $records = Objects::model()->findAll($Criteria);
+
+        if (!empty($records)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Удаляет запись
+     * @throws DictionariesException
+     */
+    public function deleteDictionaryRecord()
+    {
+        if ($this->isNewRecord) {
+            throw new DictionariesException();
+        }
+
+        try {
+            $this->deleteRecord();
+        } catch (ActiveRecordException $Exception) {
+            throw new DictionariesException($Exception);
+        }
+    }
 }
