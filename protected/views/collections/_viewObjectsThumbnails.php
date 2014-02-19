@@ -6,7 +6,7 @@
 /* @var $collectionsToMoveTo array */
 ?>
 
-<?php $this->renderPartial('_viewObjectsMenu', array('model' => $model, 'tempCollectionsAllowedToUser' => $tempCollectionsAllowedToUser, 'collectionsToMoveTo' => $collectionsToMoveTo)); ?>
+<?php $this->renderPartial('_viewObjectsMenu', array('model' => $model, 'tempCollectionsAllowedToUser' => $tempCollectionsAllowedToUser, 'collectionsToMoveTo' => !empty($collectionsToMoveTo) ? $collectionsToMoveTo : null)); ?>
 
 <div class="row-fluid">
 <?php
