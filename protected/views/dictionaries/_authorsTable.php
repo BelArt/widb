@@ -37,11 +37,18 @@ $this->widget(
                 'htmlOptions' => array('nowrap'=>'nowrap'),
                 'class'=>'bootstrap.widgets.TbButtonColumn',
                 'updateButtonUrl'=> 'Yii::app()->urlManager->createUrl("dictionaries/update", array("id" => $data->id, "type" => "authors"));',
-                'deleteButtonUrl' => null,
+                'deleteButtonUrl' => 'Yii::app()->urlManager->createUrl("dictionaries/delete", array("id" => $data->id, "type" => "authors"));',
                 'buttons' => array(
                     'view' => array('visible' => 'false'),
                     'update' => array('visible' => Yii::app()->user->checkAccess('oDictionaryRecordEdit') ? 'true' : 'false'),
-                    'delete' => array('visible' => Yii::app()->user->checkAccess('oDictionaryRecordDelete') ? 'true' : 'false')
+                    'delete' => array(
+                        'visible' => Yii::app()->user->checkAccess('oDictionaryRecordDelete') ? 'true' : 'false',
+                        'options' => array(
+                            'data-dialog-title' => CHtml::encode(Yii::t('admin', 'Удалить запись справочника?')),
+                            'data-dialog-message' => CHtml::encode(Yii::t('admin', 'Вы не сможете ее восстановить')),
+                            'class' => '_deleteDictionaryRecord'
+                        ),
+                    )
                 )
             )
         ),

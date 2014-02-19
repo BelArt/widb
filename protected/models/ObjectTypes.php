@@ -78,4 +78,47 @@ class ObjectTypes extends ActiveRecord
 	{
 		return parent::model($className);
 	}
+
+    /**
+     * Проверяет, можно ли удалять запись.
+     * Нельзя, если запись где-то используется.
+     * @return bool можно ли удалять запись
+     * @throws DictionariesException
+     */
+    public function isReadyToBeDeleted()
+    {
+        if ($this->isNewRecord) {
+            throw new DictionariesException();
+        }
+
+        $Criteria = new CDbCriteria;
+        $Criteria->select = 'id';
+        $Criteria->addCondition('type_id = :type_id');
+        $Criteria->params = array(':type_id' => $this->id);
+
+        $records = Objects::model()->findAll($Criteria);
+
+        if (!empty($records)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Удаляет запись
+     * @throws DictionariesException
+     */
+    public function deleteDictionaryRecord()
+    {
+        if ($this->isNewRecord) {
+            throw new DictionariesException();
+        }
+
+        try {
+            $this->deleteRecord();
+        } catch (ActiveRecordException $Exception) {
+            throw new DictionariesException($Exception);
+        }
+    }
 }

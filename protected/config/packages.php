@@ -83,7 +83,7 @@ return array(
     'dictionariesView' => array(
         'basePath'=>'application.assets',
         //'css'=>array('css/object-view.css'),
-        //'js'=>array('js/image-view.js'),
+        'js'=>array('js/dictionary-view.js'),
         'depends' => array('global')
     ),
     'dictionaryForm' => array(

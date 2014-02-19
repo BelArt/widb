@@ -32,6 +32,10 @@ class DictionariesController extends Controller
                 'actions' => array('create'),
                 'roles' => array('oDictionaryRecordCreate'),
             ),
+            array('allow',
+                'actions' => array('delete'),
+                'roles' => array('oDictionaryRecordDelete'),
+            ),
             array('deny',  // deny all users
                 'users'=>array('*'),
             ),
@@ -68,11 +72,11 @@ class DictionariesController extends Controller
     /**
      * Страница редактирования записи в справочнике
      * @param string $id айди записи в справочнике
-     * @param string $type тип справочника, см. {@link getModelForActionUpdate()}
+     * @param string $type тип справочника, см. {@link getDictionaryRecordModel()}
      */
     public function actionUpdate($id, $type)
     {
-        $Model = $this->getModelForActionUpdate($id, $type);
+        $Model = $this->getDictionaryRecordModel($id, $type);
         $modelName = get_class($Model);
         if(isset($_POST[$modelName]))
         {
@@ -95,7 +99,7 @@ class DictionariesController extends Controller
      * @return ActiveRecord модель записи в справочнике
      * @throws DictionariesControllerException
      */
-    private function getModelForActionUpdate($id, $type)
+    private function getDictionaryRecordModel($id, $type)
     {
         $Model = null;
         switch ($type) {
@@ -208,7 +212,7 @@ class DictionariesController extends Controller
 
     public function actionCreate($type)
     {
-        $Model = $this->getModelForActionCreate($type);
+        $Model = $this->getDictionaryModel($type);
         $modelName = get_class($Model);
         if(isset($_POST[$modelName]))
         {
@@ -224,7 +228,7 @@ class DictionariesController extends Controller
         ));
     }
 
-    private function getModelForActionCreate($type)
+    private function getDictionaryModel($type)
     {
         $Model = null;
         switch ($type) {
@@ -316,6 +320,28 @@ class DictionariesController extends Controller
                 break;
             default:
                 throw new DictionariesControllerException();
+        }
+    }
+
+    /**
+     * Удаляет запись из справочника
+     * @param string $id айди записи
+     * @param string $type тип справочника, см. {@link getDictionaryRecordModel()}
+     * @throws DictionariesControllerException
+     */
+    public function actionDelete($id, $type)
+    {
+        $Model = $this->getDictionaryRecordModel($id, $type);
+        try {
+            if (DeleteHelper::deleteDictionaryRecord($Model)) {
+                Yii::app()->user->setFlash('success', Yii::t('admin', 'Запись удалена'));
+                $this->redirect(array('dictionaries/view'));
+            } else {
+                Yii::app()->user->setFlash('error', Yii::t('admin', 'Запись не удалена, т.к. она где-то используется'));
+                $this->redirect(Yii::app()->request->urlReferrer);
+            }
+        } catch (DeleteHelperException $Exception) {
+            throw new DictionariesControllerException($Exception);
         }
     }
 }

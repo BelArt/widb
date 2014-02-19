@@ -173,4 +173,26 @@ class DeleteHelper extends CApplicationComponent
         }
 
     }
+
+    /**
+     * Удаляет запись из справочника
+     * @param ActiveRecord $Model модель записи, см. {@link DictionariesController::getDictionaryRecordModel()}
+     * @return bool удалены ли запись или нет. Нет - в случае, если запись где-то используется
+     * @throws DeleteHelperException
+     */
+    public static function deleteDictionaryRecord(ActiveRecord $Model)
+    {
+        try {
+            if ($Model->isReadyToBeDeleted()) {
+                $Model->deleteDictionaryRecord();
+                return true;
+            } else {
+                return false;
+            }
+        } catch (DictionariesException $Exception) {
+            throw new DeleteHelperException($Exception);
+        }
+
+
+    }
 } 
