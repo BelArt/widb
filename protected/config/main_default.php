@@ -114,6 +114,9 @@ return array(
             // ImageMagick setup path
             //'params'=>array('directory'=>'/opt/local/bin'),
         ),
+        'format' => array(
+            'class' => 'CLocalizedFormatter',
+        ),
 	),
 
 	// application-level parameters that can be accessed

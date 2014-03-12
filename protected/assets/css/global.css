@@ -20,7 +20,8 @@
 .itemThumbnail .itemThumbnailAuthor {
     margin: 0px;
     padding: 0px;
-    color: #999999;
+    color: #848484;
+    font-size: 13px;
 }
 .itemThumbnail .longTextFadeCheckbox {
     white-space: nowrap;
@@ -80,10 +81,44 @@
     vertical-align: middle;
 }
 .itemList .itemListDescriptionBlock .itemListName {
-    margin: 0px 0px 0px 0px;
+    margin: 0px 0px 4px 0px;
+    line-height: normal;
 }
-.itemList .itemListDescriptionBlock .itemListAuthor {
-    color: #999999;
+.itemList .itemListDescriptionBlock .itemListData1 {
+    color: #848484;
+    /*
+        нужно для того, чтобы избавиться от пробелов между дочерними элементами,
+        которые возникают в результате того, что переход на новую тсроку воспринимается как пробел
+    */
+    font-size: 0px;
+    margin: 0px 0px 4px 0px;
+    line-height: normal;
+}
+.itemList .itemListDescriptionBlock .itemListData1 .itemListAuthor {
+    font-size: 13px;
+}
+.itemList .itemListDescriptionBlock .itemListData1 .itemListCreationPeriod {
+    font-size: 13px;
+}
+.itemList .itemListDescriptionBlock .itemListData2 {
+    color: #c1a98f;
+    /*
+        нужно для того, чтобы избавиться от пробелов между дочерними элементами,
+        которые возникают в результате того, что переход на новую тсроку воспринимается как пробел
+    */
+    font-size: 0px;
+    margin: 0px;
+    line-height: normal;
+}
+.itemList .itemListDescriptionBlock .itemListData2 .itemListInventoryNumber {
+    font-size: 12px;
+}
+.itemList .itemListDescriptionBlock .itemListData2 .itemListObjectType {
+    font-size: 12px;
+}
+.itemList .itemListDescriptionBlock .itemListData2 .itemListSize {
+    font-size: 12px;
+    white-space: nowrap;
 }
 .withBorder {
     padding: 4px;
@@ -121,4 +156,30 @@
 }
 .formButton {
     margin: 0px 15px 0px 0px;
+}
+.valignedMiddle {
+    vertical-align: middle !important;
+}
+.halignedCenter {
+    text-align: center !important;
+}
+.itemTableAuthor {
+    font-size: 13px;
+    color: #848484;
+}
+.itemTableCreationPeriod {
+    font-size: 13px;
+    color: #848484;
+}
+.itemTableInventoryNumber {
+    font-size: 12px;
+    color: #c1a98f;
+}
+.itemTableObjectType {
+    font-size: 12px;
+    color: #c1a98f;
+}
+.itemTableSize {
+    font-size: 12px;
+    color: #c1a98f;
 }

@@ -394,4 +394,31 @@ class Objects extends ActiveRecord
             throw $Exception;
         }
     }
+
+    /**
+     * Возвращает размер объекта в формате Длина х Ширина х Высота
+     * @return string размер объекта в формате Длина х Ширина х Высота
+     * @throws ObjectsException
+     */
+    public function getSize()
+    {
+        if ($this->isNewRecord) {
+            throw new ObjectsException();
+        }
+
+        $size = '';
+
+        if (!empty($this->width)) {
+            $size .= OutputHelper::formatSize($this->width);
+            if (!empty($this->height)) {
+                $size .= ' x '.OutputHelper::formatSize($this->height);
+            }
+            if (!empty($this->depth)) {
+                $size .= ' x '.OutputHelper::formatSize($this->depth);
+            }
+            $size .= ' '.Yii::t('common', 'см');
+        }
+
+        return $size;
+    }
 }
