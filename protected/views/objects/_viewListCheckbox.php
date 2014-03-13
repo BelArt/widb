@@ -9,8 +9,15 @@ $itemUrl = $this->createUrl('objects/view', array('id' => $data->id));
     <tr>
         <td class="itemListCheckboxBlock"><input type="checkbox" class="_objectItem" data-object-id="<?= $data->id ?>" /></td>
         <td class="itemListImageBlock">
-            <a href="<?= CHtml::encode($itemUrl) ?>" title="<?= CHtml::encode($data->name) ?>" class="thumbnail ">
-                <img src="<?= CHtml::encode($data->thumbnailSmall) ?>" alt="<?= CHtml::encode($data->name) ?>" title="<?= CHtml::encode($data->name) ?>" />
+            <a href="<?= CHtml::encode($data->thumbnailBig) ?>" title="<?= CHtml::encode($data->name) ?>" class="thumbnail _fancybox">
+                <table class="itemListImageWrapper">
+                    <tr>
+                        <td>
+                            <img src="<?= CHtml::encode($data->thumbnailSmall) ?>" alt="<?= CHtml::encode($data->name) ?>" title="<?= CHtml::encode($data->name) ?>" />
+                        </td>
+                    </tr>
+                </table>
+
             </a>
         </td>
         <td class="itemListDescriptionBlock">

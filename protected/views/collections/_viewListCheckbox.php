@@ -9,8 +9,14 @@ $itemUrl = $data->temporary ? $this->createUrl('collections/viewTemp', array('id
     <tr>
         <td class="itemListCheckboxBlock"><input type="checkbox" class="_collectionItem" data-collection-id="<?= $data->id ?>" /></td>
         <td class="itemListImageBlock">
-            <a href="<?= CHtml::encode($itemUrl) ?>" title="<?= CHtml::encode($data->name) ?>" class="thumbnail ">
-                <img src="<?= CHtml::encode($data->thumbnailSmall) ?>" alt="<?= CHtml::encode($data->name) ?>" title="<?= CHtml::encode($data->name) ?>" />
+            <a href="<?= CHtml::encode($data->thumbnailBig) ?>" title="<?= CHtml::encode($data->name) ?>" class="thumbnail _fancybox">
+                <table class="itemListImageWrapper">
+                    <tr>
+                        <td>
+                            <img src="<?= CHtml::encode($data->thumbnailSmall) ?>" alt="<?= CHtml::encode($data->name) ?>" title="<?= CHtml::encode($data->name) ?>" />
+                        </td>
+                    </tr>
+                </table>
             </a>
         </td>
         <td class="itemListDescriptionBlock">

@@ -83,12 +83,25 @@
 .itemList {
     width: auto;
 }
+.itemList .itemListImageWrapper {
+    width:65px;
+    height: 65px;
+    padding: 0;
+    margin: 0;
+}
+.itemList .itemListImageWrapper TD {
+    width:65px;
+    height: 65px;
+    padding: 0;
+    margin: 0;
+    vertical-align: middle;
+}
 .itemList TD {
     padding:0;
 }
 .itemList .itemListImageBlock IMG {
     width: 65px;
-    height: 65px;
+    /*height: 65px;*/
 }
 .itemList .itemListCheckboxBlock {
     padding: 0px 10px 0px 0px;
@@ -176,7 +189,7 @@
     transition: all 0.2s ease-in-out;*/
 }
 .entityThumbnail IMG {
-    width: 150px;
+    width: 250px;
     /*height: 150px;*/
 }
 .entityDescription {

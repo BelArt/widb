@@ -49,7 +49,7 @@ class Objects extends ActiveRecord
 	{
 		return array(
 
-            array('name, description, type_id, inventory_number, code', 'required', 'except' => 'delete'),
+            array('name, type_id, inventory_number, code', 'required', 'except' => 'delete'),
             array('has_preview', 'boolean', 'except' => 'delete'),
             array('author_id, type_id, sort', 'application.components.validators.EmptyOrPositiveIntegerValidator', 'skipOnError' => true, 'except' => 'delete'),
             array('period, code, department, keeper', 'length', 'max'=>150, 'except' => 'delete'),
@@ -57,6 +57,7 @@ class Objects extends ActiveRecord
             array('width, height, depth', 'numerical', 'numberPattern' => '/^\d\d{0,2}(\.\d{1,2})?$/', 'message' => Yii::t('objects', 'значение должно быть в формате xxx.xx'), 'allowEmpty' => true, 'except' => 'delete'),
             array('code', 'application.components.validators.CodeValidator', 'skipOnError' => true, 'except' => 'delete'),
 
+            array('description', 'safe'),
 
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.

@@ -6,7 +6,7 @@ $itemUrl = $this->createUrl('objects/view', array('id' => $data->id));
 ?>
 
 <li class="itemThumbnail" >
-    <a href="<?= CHtml::encode($itemUrl) ?>" class="thumbnail" title="<?= CHtml::encode($data->name) ?>">
+    <a href="<?= CHtml::encode($data->thumbnailBig) ?>" class="thumbnail _fancybox" title="<?= CHtml::encode($data->name) ?>">
         <table class="itemThumbnailImageWrapper">
             <tr>
                 <td>
