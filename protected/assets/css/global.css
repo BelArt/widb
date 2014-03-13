@@ -8,9 +8,22 @@
     margin: 0px 15px 15px 0px !important;
     /*display: block;*/
 }
+.itemThumbnail .itemThumbnailImageWrapper {
+    width:150px;
+    height: 150px;
+    padding: 0;
+    margin: 0;
+}
+.itemThumbnail .itemThumbnailImageWrapper TD {
+    width:150px;
+    height: 150px;
+    padding: 0;
+    margin: 0;
+    vertical-align: middle;
+}
 .itemThumbnail IMG {
     width: 150px;
-    height: 150px;
+    /*height: 150px;*/
     margin: 0;
 }
 .itemThumbnail .itemThumbnailName {
@@ -164,7 +177,7 @@
 }
 .entityThumbnail IMG {
     width: 150px;
-    height: 150px;
+    /*height: 150px;*/
 }
 .entityDescription {
     float: left;
