@@ -154,6 +154,18 @@ class CollectionsController extends Controller
         $this->breadcrumbs = array($model->name);
         $this->pageName = $model->name;
         $pageMenu = array();
+        if (Yii::app()->user->checkAccess('oCollectionCreate')) {
+            $pageMenu[] = array(
+                'label' => Yii::t('collections', 'Создать коллекцию'),
+                'url' => $this->createUrl('collections/create'),
+            );
+        }
+        if (Yii::app()->user->checkAccess('oTempCollectionCreate')) {
+            $pageMenu[] = array(
+                'label' => Yii::t('collections', 'Создать временную коллекцию'),
+                'url' => $this->createUrl('collections/createTemp'),
+            );
+        }
         if (Yii::app()->user->checkAccess('oCollectionEdit')) {
             $pageMenu[] = array(
                 'label' => Yii::t('collections', 'Редактировать коллекцию'),
@@ -254,6 +266,18 @@ class CollectionsController extends Controller
         $this->breadcrumbs = array($model->name);
         $this->pageName = $model->name;
         $pageMenu = array();
+        if (Yii::app()->user->checkAccess('oCollectionCreate')) {
+            $pageMenu[] = array(
+                'label' => Yii::t('collections', 'Создать коллекцию'),
+                'url' => $this->createUrl('collections/create'),
+            );
+        }
+        if (Yii::app()->user->checkAccess('oTempCollectionCreate')) {
+            $pageMenu[] = array(
+                'label' => Yii::t('collections', 'Создать временную коллекцию'),
+                'url' => $this->createUrl('collections/createTemp'),
+            );
+        }
         if (Yii::app()->user->checkAccess(
                 'oTempCollectionEdit',
                 array(
