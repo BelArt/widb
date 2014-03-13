@@ -24,4 +24,14 @@ class OutputHelper extends CApplicationComponent
     {
         return mb_strtolower($string, 'UTF-8');
     }
+
+    /**
+     * Форматирует дату
+     * @param string $date дата в формате БД (yyyy-mm-dd)
+     * @return string дата в формате dd.mm.yyyy
+     */
+    public static function formatDate($date)
+    {
+        return Yii::app()->format->date($date);
+    }
 } 

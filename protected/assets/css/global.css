@@ -23,6 +23,12 @@
     color: #848484;
     font-size: 13px;
 }
+.itemThumbnail .itemThumbnailResolution {
+    margin: 0px;
+    padding: 0px;
+    color: #848484;
+    font-size: 13px;
+}
 .itemThumbnail .longTextFadeCheckbox {
     white-space: nowrap;
     overflow: hidden;
@@ -97,7 +103,16 @@
 .itemList .itemListDescriptionBlock .itemListData1 .itemListAuthor {
     font-size: 13px;
 }
+.itemList .itemListDescriptionBlock .itemListData1 .itemListResolution {
+    font-size: 13px;
+}
 .itemList .itemListDescriptionBlock .itemListData1 .itemListCreationPeriod {
+    font-size: 13px;
+}
+.itemList .itemListDescriptionBlock .itemListData1 .itemListPhotoDate {
+    font-size: 13px;
+}
+.itemList .itemListDescriptionBlock .itemListData1 .itemListPathToOriginal {
     font-size: 13px;
 }
 .itemList .itemListDescriptionBlock .itemListData2 {
@@ -117,6 +132,10 @@
     font-size: 12px;
 }
 .itemList .itemListDescriptionBlock .itemListData2 .itemListSize {
+    font-size: 12px;
+    white-space: nowrap;
+}
+.itemList .itemListDescriptionBlock .itemListData2 .itemListDescription {
     font-size: 12px;
     white-space: nowrap;
 }
@@ -167,6 +186,18 @@
     font-size: 13px;
     color: #848484;
 }
+.itemTableResolution {
+    font-size: 13px;
+    color: #848484;
+}
+.itemTableDatePhoto {
+    font-size: 13px;
+    color: #848484;
+}
+.itemTableOriginalPath {
+    font-size: 13px;
+    color: #848484;
+}
 .itemTableCreationPeriod {
     font-size: 13px;
     color: #848484;
@@ -180,6 +211,10 @@
     color: #c1a98f;
 }
 .itemTableSize {
+    font-size: 12px;
+    color: #c1a98f;
+}
+.itemTableDescription {
     font-size: 12px;
     color: #c1a98f;
 }

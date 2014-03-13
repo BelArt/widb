@@ -207,7 +207,10 @@ class Images extends ActiveRecord
      */
     private function setName()
     {
-        $this->name = $this->width.' x '.$this->height.' px';
+        $this->name = $this->width.' x '.$this->height.' '.Yii::t('common', 'px');
+        /*if (!empty($this->dpi)) {
+            $this->name .= ' ['.$this->dpi.' '.Yii::t('common', 'dpi').']';
+        }*/
     }
 
     public function getName()
@@ -265,6 +268,26 @@ class Images extends ActiveRecord
         } catch (Exception $Exception) {
             throw new ImagesException($Exception);
         }
+    }
+
+    /**
+     * Возвращает разрешение изображения
+     * @return string разрешение изображения
+     * @throws ImagesException
+     */
+    public function getResolution()
+    {
+        if ($this->isNewRecord) {
+            throw new ImagesException();
+        }
+
+        $resolution = '';
+
+        if (!empty($this->dpi)) {
+            $resolution .= $this->dpi.' '.Yii::t('common', 'dpi');
+        }
+
+        return $resolution;
     }
 
 }
