@@ -36,4 +36,16 @@ $(function(){
         window.onbeforeunload = null;
     });
 
+    // формируем код объекта из инвентарника транслитом
+    $source = $('._translitSource');
+    var translitSourceLastValue = $source.val();
+    $source.on('change keyup paste mouseup', function(){
+        if ($(this).val() != translitSourceLastValue) {
+            translitSourceLastValue = $(this).val();
+            $(this).liTranslit({
+                elAlias: $('._translitDestination')
+            });
+        }
+    });
+
 });

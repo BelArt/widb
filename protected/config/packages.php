@@ -46,7 +46,7 @@ return array(
     ),
     'objectForm' => array(
         'basePath'=>'application.assets',
-        'js'=>array('js/object-form.js'),
+        'js'=>array('js/object-form.js', 'plugins/litranslit/jquery.liTranslit.js'),
         'css'=>array('css/object-form.css'),
         'depends' => array('global')
     ),

@@ -180,7 +180,6 @@ class ObjectsController extends Controller
                 'with' => array('photoType'),
             ),
             'pagination' => array(
-                'pageSize' => 1,
                 'pageVar' => 'p',
             ),
         ));
