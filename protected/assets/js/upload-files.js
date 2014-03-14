@@ -33,11 +33,11 @@ $(function() {
                 $('._uploadFiles_previewBlock').remove();
                 $('._uploadFiles_xuploadBlock').show();
 
-                /*
-                 * @@WIDB-79
-                    // и снимаем галочку Есть превью
-                    $('._hasPreviewCheckbox').removeAttr('checked');
-                */
+
+                // @@WIDB-79 start
+                // и снимаем галочку Есть превью
+                $('._hasPreviewCheckbox').removeAttr('checked');
+                // @@WIDB-79 end
 
             },
             error: function() {

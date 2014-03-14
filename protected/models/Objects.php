@@ -223,12 +223,12 @@ class Objects extends ActiveRecord
 
     public function afterSave()
     {
-        /* @@WIDB-79
-            // проверяем на сценарий для исключения рекурсивного вызова этой функции в afterSave() после сохранения данных о превью
-            if ($this->scenario != PreviewHelper::SCENARIO_SAVE_PREVIEWS) {
-                PreviewHelper::savePreviews($this);
-            }
-        */
+        // @@WIDB-79 start
+        // проверяем на сценарий для исключения рекурсивного вызова этой функции в afterSave() после сохранения данных о превью
+        if ($this->scenario != PreviewHelper::SCENARIO_SAVE_PREVIEWS) {
+            PreviewHelper::savePreviews($this);
+        }
+        // @@WIDB-79 end
 
         PreviewHelper::savePreviews($this);
 
