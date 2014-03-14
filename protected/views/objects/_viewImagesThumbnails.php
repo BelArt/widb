@@ -11,7 +11,8 @@
         'bootstrap.widgets.TbThumbnails',
         array(
             'dataProvider' => $ImagesDataProvider,
-            'template' => "{items}",
+            'template' => '{items}'.PHP_EOL.'{pager}',
+            'ajaxUpdate' => false,
             'itemView' => 'application.views.images._viewThumbnailCheckbox',
             'emptyText' => ''
         )

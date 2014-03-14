@@ -12,7 +12,8 @@ $this->widget(
     array(
         'type' => 'striped bordered',
         'dataProvider' => $ChildCollectionsDataProvider,
-        'template' => "{items}",
+        'template' => '{items}'.PHP_EOL.'{pager}',
+        'ajaxUpdate' => false,
         'columns' => array(
             array(
                 'class' => 'CCheckBoxColumn',

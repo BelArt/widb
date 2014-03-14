@@ -10,10 +10,11 @@
 
 <div class="row-fluid">
     <?php
-    $this->widget('zii.widgets.CListView', array(
+    $this->widget('bootstrap.widgets.TbListView', array(
         'dataProvider' => $ObjectsDataProvider,
         'itemView' => 'application.views.objects._viewListCheckbox',
-        'template' => '{items}',
+        'template' => '{items}'.PHP_EOL.'{pager}',
+        'ajaxUpdate' => false,
         'emptyText' => ''
     ));
     ?>

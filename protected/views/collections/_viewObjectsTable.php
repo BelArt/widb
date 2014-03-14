@@ -15,7 +15,8 @@ $this->widget(
         'type' => 'striped bordered condensed',
         //'responsiveTable' => true,
         'dataProvider' => $ObjectsDataProvider,
-        'template' => "{items}",
+        'template' => '{items}'.PHP_EOL.'{pager}',
+        'ajaxUpdate' => false,
         'columns' => array(
             array(
                 'class' => 'CCheckBoxColumn',

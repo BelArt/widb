@@ -133,7 +133,12 @@ class CollectionsController extends Controller
         $ObjectsCriteria->params = array(':collection_id' => $id);
         $ObjectsCriteria->with = array('author');
 
-        $ObjectsDataProvider = new CActiveDataProvider('Objects', array('criteria' => $ObjectsCriteria));
+        $ObjectsDataProvider = new CActiveDataProvider('Objects', array(
+            'criteria' => $ObjectsCriteria,
+            'pagination' => array(
+                'pageVar' => 'p',
+            ),
+        ));
 
         $ChildCollectionsDataProvider = new CActiveDataProvider(
             'Collections',
@@ -141,6 +146,11 @@ class CollectionsController extends Controller
                 'criteria' => array(
                     'condition' => 'parent_id = :parent_id',
                     'params' => array(':parent_id' => $id)
+                ),
+                'pagination' => array(
+                    'pageVar' => 'p',
+                    // чтобы правильно строить урлы пейджера на вкладке Дочерние коллекции при просмотре картинками
+                    'params' => (empty($_GET['tb']) ? array('id' => $id,'tb' => 'cc', 'cv' => 'th') : null)
                 ),
             )
         );
@@ -257,7 +267,12 @@ class CollectionsController extends Controller
         $ObjectsCriteria->addInCondition('t.id', $objectIds);
         $ObjectsCriteria->with = array('author');
 
-        $ObjectsDataProvider = new CActiveDataProvider('Objects', array('criteria' => $ObjectsCriteria));
+        $ObjectsDataProvider = new CActiveDataProvider('Objects', array(
+            'criteria' => $ObjectsCriteria,
+            'pagination' => array(
+                'pageVar' => 'p',
+            ),
+        ));
 
         $tempCollectionsAllowedToUser = Collections::getTempCollectionsAllowedToUser(Yii::app()->user->id);
 
@@ -596,9 +611,14 @@ class CollectionsController extends Controller
 	{
         $allowedCollectionsCriteria = Collections::getAllowedCollectionsCriteria(Yii::app()->user->id);
 
-		$dataProvider=new CActiveDataProvider(
-            'Collections',
-            array('criteria' => $allowedCollectionsCriteria)
+		$dataProvider=new CActiveDataProvider('Collections',
+            array(
+                'criteria' => $allowedCollectionsCriteria,
+                'pagination'=>array(
+                    //'pageSize' => 2,
+                    'pageVar' => 'p'
+                ),
+            )
         );
 
         // параметры страницы

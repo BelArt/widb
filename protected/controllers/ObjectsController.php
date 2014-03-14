@@ -173,26 +173,24 @@ class ObjectsController extends Controller
      */
     public function actionView($id, $iv = 'th')
     {
-        try {
-            $ImagesDataProvider = new CActiveDataProvider('Images', array(
-                'criteria' => array(
-                    'condition' => 'object_id = :object_id',
-                    'params' => array(':object_id' => $id),
-                    'with' => array('photoType'),
-                ),
-            ));
-            $this->setPageParamsForActionView($id);
-            $this->render('view', array(
-                'Object' => $this->loadObject($id),
-                'renderViewImages' => $this->getObjectsImagesViewName($iv),
-                'ImagesDataProvider' => $ImagesDataProvider,
-                'attributesForDetailViewWidget' => $this->getAttributesForTbDetailViewWidget($id),
-            ));
-        } catch (ObjectsControllerException $Exception) {
-            throw $Exception;
-        } catch (Exception $Exception) {
-            throw new ObjectsControllerException($Exception);
-        }
+        $ImagesDataProvider = new CActiveDataProvider('Images', array(
+            'criteria' => array(
+                'condition' => 'object_id = :object_id',
+                'params' => array(':object_id' => $id),
+                'with' => array('photoType'),
+            ),
+            'pagination' => array(
+                'pageSize' => 1,
+                'pageVar' => 'p',
+            ),
+        ));
+        $this->setPageParamsForActionView($id);
+        $this->render('view', array(
+            'Object' => $this->loadObject($id),
+            'renderViewImages' => $this->getObjectsImagesViewName($iv),
+            'ImagesDataProvider' => $ImagesDataProvider,
+            'attributesForDetailViewWidget' => $this->getAttributesForTbDetailViewWidget($id),
+        ));
     }
 
     /**

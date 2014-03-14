@@ -371,6 +371,8 @@ class ImagesController extends Controller
         } catch (DeleteHelperException $Exception) {
             Yii::app()->user->setFlash('success', null);
             throw new ImagesControllerException($Exception);
+        } catch (Exception $Exception) {
+            Yii::app()->user->setFlash('success', null);
         }
     }
 
