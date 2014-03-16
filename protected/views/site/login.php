@@ -23,7 +23,7 @@ echo $form->passwordFieldRow($model, 'password', array(
     'class' => 'span3 _hideErrors',
     //'onkeypress' => 'hideErrors($(this))'
 ));
-echo $form->checkboxRow($model, 'rememberMe');
+/*echo $form->checkboxRow($model, 'rememberMe');*/
 
 $this->widget(
     'bootstrap.widgets.TbButton',
