@@ -44,6 +44,7 @@
 }
 .breadcrumb {
     border: 1px solid #ddd;
+    margin: 0;
 }
 #footer {
     margin-top: 20px;

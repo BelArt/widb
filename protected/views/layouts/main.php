@@ -71,14 +71,34 @@
         ?>
 	</div><!-- mainmenu -->
 
-    <?php
-        $this->widget(
-            'bootstrap.widgets.TbBreadcrumbs',
-            array(
+    <!--<table class="breadcrumbsAndMenu">
+        <tr>
+            <td>
+
+            </td>
+            <td>
+
+            </td>
+        </tr>
+    </table>-->
+
+    <div class="breadcrumbsAndSectionMenu">
+        <div class="sectionMenuWrapper">
+            <?php
+            $this->widget('application.widgets.section_menu.SectionMenu', array(
+                'menuItems' => $this->pageMenu,
+            ));
+            ?>
+        </div>
+        <div class="breadcrumbsWrapper">
+            <?php
+            $this->widget('bootstrap.widgets.TbBreadcrumbs', array(
                 'links' => $this->breadcrumbs,
-            )
-        );
-    ?>
+            ));
+            ?>
+        </div>
+        <div class="clear"></div>
+    </div>
 
     <?php
         $this->widget('bootstrap.widgets.TbAlert', array(

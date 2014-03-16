@@ -162,18 +162,20 @@ class CollectionsController extends Controller
         // параметры страницы
         $this->pageTitle = array($model->name);
         $this->breadcrumbs = array($model->name);
-        $this->pageName = $model->name;
+        //$this->pageName = $model->name;
         $pageMenu = array();
         if (Yii::app()->user->checkAccess('oCollectionCreate')) {
             $pageMenu[] = array(
                 'label' => Yii::t('collections', 'Создать коллекцию'),
                 'url' => $this->createUrl('collections/create'),
+                'iconType' => 'create_normal_col'
             );
         }
         if (Yii::app()->user->checkAccess('oTempCollectionCreate')) {
             $pageMenu[] = array(
                 'label' => Yii::t('collections', 'Создать временную коллекцию'),
                 'url' => $this->createUrl('collections/createTemp'),
+                'iconType' => 'create_temp_col'
             );
         }
         if (Yii::app()->user->checkAccess('oCollectionEdit')) {
@@ -183,12 +185,14 @@ class CollectionsController extends Controller
                     'collections/update',
                     array('id' => $id)
                 ),
+                'iconType' => 'edit'
             );
         }
         if (Yii::app()->user->checkAccess('oCollectionDelete')) {
             $pageMenu[] = array(
                 'label' => Yii::t('collections', 'Удалить коллекцию'),
                 'url' => $this->createUrl('collections/delete', array('id' => $id)),
+                'iconType' => 'delete',
                 'itemOptions' => array(
                     'class' => '_deleteCollection',
                     'data-dialog-title' => CHtml::encode(Yii::t('collections', 'Удалить коллекцию?')),
@@ -200,6 +204,7 @@ class CollectionsController extends Controller
             $pageMenu[] = array(
                 'label' => Yii::t('objects', 'Создать объект в коллекции'),
                 'url' => $this->createUrl('objects/create', array('ci' => $id)),
+                'iconType' => 'create'
             );
         }
         $this->pageMenu = $pageMenu;
@@ -279,18 +284,20 @@ class CollectionsController extends Controller
         // параметры страницы
         $this->pageTitle = array($model->name);
         $this->breadcrumbs = array($model->name);
-        $this->pageName = $model->name;
+        //$this->pageName = $model->name;
         $pageMenu = array();
         if (Yii::app()->user->checkAccess('oCollectionCreate')) {
             $pageMenu[] = array(
                 'label' => Yii::t('collections', 'Создать коллекцию'),
                 'url' => $this->createUrl('collections/create'),
+                'iconType' => 'create_normal_col'
             );
         }
         if (Yii::app()->user->checkAccess('oTempCollectionCreate')) {
             $pageMenu[] = array(
                 'label' => Yii::t('collections', 'Создать временную коллекцию'),
                 'url' => $this->createUrl('collections/createTemp'),
+                'iconType' => 'create_temp_col'
             );
         }
         if (Yii::app()->user->checkAccess(
@@ -306,6 +313,7 @@ class CollectionsController extends Controller
                         'collections/updateTemp',
                         array('id' => $id)
                     ),
+                'iconType' => 'edit'
                 //'itemOptions' => array('class' => 'small')
             );
         }
@@ -323,7 +331,8 @@ class CollectionsController extends Controller
                     'class' => '_deleteTempCollection',
                     'data-dialog-title' => CHtml::encode(Yii::t('collections', 'Удалить временную коллекцию?')),
                     'data-dialog-message' => CHtml::encode(Yii::t('collections', 'Вы уверены, что хотите удалить временную коллекцию? Ее нельзя будет восстановить!')),
-                )
+                ),
+                'iconType' => 'delete'
             );
         }
         $this->pageMenu = $pageMenu;
@@ -630,12 +639,14 @@ class CollectionsController extends Controller
             $pageMenu[] = array(
                 'label' => Yii::t('collections', 'Создать коллекцию'),
                 'url' => $this->createUrl('collections/create'),
+                'iconType' => 'create_normal_col'
             );
         }
         if (Yii::app()->user->checkAccess('oTempCollectionCreate')) {
             $pageMenu[] = array(
                 'label' => Yii::t('collections', 'Создать временную коллекцию'),
                 'url' => $this->createUrl('collections/createTemp'),
+                'iconType' => 'create_temp_col'
             );
         }
         $this->pageMenu = $pageMenu;

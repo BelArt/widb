@@ -301,6 +301,7 @@ class ObjectsController extends Controller
             $pageMenu[] = array(
                 'label' => Yii::t('objects', 'Редактировать объект'),
                 'url' => $this->createUrl('update', array('id' => $id)),
+                'iconType' => 'edit'
             );
         }
         if (Yii::app()->user->checkAccess('oObjectDelete')) {
@@ -311,7 +312,8 @@ class ObjectsController extends Controller
                     'class' => '_deleteObject',
                     'data-dialog-title' => CHtml::encode(Yii::t('objects', 'Удалить объект?')),
                     'data-dialog-message' => CHtml::encode(Yii::t('objects', 'Вы уверены, что хотите удалить объект? Его нельзя будет восстановить!')),
-                )
+                ),
+                'iconType' => 'delete'
             );
         }
         $tempCollections = Collections::getTempCollectionsAllowedToUser(Yii::app()->user->id);
@@ -323,7 +325,8 @@ class ObjectsController extends Controller
                     'class' => '_addObjectToTempCollection',
                     'data-dialog-title' => CHtml::encode(Yii::t('objects', 'Выберите временную коллекцию, в которую хотите добавить объект')),
                     'data-dialog-message' => CHtml::encode($this->renderPartial('_tempCollectionsSelect', array('Object' => $Object, 'tempCollections' => $tempCollections), true)),
-                )
+                ),
+                'iconType' => 'add_to_temp'
             );
         }
         if (Yii::app()->user->checkAccess('oChangeObjectsCollection')) {
@@ -335,13 +338,15 @@ class ObjectsController extends Controller
                     'class' => '_moveObjectToOtherCollection',
                     'data-dialog-title' => CHtml::encode(Yii::t('objects', 'Выберите коллекцию, в которую хотите переместить объект/объекты')),
                     'data-dialog-message' => CHtml::encode($this->renderPartial('_collectionsToMoveToSelect', array('Object' => $Object, 'collectionsToMoveTo' => $collectionsToMoveTo), true)),
-                )
+                ),
+                'iconType' => 'move'
             );
         }
         if (Yii::app()->user->checkAccess('oImageCreate')) {
             $pageMenu[] = array(
                 'label' => Yii::t('images', 'Создать изображение'),
                 'url' => $this->createUrl('images/create', array('oi' => $id)),
+                'iconType' => 'create'
             );
         }
         $this->pageMenu = $pageMenu;

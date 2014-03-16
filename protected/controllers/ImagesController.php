@@ -204,6 +204,7 @@ class ImagesController extends Controller
             $pageMenu[] = array(
                 'label' => Yii::t('images', 'Редактировать изображение'),
                 'url' => $this->createUrl('update', array('id' => $id)),
+                'iconType' => 'edit'
             );
         }
 
@@ -215,7 +216,8 @@ class ImagesController extends Controller
                     'class' => '_deleteImage',
                     'data-dialog-title' => CHtml::encode(Yii::t('images', 'Удалить изображение?')),
                     'data-dialog-message' => CHtml::encode(Yii::t('images', 'Вы уверены, что хотите удалить изображение? Его нельзя будет восстановить!')),
-                )
+                ),
+                'iconType' => 'delete'
             );
         }
 
