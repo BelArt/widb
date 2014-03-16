@@ -16,7 +16,5 @@ $itemUrl = $this->createUrl('objects/view', array('id' => $data->id));
         </table>
     </a>
     <p class='itemThumbnailName longTextFadeNoCheckbox'><a href="<?= CHtml::encode($itemUrl) ?>" title="<?= CHtml::encode($data->name) ?>"><?= CHtml::encode($data->name) ?></a></p>
-    <?php if(!empty($data->author->initials)): ?>
-        <p class='itemThumbnailAuthor'><?= CHtml::encode($data->author->initials) ?></p>
-    <?php endif; ?>
+    <p class='itemThumbnailAuthor'><?= CHtml::encode($data->getAuthorInitials()) ?></p>
 </li>
