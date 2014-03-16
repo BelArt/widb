@@ -164,7 +164,6 @@ class ObjectsController extends Controller
      * Просмотр объекта
      * @param string $id айди объекта
      * @param string $iv как отображать изображения: th - картинками, ls - списком, tb - таблицей
-     * @throws ObjectsControllerException
      */
     public function actionView($id, $iv = 'th')
     {

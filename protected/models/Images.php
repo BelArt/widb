@@ -29,7 +29,6 @@ class Images extends ActiveRecord
     private $thumbnailBig;
     private $thumbnailMedium;
     private $thumbnailSmall;
-    private $name;
 
 	/**
 	 * @return string the associated database table name
@@ -123,9 +122,6 @@ class Images extends ActiveRecord
 
         // формируем набор превью
         $this->setThumbnails();
-
-        // создаем фиктивный атрибут Имя
-        $this->setName();
     }
 
     public function beforeSave()
@@ -202,24 +198,18 @@ class Images extends ActiveRecord
         return $this->thumbnailSmall;
     }
 
-    /**
-     * создаем фиктивный атрибут Имя
-     */
-    private function setName()
-    {
-        $this->name = $this->width.' x '.$this->height.' '.Yii::t('common', 'px');
-        /*if (!empty($this->dpi)) {
-            $this->name .= ' ['.$this->dpi.' '.Yii::t('common', 'dpi').']';
-        }*/
-    }
-
     public function getName()
     {
         if ($this->isNewRecord) {
-            throw new ImagesException();
+            throw new CException();
         }
 
-        return $this->name;
+        $name = $this->width.' x '.$this->height.' '.Yii::t('common', 'px');
+        if (!empty($this->dpi)) {
+            $name .= ' ['.$this->dpi.' '.Yii::t('common', 'dpi').']';
+        }
+
+        return $name;
     }
 
     public function getArrayOfPhotoTypes()
@@ -288,6 +278,28 @@ class Images extends ActiveRecord
         }
 
         return $resolution;
+    }
+
+    /**
+     * Возвращает дату съемки изображения в виде "Съемка 12.03.2014"
+     * @return string отформатированная дата съемки
+     * @throws CException
+     */
+    public function getPhotoDateWithIntroWord()
+    {
+        if ($this->isNewRecord) {
+            throw new CException();
+        }
+
+        $result = '';
+
+        if (!empty($this->date_photo)) {
+            $result .= Yii::t('images', 'Cъемка').' '.OutputHelper::formatDate($this->date_photo);
+        } else {
+            $result .= Yii::t('images', 'Дата съемки неизвестна');
+        }
+
+        return $result;
     }
 
 }

@@ -22,9 +22,7 @@ $itemUrl = $this->createUrl('images/view', array('id' => $data->id));
             <td class="itemThumbnailCheckboxBlock"><input type="checkbox" class="_imageItem" data-image-id="<?= $data->id ?>" /></td>
             <td class="itemThumbnailTextBlock">
                 <p class='itemThumbnailName longTextFadeCheckbox'><a href="<?= CHtml::encode($itemUrl) ?>" title="<?= CHtml::encode($data->name) ?>"><?= CHtml::encode($data->name) ?></a></p>
-                <?php if(!empty($data->resolution)): ?>
-                    <p class='itemThumbnailResolution'><?= CHtml::encode($data->resolution) ?></p>
-                <?php endif; ?>
+                <p class='itemThumbnailResolution'><?= CHtml::encode($data->getPhotoDateWithIntroWord()) ?></p>
             </td>
         </tr>
     </table>

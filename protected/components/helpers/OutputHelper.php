@@ -5,6 +5,7 @@
 class OutputHelper
 {
     const MEASURE_UNIT_CM = 'см';
+    const MEASURE_UNIT_PX = 'px';
 
     /**
      * Форматирует число - из формата в БД (с разделителем-точкой) в формат с разделителем-запятой
@@ -49,6 +50,9 @@ class OutputHelper
         switch ($measure) {
             case self::MEASURE_UNIT_CM:
                 $measureUnit = Yii::t('common', 'см');
+                break;
+            case self::MEASURE_UNIT_PX:
+                $measureUnit = Yii::t('common', 'px');
                 break;
             default:
                 $measureUnit = Yii::t('common', 'см');

@@ -16,7 +16,5 @@ $itemUrl = $this->createUrl('images/view', array('id' => $data->id));
         </table>
     </a>
     <p class='itemThumbnailName longTextFadeNoCheckbox'><a href="<?= CHtml::encode($itemUrl) ?>" title="<?= CHtml::encode($data->name) ?>"><?= CHtml::encode($data->name) ?></a></p>
-    <?php if(!empty($data->resolution)): ?>
-        <p class='itemThumbnailResolution'><?= CHtml::encode($data->resolution) ?></p>
-    <?php endif; ?>
+    <p class='itemThumbnailResolution'><?= CHtml::encode($data->getPhotoDateWithIntroWord()) ?></p>
 </li>

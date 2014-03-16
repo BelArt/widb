@@ -204,10 +204,12 @@
 .entityDescription {
     float: left;
     margin: 0px 0px 0px 20px;
+    width: 420px;
 }
 .entityDescription2 {
     float: left;
     margin: 0px 0px 0px 20px;
+    width: 165px;
 }
 .clearBoth {
     clear: both;
@@ -230,6 +232,10 @@
     color: #848484;
 }
 .itemTableDatePhoto {
+     font-size: 13px;
+     color: #848484;
+ }
+.itemTablePhotoType {
     font-size: 13px;
     color: #848484;
 }

@@ -40,7 +40,7 @@ $this->widget(
                     'class' => 'valignedMiddle halignedCenter'
                 ),
             ),
-            array(
+            /*array(
                 'value'=>'(!empty($data->resolution) ? $data->resolution : "")',
                 'header' => Yii::t('images', 'Разрешение'),
                 'sortable' => false,
@@ -50,7 +50,7 @@ $this->widget(
                 'htmlOptions' => array(
                     'class' => 'itemTableResolution'
                 ),
-            ),
+            ),*/
             array(
                 'value'=>'(!empty($data->date_photo) ? OutputHelper::formatDate($data->date_photo) : "")',
                 'header' => Yii::t('images', 'Дата съемки'),
@@ -62,6 +62,17 @@ $this->widget(
                     'class' => 'itemTableDatePhoto'
                 ),
             ),
+            /*array(
+                'value'=>'(!empty($data->photoType->name) ? OutputHelper::stringToLower($data->photoType->name) : "")',
+                'header' => Yii::t('images', 'Тип съемки'),
+                'sortable' => false,
+                'headerHtmlOptions' => array(
+                    'class' => 'valignedMiddle halignedCenter'
+                ),
+                'htmlOptions' => array(
+                    'class' => 'itemTablePhotoType'
+                ),
+            ),*/
             array(
                 'value'=>'(!empty($data->original) ? $data->original : "")',
                 'header' => Yii::t('images', 'Путь хранения оригинала'),
