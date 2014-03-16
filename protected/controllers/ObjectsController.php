@@ -215,11 +215,11 @@ class ObjectsController extends Controller
             ),
             array(
                 'label' => $Object->getAttributeLabel('height'),
-                'value' => $Object->width !== '0.00' ? CHtml::encode(OutputHelper::formatSize($Object->height)) : ''
+                'value' => $Object->height !== '0.00' ? CHtml::encode(OutputHelper::formatSize($Object->height)) : ''
             ),
             array(
                 'label' => $Object->getAttributeLabel('depth'),
-                'value' => $Object->width !== '0.00' ? CHtml::encode(OutputHelper::formatSize($Object->depth)) : ''
+                'value' => $Object->depth !== '0.00' ? CHtml::encode(OutputHelper::formatSize($Object->depth)) : ''
             ),
             array(
                 'label' => $Object->getAttributeLabel('department'),
