@@ -13,6 +13,7 @@
     height: 150px;
     padding: 0;
     margin: 0;
+    overflow: hidden;
 }
 .itemThumbnail .itemThumbnailImageWrapper TD {
     width:150px;
