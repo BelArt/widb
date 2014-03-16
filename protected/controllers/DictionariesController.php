@@ -66,7 +66,26 @@ class DictionariesController extends Controller
     {
         $this->pageTitle = array(Yii::t('admin', 'Справочники'));
         $this->breadcrumbs = array(Yii::t('admin', 'Справочники'));
-        $this->pageName = Yii::t('admin', 'Справочники');
+        //$this->pageName = Yii::t('admin', 'Справочники');
+        $pageMenu = array();
+        if (Yii::app()->user->checkAccess('oDictionaryRecordCreate')) {
+            $pageMenu[] = array(
+                'label' => Yii::t('admin', 'Создать нового автора'),
+                'url' => $this->createUrl('dictionaries/create', array('type' => 'authors')),
+                'iconType' => 'create_author'
+            );
+            $pageMenu[] = array(
+                'label' => Yii::t('admin', 'Создать новый тип объекта'),
+                'url' => $this->createUrl('dictionaries/create', array('type' => 'object_types')),
+                'iconType' => 'create_object_type'
+            );
+            $pageMenu[] = array(
+                'label' => Yii::t('admin', 'Создать новый тип съемки'),
+                'url' => $this->createUrl('dictionaries/create' , array('type' => 'photo_types')),
+                'iconType' => 'create_photo_type'
+            );
+        }
+        $this->pageMenu = $pageMenu;
     }
 
     /**

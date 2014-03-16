@@ -29,7 +29,6 @@ class Images extends ActiveRecord
     private $thumbnailBig;
     private $thumbnailMedium;
     private $thumbnailSmall;
-    private $name;
 
 	/**
 	 * @return string the associated database table name
@@ -123,9 +122,6 @@ class Images extends ActiveRecord
 
         // формируем набор превью
         $this->setThumbnails();
-
-        // создаем фиктивный атрибут Имя
-        $this->setName();
     }
 
     public function beforeSave()
@@ -153,12 +149,12 @@ class Images extends ActiveRecord
 
     public function afterSave()
     {
-        /* @@WIDB-79
+        // @@WIDB-79 start
         // проверяем на сценарий для исключения рекурсивного вызова этой функции в afterSave() после сохранения данных о превью
         if ($this->scenario != PreviewHelper::SCENARIO_SAVE_PREVIEWS) {
-        PreviewHelper::savePreviews($this);
+            PreviewHelper::savePreviews($this);
         }
-         */
+        // @@WIDB-79 end
 
         PreviewHelper::savePreviews($this);
 
@@ -202,21 +198,18 @@ class Images extends ActiveRecord
         return $this->thumbnailSmall;
     }
 
-    /**
-     * создаем фиктивный атрибут Имя
-     */
-    private function setName()
-    {
-        $this->name = $this->width.' x '.$this->height.' px';
-    }
-
     public function getName()
     {
         if ($this->isNewRecord) {
-            throw new ImagesException();
+            throw new CException();
         }
 
-        return $this->name;
+        $name = $this->width.' x '.$this->height.' '.Yii::t('common', 'px');
+        if (!empty($this->dpi)) {
+            $name .= ' ['.$this->dpi.' '.Yii::t('common', 'dpi').']';
+        }
+
+        return $name;
     }
 
     public function getArrayOfPhotoTypes()
@@ -265,6 +258,48 @@ class Images extends ActiveRecord
         } catch (Exception $Exception) {
             throw new ImagesException($Exception);
         }
+    }
+
+    /**
+     * Возвращает разрешение изображения
+     * @return string разрешение изображения
+     * @throws ImagesException
+     */
+    public function getResolution()
+    {
+        if ($this->isNewRecord) {
+            throw new ImagesException();
+        }
+
+        $resolution = '';
+
+        if (!empty($this->dpi)) {
+            $resolution .= $this->dpi.' '.Yii::t('common', 'dpi');
+        }
+
+        return $resolution;
+    }
+
+    /**
+     * Возвращает дату съемки изображения в виде "Съемка 12.03.2014"
+     * @return string отформатированная дата съемки
+     * @throws CException
+     */
+    public function getPhotoDateWithIntroWord()
+    {
+        if ($this->isNewRecord) {
+            throw new CException();
+        }
+
+        $result = '';
+
+        if (!empty($this->date_photo)) {
+            $result .= Yii::t('images', 'Cъемка').' '.OutputHelper::formatDate($this->date_photo);
+        } else {
+            $result .= Yii::t('images', 'Дата съемки неизвестна');
+        }
+
+        return $result;
     }
 
 }

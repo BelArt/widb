@@ -50,11 +50,11 @@ echo $form->textFieldRow($model,'period', array(
 ));
 
 echo $form->textFieldRow($model,'inventory_number', array(
-    'class' => 'input-small _objectForm_hideErrorsKeypress'
+    'class' => 'input-small _objectForm_hideErrorsKeypress _translitSource'
 ));
 
 echo $form->textFieldRow($model,'code', array(
-    'class' => 'input-small _objectForm_hideErrorsKeypress'
+    'class' => 'input-small _objectForm_hideErrorsKeypress _translitDestination'
 ));
 
 echo $form->textFieldRow($model,'width', array(

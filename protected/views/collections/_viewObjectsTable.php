@@ -12,9 +12,11 @@
 $this->widget(
     'bootstrap.widgets.TbGridView',
     array(
-        'type' => 'striped bordered',
+        'type' => 'striped bordered condensed',
+        //'responsiveTable' => true,
         'dataProvider' => $ObjectsDataProvider,
-        'template' => "{items}",
+        'template' => '{items}'.PHP_EOL.'{pager}',
+        'ajaxUpdate' => false,
         'columns' => array(
             array(
                 'class' => 'CCheckBoxColumn',
@@ -24,7 +26,10 @@ $this->widget(
                 'checkBoxHtmlOptions' => array(
                     'class' => '_objectItem',
                     'data-object-id' => '' // айдишник объекта будет записываться сюда джаваскриптом
-                )
+                ),
+                'headerHtmlOptions' => array(
+                    'class' => 'valignedMiddle halignedCenter'
+                ),
             ),
             array(
                 'class' => 'CLinkColumn',
@@ -33,12 +38,65 @@ $this->widget(
                 'header'=>'Название',
                 'linkHtmlOptions' => array(
                     'class' => '_objectLinkInTableRow'
-                )
+                ),
+                'headerHtmlOptions' => array(
+                    'class' => 'valignedMiddle halignedCenter'
+                ),
             ),
             array(
                 'value'=>'(!empty($data->author->initials) ? $data->author->initials : "")',
-                'header'=>'Автор',
-                'sortable' => false
+                'header' => Yii::t('objects', 'Автор'),
+                'sortable' => false,
+                'headerHtmlOptions' => array(
+                    'class' => 'valignedMiddle halignedCenter'
+                ),
+                'htmlOptions' => array(
+                    'class' => 'itemTableAuthor'
+                ),
+            ),
+            array(
+                'value'=>'(!empty($data->period) ? $data->period : "")',
+                'header' => Yii::t('objects', 'Период создания'),
+                'sortable' => false,
+                'headerHtmlOptions' => array(
+                    'class' => 'valignedMiddle halignedCenter'
+                ),
+                'htmlOptions' => array(
+                    'class' => 'itemTableCreationPeriod'
+                ),
+            ),
+            array(
+                'value'=>'(!empty($data->inventory_number) ? $data->inventory_number : "")',
+                'header' => Yii::t('objects', 'Инвентарный номер'),
+                'sortable' => false,
+                'headerHtmlOptions' => array(
+                    'class' => 'valignedMiddle halignedCenter'
+                ),
+                'htmlOptions' => array(
+                    'class' => 'itemTableInventoryNumber'
+                ),
+            ),
+            array(
+                'value'=>'(!empty($data->type->name) ? $data->type->name : "")',
+                'header' => Yii::t('objects', 'Тип объекта'),
+                'sortable' => false,
+                'headerHtmlOptions' => array(
+                    'class' => 'valignedMiddle halignedCenter'
+                ),
+                'htmlOptions' => array(
+                    'class' => 'itemTableObjectType'
+                ),
+            ),
+            array(
+                'value'=>'(!empty($data->size) ? $data->size : "")',
+                'header' => Yii::t('common', 'Размер'),
+                'sortable' => false,
+                'headerHtmlOptions' => array(
+                    'class' => 'valignedMiddle halignedCenter'
+                ),
+                'htmlOptions' => array(
+                    'class' => 'itemTableSize'
+                ),
             ),
             array(
                 'header'=>'Действия',
@@ -49,7 +107,10 @@ $this->widget(
                 'deleteButtonUrl' => null,
                 'buttons' => array(
                     'delete' => array('visible' => 'false')
-                )
+                ),
+                'headerHtmlOptions' => array(
+                    'class' => 'valignedMiddle halignedCenter'
+                ),
             )
         ),
         'showTableOnEmpty' => false,

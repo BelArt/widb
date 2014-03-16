@@ -19,8 +19,8 @@ return array(
     ),
     'global' => array(
         'basePath'=>'application.assets',
-        'css'=>array('css/global.css'),
-        'js'=>array('js/global.js'),
+        'css'=>array('css/global.css', 'plugins/fancybox2/jquery.fancybox.css'),
+        'js'=>array('js/global.js', 'plugins/fancybox2/jquery.fancybox.pack.js'),
         'depends' => array('layoutFix')
     ),
     'emptyLayout' => array(
@@ -46,7 +46,7 @@ return array(
     ),
     'objectForm' => array(
         'basePath'=>'application.assets',
-        'js'=>array('js/object-form.js'),
+        'js'=>array('js/object-form.js', 'plugins/litranslit/jquery.liTranslit.js'),
         'css'=>array('css/object-form.css'),
         'depends' => array('global')
     ),

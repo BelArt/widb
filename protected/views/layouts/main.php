@@ -47,7 +47,8 @@
                         ),
                         '<p class="pull-right navbarItem navbarUserInfo">Вы зашли как <strong>'.Yii::app()->user->name.'</strong></p>',
 
-                        '<form class="navbar-form pull-right navbarItem" action="#">
+                        '<!--
+<form class="navbar-form pull-right navbarItem" action="#">
                             <div class="input-prepend">
                                 <span class="add-on">
                                     <i class="icon-search"></i>
@@ -63,7 +64,8 @@
                                 <option value="5">5</option>
                             </select>
                             <button type="submit" class="btn navbarBtnSubmit">Искать</button>
-                        </form>',
+                        </form>-->
+',
 
                     )
                 )
@@ -71,14 +73,23 @@
         ?>
 	</div><!-- mainmenu -->
 
-    <?php
-        $this->widget(
-            'bootstrap.widgets.TbBreadcrumbs',
-            array(
+    <div class="breadcrumbsAndSectionMenu">
+        <div class="sectionMenuWrapper">
+            <?php
+            $this->widget('application.widgets.section_menu.SectionMenu', array(
+                'menuItems' => $this->pageMenu,
+            ));
+            ?>
+        </div>
+        <div class="breadcrumbsWrapper">
+            <?php
+            $this->widget('bootstrap.widgets.TbBreadcrumbs', array(
                 'links' => $this->breadcrumbs,
-            )
-        );
-    ?>
+            ));
+            ?>
+        </div>
+        <div class="clear"></div>
+    </div>
 
     <?php
         $this->widget('bootstrap.widgets.TbAlert', array(

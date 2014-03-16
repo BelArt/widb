@@ -63,20 +63,6 @@ class Controller extends CController
                 'url' => $this->createUrl('dictionaries/view'),
             );
         }
-        if (Yii::app()->user->checkAccess('oDictionaryRecordCreate')) {
-            $adminMenu[] = array(
-                'label' => Yii::t('admin', 'Создать нового автора'),
-                'url' => $this->createUrl('dictionaries/create', array('type' => 'authors')),
-            );
-            $adminMenu[] = array(
-                'label' => Yii::t('admin', 'Создать новый тип объекта'),
-                'url' => $this->createUrl('dictionaries/create', array('type' => 'object_types')),
-            );
-            $adminMenu[] = array(
-                'label' => Yii::t('admin', 'Создать новый тип съемки'),
-                'url' => $this->createUrl('dictionaries/create' , array('type' => 'photo_types')),
-            );
-        }
         return $adminMenu;
     }
 }

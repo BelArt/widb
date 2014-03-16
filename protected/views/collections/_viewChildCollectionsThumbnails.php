@@ -12,7 +12,8 @@ $this->widget(
     'bootstrap.widgets.TbThumbnails',
     array(
         'dataProvider' => $ChildCollectionsDataProvider,
-        'template' => "{items}",
+        'template' => '{items}'.PHP_EOL.'{pager}',
+        'ajaxUpdate' => false,
         'itemView' => '_viewThumbnailCheckbox',
         'emptyText' => ''
     )

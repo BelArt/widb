@@ -624,14 +624,13 @@ class PreviewHelper extends CApplicationComponent
 
         }
 
-        /*
-         * @@WIDB-79
-         *
-            $Model->has_preview = 0;
-            if (!$Model->save()) {
-                throw new PreviewHelperException();
-            }
-        */
+
+        // @@WIDB-79 start
+        $Model->has_preview = 0;
+        if (!$Model->save()) {
+            throw new PreviewHelperException();
+        }
+        // @@WIDB-79 end
 
     }
 
@@ -777,25 +776,22 @@ class PreviewHelper extends CApplicationComponent
                         throw new PreviewHelperException();
                     }
 
-                    /*
-                     * @@WIDB-79 Теперь не ставим отметку, даже если загрузили превью - пользователь галочкой Есть превью
-                     * должен управлять выводом превью.
-                     * Чтобы включить функционал обратно, надо также изменить метод afterSave() соответствующих моделей
-                     *
-                            // ставим отметку, что превью есть
-                            $Caller->has_preview = 1;
 
-                            // обязательно для повторного сохранения, иначе при создании yii будет пытаться вставить эту запись еще раз,
-                            // что вызовет ошибку
-                            $Caller->isNewRecord = false;
+                    // @@WIDB-79 start
+                    // ставим отметку, что превью есть
+                    $Caller->has_preview = 1;
 
-                            // устанавливаем сценарий для исключения рекурсивного вызова этой функции в afterSave()
-                            $Caller->scenario = self::SCENARIO_SAVE_PREVIEWS;
+                    // обязательно для повторного сохранения, иначе при создании yii будет пытаться вставить эту запись еще раз,
+                    // что вызовет ошибку
+                    $Caller->isNewRecord = false;
 
-                            if (!$Caller->save()) {
-                                throw new PreviewHelperException();
-                            }
-                     */
+                    // устанавливаем сценарий для исключения рекурсивного вызова этой функции в afterSave()
+                    $Caller->scenario = self::SCENARIO_SAVE_PREVIEWS;
+
+                    if (!$Caller->save()) {
+                        throw new PreviewHelperException();
+                    }
+                    // @@WIDB-79 end
 
                     self::incrementPreviewVersion($Caller);
                 }

@@ -2,9 +2,9 @@
 
 class ImagesController extends Controller
 {
-    private $image;
-    private $object;
-    private $collection;
+    private $_image;
+    private $_object;
+    private $_collection;
 
 	/**
 	 * @return array action filters
@@ -57,23 +57,23 @@ class ImagesController extends Controller
             return null;
         }
 
-        if (empty($this->image)) {
+        if (empty($this->_image)) {
 
-            $this->image = Images::model()->findByPk($id);
+            $this->_image = Images::model()->findByPk($id);
 
-            if (empty($this->image)) {
+            if (empty($this->_image)) {
                 throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
             }
         }
 
-        return $this->image;
+        return $this->_image;
     }
 
     /**
      * Возвращает объект, к которому принадлежит изображение
      * @param int $id айди изображения
-     * @return Objects|null
-     * @throws ImagesControllerException
+     * @return Objects
+     * @throws CException
      */
     public function loadObject($id)
 	{
@@ -81,25 +81,24 @@ class ImagesController extends Controller
             return null;
         }
 
-        if (empty($this->object)) {
+        if (empty($this->_object)) {
 
             $Image = $this->loadImage($id);
+            $this->_object = $Image->object;
 
-            $this->object = $Image->object;
-
-            if (empty($this->object)) {
-                throw new ImagesControllerException();
+            if (empty($this->_object)) {
+                throw new CException();
             }
         }
 
-        return $this->object;
+        return $this->_object;
 	}
 
     /**
      * Возвращает коллекцию, к которой принадлежит объект, к которому принадлежит изображение
      * @param int $id айди изображения
-     * @return Collections|null
-     * @throws ImagesControllerException
+     * @return Collections
+     * @throws CException
      */
     public function loadCollection($id)
     {
@@ -107,19 +106,17 @@ class ImagesController extends Controller
             return null;
         }
 
-        if (empty($this->collection)) {
+        if (empty($this->_collection)) {
 
             $Object = $this->loadObject($id);
+            $this->_collection = $Object->collection;
 
-            $this->collection = $Object->collection;
-
-            if (empty($this->collection)) {
-                throw new ImagesControllerException();
+            if (empty($this->_collection)) {
+                throw new CException();
             }
         }
 
-        return $this->collection;
-
+        return $this->_collection;
     }
 
     /**
@@ -129,36 +126,75 @@ class ImagesController extends Controller
     public function actionView($id)
     {
         $Image = $this->loadImage($id);
+        $this->setPageParamsForActionView($id);
+
+        $this->render('view', array(
+            'Image' => $Image,
+            'attributesForMainDetailViewWidget' => $this->getAttributesForMainDetailViewWidget($Image),
+            'attributesForSystemDetailViewWidget' => $this->getAttributesForSystemDetailViewWidget($Image)
+        ));
+    }
+
+    /**
+     * Устанавливает параметры страницы просмотра изображения (тайтл, хлебные крошки, заголовок, меню)
+     * @param int $id айди изображения
+     */
+    private function setPageParamsForActionView($id)
+    {
+        $Image = $this->loadImage($id);
         $Object = $this->loadObject($id);
         $Collection = $this->loadCollection($id);
 
-        $imageName = $Image->width.' х '.$Image->height.' '.Yii::t('common', 'px').' ['.$Image->dpi.' '.Yii::t('common', 'dpi').']';
-
-        $attributes = array();
-        //$attributes[] = array('label' => $Image->getAttributeLabel('object_id'), 'value' => CHtml::encode($Image->object->name));
-        $attributes[] = array(
-            'label' => $Image->getAttributeLabel('date_photo'),
-            'value' => CHtml::encode($Image->date_photo != '0000-00-00' ? Yii::app()->dateFormatter->formatDateTime(strtotime($Image->date_photo), 'medium', null) : '')
+        // параметры страницы
+        $this->pageTitle = array($Collection->name, $Object->name, $Image->name);
+        $this->breadcrumbs = array(
+            $Collection->name => array('collections/view', 'id' => $Collection->id),
+            $Object->name => array('objects/view', 'id' => $Object->id),
+            $Image->name
         );
+        $this->pageName = $Image->name;
+
+        $pageMenu = array();
+        if (Yii::app()->user->checkAccess('oImageEdit')) {
+            $pageMenu[] = array(
+                'label' => Yii::t('images', 'Редактировать изображение'),
+                'url' => $this->createUrl('update', array('id' => $id)),
+                'iconType' => 'edit'
+            );
+        }
+
+        if (Yii::app()->user->checkAccess('oImageDelete')) {
+            $pageMenu[] = array(
+                'label' => Yii::t('images', 'Удалить изображение'),
+                'url' => $this->createUrl('delete', array('id' => $id)),
+                'itemOptions' => array(
+                    'class' => '_deleteImage',
+                    'data-dialog-title' => CHtml::encode(Yii::t('images', 'Удалить изображение?')),
+                    'data-dialog-message' => CHtml::encode(Yii::t('images', 'Вы уверены, что хотите удалить изображение? Его нельзя будет восстановить!')),
+                ),
+                'iconType' => 'delete'
+            );
+        }
+        $this->pageMenu = $pageMenu;
+    }
+
+    /**
+     * Возвращает массив с данными для виджета TbDetailView с основной информацией, который используется при рендеринге
+     * страницы изображения
+     * @param Images $Image модель изображения
+     * @return array массив с данными для виджета TbDetailView
+     */
+    private function getAttributesForMainDetailViewWidget($Image)
+    {
+        $attributes = array();
+
         $attributes[] = array(
-            'label' => $Image->getAttributeLabel('photo_type_id'),
-            'value' => CHtml::encode(!empty($Image->photoType->name) ? $Image->photoType->name : '')
+            'label' => $Image->getAttributeLabel('request'),
+            'value' => CHtml::encode(!empty($Image->request) ? $Image->request : '')
         );
         $attributes[] = array(
             'label' => $Image->getAttributeLabel('description'),
             'value' => CHtml::encode(!empty($Image->description) ? $Image->description : '')
-        );
-        $attributes[] = array(
-            'label' => $Image->getAttributeLabel('width'),
-            'value' => CHtml::encode(!empty($Image->width) ? $Image->width.' '.Yii::t('common', 'px') : '')
-        );
-        $attributes[] = array(
-            'label' => $Image->getAttributeLabel('height'),
-            'value' => CHtml::encode(!empty($Image->height) ? $Image->height.' '.Yii::t('common', 'px') : '')
-        );
-        $attributes[] = array(
-            'label' => $Image->getAttributeLabel('dpi'),
-            'value' => CHtml::encode(!empty($Image->dpi) ? $Image->dpi : '')
         );
         $attributes[] = array(
             'label' => $Image->getAttributeLabel('original'),
@@ -172,63 +208,33 @@ class ImagesController extends Controller
             'label' => $Image->getAttributeLabel('deepzoom'),
             'value' => CHtml::encode($Image->deepzoom ? Yii::t('common', 'Да') : Yii::t('common', 'Нет'))
         );
-        $attributes[] = array(
-            'label' => $Image->getAttributeLabel('has_preview'),
-            'value' => CHtml::encode($Image->has_preview ? Yii::t('common', 'Да') : Yii::t('common', 'Нет'))
-        );
-        $attributes[] = array(
-            'label' => $Image->getAttributeLabel('request'),
-            'value' => CHtml::encode(!empty($Image->request) ? $Image->request : '')
-        );
+
+        return $attributes;
+    }
+
+    /**
+     * Возвращает массив с данными для виджета TbDetailView с системной информацией, который используется при рендеринге
+     * страницы изображения
+     * @param Images $Image модель изображения
+     * @return array массив с данными для виджета TbDetailView
+     */
+    private function getAttributesForSystemDetailViewWidget($Image)
+    {
+        $attributes = array();
         $attributes[] = array(
             'label' => $Image->getAttributeLabel('code'),
             'value' => CHtml::encode(!empty($Image->code) ? $Image->code : '')
+        );
+        $attributes[] = array(
+            'label' => $Image->getAttributeLabel('has_preview'),
+            'value' => CHtml::encode($Image->has_preview ? Yii::t('common', 'Да') : Yii::t('common', 'Нет'))
         );
         $attributes[] = array(
             'label' => $Image->getAttributeLabel('sort'),
             'value' => CHtml::encode(!empty($Image->sort) ? $Image->sort : '')
         );
 
-        // параметры страницы
-        $this->pageTitle = array($Collection->name, $Object->name, $imageName);
-        $this->breadcrumbs = array(
-            $Collection->name => array('collections/view', 'id' => $Collection->id),
-            $Object->name => array('objects/view', 'id' => $Object->id),
-            $imageName
-        );
-        $this->pageName = $imageName;
-
-        $pageMenu = array();
-
-        if (Yii::app()->user->checkAccess('oImageEdit')) {
-            $pageMenu[] = array(
-                'label' => Yii::t('images', 'Редактировать изображение'),
-                'url' => $this->createUrl('update', array('id' => $id)),
-            );
-        }
-
-        if (Yii::app()->user->checkAccess('oImageDelete')) {
-            $pageMenu[] = array(
-                'label' => Yii::t('images', 'Удалить изображение'),
-                'url' => $this->createUrl('delete', array('id' => $id)),
-                'itemOptions' => array(
-                    'class' => '_deleteImage',
-                    'data-dialog-title' => CHtml::encode(Yii::t('images', 'Удалить изображение?')),
-                    'data-dialog-message' => CHtml::encode(Yii::t('images', 'Вы уверены, что хотите удалить изображение? Его нельзя будет восстановить!')),
-                )
-            );
-        }
-
-        $this->pageMenu = $pageMenu;
-
-        $this->render(
-            'view',
-            array(
-                'Image' => $Image,
-                'imageName' => $imageName,
-                'attributes' => $attributes
-            )
-        );
+        return $attributes;
     }
 
     /**
@@ -371,6 +377,8 @@ class ImagesController extends Controller
         } catch (DeleteHelperException $Exception) {
             Yii::app()->user->setFlash('success', null);
             throw new ImagesControllerException($Exception);
+        } catch (Exception $Exception) {
+            Yii::app()->user->setFlash('success', null);
         }
     }
 

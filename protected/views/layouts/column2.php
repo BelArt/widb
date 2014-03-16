@@ -1,10 +1,10 @@
 <?php /* @var $this Controller */ ?>
 <?php $this->beginContent('//layouts/main'); ?>
 <div class="span-8 first">
-    <?php if (!empty($this->pageMenu)): ?>
+    <?php /*if (!empty($this->pageMenu)): */?><!--
         <div id="page-menu">
             <?php
-                $this->widget(
+/*                $this->widget(
                     'bootstrap.widgets.TbMenu',
                     array(
                         'type' => 'pills',
@@ -12,9 +12,9 @@
                         'items' => $this->pageMenu,
                     )
                 );
-            ?>
+            */?>
         </div>
-    <?php endif; ?>
+    --><?php /*endif; */?>
     <div id="sidebar">
         <?php
             $this->widget('CTreeView', array(

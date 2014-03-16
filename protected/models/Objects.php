@@ -49,7 +49,7 @@ class Objects extends ActiveRecord
 	{
 		return array(
 
-            array('name, description, type_id, inventory_number, code', 'required', 'except' => 'delete'),
+            array('name, type_id, inventory_number, code', 'required', 'except' => 'delete'),
             array('has_preview', 'boolean', 'except' => 'delete'),
             array('author_id, type_id, sort', 'application.components.validators.EmptyOrPositiveIntegerValidator', 'skipOnError' => true, 'except' => 'delete'),
             array('period, code, department, keeper', 'length', 'max'=>150, 'except' => 'delete'),
@@ -57,6 +57,7 @@ class Objects extends ActiveRecord
             array('width, height, depth', 'numerical', 'numberPattern' => '/^\d\d{0,2}(\.\d{1,2})?$/', 'message' => Yii::t('objects', 'значение должно быть в формате xxx.xx'), 'allowEmpty' => true, 'except' => 'delete'),
             array('code', 'application.components.validators.CodeValidator', 'skipOnError' => true, 'except' => 'delete'),
 
+            array('description', 'safe'),
 
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
@@ -222,12 +223,12 @@ class Objects extends ActiveRecord
 
     public function afterSave()
     {
-        /* @@WIDB-79
-            // проверяем на сценарий для исключения рекурсивного вызова этой функции в afterSave() после сохранения данных о превью
-            if ($this->scenario != PreviewHelper::SCENARIO_SAVE_PREVIEWS) {
-                PreviewHelper::savePreviews($this);
-            }
-        */
+        // @@WIDB-79 start
+        // проверяем на сценарий для исключения рекурсивного вызова этой функции в afterSave() после сохранения данных о превью
+        if ($this->scenario != PreviewHelper::SCENARIO_SAVE_PREVIEWS) {
+            PreviewHelper::savePreviews($this);
+        }
+        // @@WIDB-79 end
 
         PreviewHelper::savePreviews($this);
 
@@ -393,5 +394,54 @@ class Objects extends ActiveRecord
             $Transaction->rollback();
             throw $Exception;
         }
+    }
+
+    /**
+     * Возвращает размер объекта в формате Длина х Ширина х Высота
+     * @return string размер объекта в формате Длина х Ширина х Высота
+     * @throws ObjectsException
+     */
+    public function getSize()
+    {
+        if ($this->isNewRecord) {
+            throw new ObjectsException();
+        }
+
+        $size = '';
+
+        if (!empty($this->width)) {
+            $size .= OutputHelper::formatNumber($this->width);
+            if (!empty($this->height)) {
+                $size .= ' x '.OutputHelper::formatNumber($this->height);
+            }
+            if (!empty($this->depth)) {
+                $size .= ' x '.OutputHelper::formatNumber($this->depth);
+            }
+            $size .= ' '.Yii::t('common', 'см');
+        }
+
+        return $size;
+    }
+
+    /**
+     * Возвращает инициалы автора объекта
+     * @return string
+     * @throws ObjectsException
+     */
+    public function getAuthorInitials()
+    {
+        if ($this->isNewRecord) {
+            throw new ObjectsException();
+        }
+
+        $authorInitials = '';
+
+        if (!empty($this->author->intials)) {
+            $authorInitials .= $this->author->intials;
+        } else {
+            $authorInitials .= Yii::t('objects', 'Автор неизвестен');
+        }
+
+        return $authorInitials;
     }
 }

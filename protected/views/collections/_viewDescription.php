@@ -3,7 +3,7 @@
 /* @var $model Collections */
 ?>
 <div class="entityThumbnail">
-    <img src="<?= CHtml::encode($model->thumbnailBig) ?>" alt="<?= CHtml::encode($model->name) ?>" title="<?= CHtml::encode($model->name) ?>" />
+    <img src="<?= CHtml::encode($model->thumbnailBig) ?>" alt="<?= CHtml::encode($model->name) ?>" title="<?= CHtml::encode($model->name) ?>" class="medium" />
 </div>
 
 <div class="entityDescription">

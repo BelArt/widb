@@ -29,7 +29,7 @@ $this->widget(
 );
 ?>
 
-<div class="gapeSmall"></div>
+<!--<div class="gapeSmall"></div>-->
 
 <?php
 
@@ -66,4 +66,4 @@ $this->widget(
 );
 ?>
 
-<div class="gape"></div>
+<!--<div class="gape"></div>-->

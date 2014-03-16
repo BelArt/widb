@@ -2,7 +2,7 @@
 /* @var $this CollectionsController */
 /* @var $dataProvider CActiveDataProvider */
 
-    Yii::app()->clientScript->registerPackage('collections');
+Yii::app()->clientScript->registerPackage('collections');
 ?>
 <?php
 
@@ -48,17 +48,19 @@ $this->widget(
                 'bootstrap.widgets.TbThumbnails',
                 array(
                     'dataProvider' => $dataProvider,
-                    'template' => "{items}",
+                    'template' => '{items}'.PHP_EOL.'{pager}',
                     'itemView' => '_viewThumbnailNoCheckbox',
+                    'ajaxUpdate' => false,
                     //'htmlOptions' => array('class' => 'collections_thumbnails')
                 )
             );
             break;
         case 'ls':
-            $this->widget('zii.widgets.CListView', array(
+            $this->widget('bootstrap.widgets.TbListView', array(
                 'dataProvider' => $dataProvider,
                 'itemView'=>'_viewListNoCheckbox',
-                'template' => '{items}',
+                'template' => '{items}'.PHP_EOL.'{pager}',
+                'ajaxUpdate' => false,
                 'emptyText' => ''
             ));
             break;
@@ -68,7 +70,8 @@ $this->widget(
                 array(
                     'type' => 'striped bordered',
                     'dataProvider' => $dataProvider,
-                    'template' => "{items}",
+                    'template' => "{items}\n{pager}",
+                    'ajaxUpdate' => false,
                     'columns' => array(
                         /*array(
                             'class' => 'CCheckBoxColumn',
