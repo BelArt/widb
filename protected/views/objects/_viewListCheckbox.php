@@ -23,7 +23,7 @@ $itemUrl = $this->createUrl('objects/view', array('id' => $data->id));
         <td class="itemListDescriptionBlock">
             <p class="itemListName"><a href='<?= CHtml::encode($itemUrl) ?>'><?= CHtml::encode($data->name) ?></a></p>
             <p class="itemListData1">
-                <span class='itemListAuthor'><?= CHtml::encode($data->author->initials) ?></span>
+                <span class='itemListAuthor'><?= CHtml::encode($data->getAuthorInitials()) ?></span>
                 <?php if (!empty($data->period)): ?>
                     <span class="itemListCreationPeriod">, <?= CHtml::encode($data->period) ?></span>
                 <?php endif; ?>
