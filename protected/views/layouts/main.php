@@ -47,7 +47,8 @@
                         ),
                         '<p class="pull-right navbarItem navbarUserInfo">Вы зашли как <strong>'.Yii::app()->user->name.'</strong></p>',
 
-                        '<form class="navbar-form pull-right navbarItem" action="#">
+                        '<!--
+<form class="navbar-form pull-right navbarItem" action="#">
                             <div class="input-prepend">
                                 <span class="add-on">
                                     <i class="icon-search"></i>
@@ -63,24 +64,14 @@
                                 <option value="5">5</option>
                             </select>
                             <button type="submit" class="btn navbarBtnSubmit">Искать</button>
-                        </form>',
+                        </form>-->
+',
 
                     )
                 )
             );
         ?>
 	</div><!-- mainmenu -->
-
-    <!--<table class="breadcrumbsAndMenu">
-        <tr>
-            <td>
-
-            </td>
-            <td>
-
-            </td>
-        </tr>
-    </table>-->
 
     <div class="breadcrumbsAndSectionMenu">
         <div class="sectionMenuWrapper">

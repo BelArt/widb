@@ -82,10 +82,10 @@ if (!$model->temporary) {
     );
 }
 
-echo CHtml::openTag('div', array(
+/*echo CHtml::openTag('div', array(
     'class' => 'gapeSmall',
 ));
-echo CHtml::closeTag('div');
+echo CHtml::closeTag('div');*/
 ?>
 
 <?php
@@ -124,4 +124,4 @@ $this->widget(
 
 ?>
 
-<div class="gape"></div>
+<!--<div class="gape"></div>-->

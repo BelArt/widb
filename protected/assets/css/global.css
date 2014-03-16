@@ -265,7 +265,7 @@
 }
 .breadcrumbsAndSectionMenu {
     width: 100%;
-    margin: 0px 0px 20px 0px;
+    margin: 0px 0px 10px 0px;
 }
 .breadcrumbsWrapper {
     overflow: hidden;
@@ -298,4 +298,14 @@
 }
 .subname {
     font-size: 16px;
+}
+#admin-menu {
+    padding: 20px;
+    /*background-color: #F5F5F5;*/
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    behavior: url(PIE.htc);
+    border: 1px solid #ddd;
+    margin: 10px 0px 10px 0px;
 }
