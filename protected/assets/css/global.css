@@ -188,11 +188,24 @@
     -o-transition: all 0.2s ease-in-out;
     transition: all 0.2s ease-in-out;*/
 }
-.entityThumbnail IMG {
+
+.entityThumbnail IMG.big {
     width: 250px;
     /*height: 150px;*/
 }
+.entityThumbnail IMG.medium {
+    width: 150px;
+    /*height: 150px;*/
+}
+.entityThumbnail IMG.small {
+    width: 65px;
+    /*height: 150px;*/
+}
 .entityDescription {
+    float: left;
+    margin: 0px 0px 0px 20px;
+}
+.entityDescription2 {
     float: left;
     margin: 0px 0px 0px 20px;
 }
@@ -272,4 +285,11 @@
     width: 20px;
     height: 20px;
     margin: 8px
+}
+.entitySubname {
+    font-size: 0px;
+    color: #848484;
+}
+.subname {
+    font-size: 16px;
 }

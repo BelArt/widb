@@ -2,8 +2,8 @@
 
 class ObjectsController extends Controller
 {
-    private $object;
-    private $collection;
+    private $_object;
+    private $_collection;
 
 	/**
 	 * @return array action filters
@@ -113,36 +113,34 @@ class ObjectsController extends Controller
         $filterChain->run();
     }
 
-	/**
-	 * Returns the data model based on the primary key given in the GET variable.
-	 * If the data model is not found, an HTTP exception will be raised.
-	 * @param integer $id the ID of the model to be loaded
-	 * @return Objects the loaded model
-	 * @throws CHttpException
-	 */
-	public function loadObject($id)
+    /**
+     * Возвращает модель объекта
+     * @param $id айди объекта
+     * @return Objects модель объекта
+     * @throws CHttpException
+     */
+    public function loadObject($id)
 	{
         if (empty($id)) {
             return null;
         }
 
-        if (empty($this->object)) {
+        if (empty($this->_object)) {
+            $this->_object = Objects::model()->findByPk($id);
 
-            $this->object = Objects::model()->findByPk($id);
-
-            if (empty($this->object)) {
+            if (empty($this->_object)) {
                 throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
             }
         }
 
-        return $this->object;
+        return $this->_object;
 	}
 
     /**
      * Возвращает модель коллекции, к которой принадлежит объект
-     * @param $id
-     * @return array|mixed|null
-     * @throws ObjectsControllerException
+     * @param $id айди объекта
+     * @return Collections модель коллекции, к которой принадлежит объект
+     * @throws CException
      */
     public function loadCollection($id)
     {
@@ -150,19 +148,16 @@ class ObjectsController extends Controller
             return null;
         }
 
-        if (empty($this->collection)) {
-
+        if (empty($this->_collection)) {
             $Object = $this->loadObject($id);
+            $this->_collection = $Object->collection;
 
-            $this->collection = $Object->collection;
-
-            if (empty($this->collection)) {
-                throw new ObjectsControllerException();
+            if (empty($this->_collection)) {
+                throw new CException();
             }
         }
 
-        return $this->collection;
-
+        return $this->_collection;
     }
 
     /**
@@ -173,6 +168,7 @@ class ObjectsController extends Controller
      */
     public function actionView($id, $iv = 'th')
     {
+        $Object = $this->loadObject($id);
         $ImagesDataProvider = new CActiveDataProvider('Images', array(
             'criteria' => array(
                 'condition' => 'object_id = :object_id',
@@ -185,58 +181,46 @@ class ObjectsController extends Controller
         ));
         $this->setPageParamsForActionView($id);
         $this->render('view', array(
-            'Object' => $this->loadObject($id),
+            'Object' => $Object,
             'renderViewImages' => $this->getObjectsImagesViewName($iv),
             'ImagesDataProvider' => $ImagesDataProvider,
-            'attributesForDetailViewWidget' => $this->getAttributesForTbDetailViewWidget($id),
+            'attributesForMainDetailViewWidget' => $this->getAttributesForMainDetailViewWidget($Object),
+            'attributesForSystemDetailViewWidget' => $this->getAttributesForSystemDetailViewWidget($Object),
         ));
     }
 
     /**
-     * Возвращает массив с данными для виджета TbDetailView, который используется при рендеринге страницы объекта
-     * @param string $id айди объекта
+     * Возвращает массив с данными для виджета TbDetailView с основной информацией, который используется при рендеринге
+     * страницы объекта
+     * @param Objects $Object модель объекта
      * @return array массив с данными для виджета TbDetailView
-     * @throws ObjectsControllerException
      */
-    private function getAttributesForTbDetailViewWidget($id)
+    private function getAttributesForMainDetailViewWidget($Object)
     {
-        $Object = $this->loadObject($id);
         $attributes = array(
             array(
-                'label' => $Object->getAttributeLabel('author_id'),
-                'value' => !empty($Object->author->initials) ? CHtml::encode($Object->author->initials) : ''
-            ),
-            array(
-                'label' => $Object->getAttributeLabel('type_id'),
-                'value' => !empty($Object->type->name) ? CHtml::encode($Object->type->name) : ''
+                'label' => $Object->getAttributeLabel('inventory_number'),
+                'value' => !empty($Object->inventory_number) ? CHtml::encode($Object->inventory_number) : ''
             ),
             array(
                 'label' => $Object->getAttributeLabel('description'),
                 'value' => !empty($Object->description) ? CHtml::encode($Object->description) : ''
             ),
             array(
-                'label' => $Object->getAttributeLabel('inventory_number'),
-                'value' => !empty($Object->inventory_number) ? CHtml::encode($Object->inventory_number) : ''
-            ),
-            array(
-                'label' => $Object->getAttributeLabel('code'),
-                'value' => !empty($Object->code) ? CHtml::encode($Object->code) : ''
+                'label' => $Object->getAttributeLabel('type_id'),
+                'value' => !empty($Object->type->name) ? CHtml::encode($Object->type->name) : ''
             ),
             array(
                 'label' => $Object->getAttributeLabel('width'),
-                'value' => $Object->width === '0.00' ? CHtml::encode(floatval($Object->width).' '.Yii::t('common', 'см')) : ''
+                'value' => $Object->width !== '0.00' ? CHtml::encode(OutputHelper::formatSize($Object->width)) : ''
             ),
             array(
                 'label' => $Object->getAttributeLabel('height'),
-                'value' => $Object->width === '0.00' ? CHtml::encode(floatval($Object->height).' '.Yii::t('common', 'см')) : ''
+                'value' => $Object->width !== '0.00' ? CHtml::encode(OutputHelper::formatSize($Object->height)) : ''
             ),
             array(
                 'label' => $Object->getAttributeLabel('depth'),
-                'value' => $Object->width === '0.00' ? CHtml::encode(floatval($Object->depth).' '.Yii::t('common', 'см')) : ''
-            ),
-            array(
-                'label' => $Object->getAttributeLabel('has_preview'),
-                'value' => !empty($Object->has_preview) ? CHtml::encode(Yii::t('common', 'Да')) : CHtml::encode(Yii::t('common', 'Нет'))
+                'value' => $Object->width !== '0.00' ? CHtml::encode(OutputHelper::formatSize($Object->depth)) : ''
             ),
             array(
                 'label' => $Object->getAttributeLabel('department'),
@@ -246,9 +230,27 @@ class ObjectsController extends Controller
                 'label' => $Object->getAttributeLabel('keeper'),
                 'value' => !empty($Object->keeper) ? CHtml::encode($Object->keeper) : ''
             ),
+        );
+
+        return $attributes;
+    }
+
+    /**
+     * Возвращает массив с данными для виджета TbDetailView с системной информацией, который используется при рендеринге
+     * страницы объекта
+     * @param Objects $Object модель объекта
+     * @return array массив с данными для виджета TbDetailView
+     */
+    private function getAttributesForSystemDetailViewWidget($Object)
+    {
+        $attributes = array(
             array(
-                'label' => $Object->getAttributeLabel('period'),
-                'value' => !empty($Object->period) ? CHtml::encode($Object->period) : ''
+                'label' => $Object->getAttributeLabel('code'),
+                'value' => !empty($Object->code) ? CHtml::encode($Object->code) : ''
+            ),
+            array(
+                'label' => $Object->getAttributeLabel('has_preview'),
+                'value' => !empty($Object->has_preview) ? CHtml::encode(Yii::t('common', 'Да')) : CHtml::encode(Yii::t('common', 'Нет'))
             ),
             array(
                 'label' => $Object->getAttributeLabel('sort'),
@@ -279,6 +281,7 @@ class ObjectsController extends Controller
             default: // картинками
                 $objectsImagesViewName = '_viewImagesThumbnails';
         }
+
         return $objectsImagesViewName;
     }
 
@@ -297,25 +300,6 @@ class ObjectsController extends Controller
         $this->pageName = $Object->name;
 
         $pageMenu = array();
-        if (Yii::app()->user->checkAccess('oObjectEdit')) {
-            $pageMenu[] = array(
-                'label' => Yii::t('objects', 'Редактировать объект'),
-                'url' => $this->createUrl('update', array('id' => $id)),
-                'iconType' => 'edit'
-            );
-        }
-        if (Yii::app()->user->checkAccess('oObjectDelete')) {
-            $pageMenu[] = array(
-                'label' => Yii::t('objects', 'Удалить объект'),
-                'url' => $this->createUrl('delete', array('id' => $id)),
-                'itemOptions' => array(
-                    'class' => '_deleteObject',
-                    'data-dialog-title' => CHtml::encode(Yii::t('objects', 'Удалить объект?')),
-                    'data-dialog-message' => CHtml::encode(Yii::t('objects', 'Вы уверены, что хотите удалить объект? Его нельзя будет восстановить!')),
-                ),
-                'iconType' => 'delete'
-            );
-        }
         $tempCollections = Collections::getTempCollectionsAllowedToUser(Yii::app()->user->id);
         if (!empty($tempCollections)) {
             $pageMenu[] = array(
@@ -340,6 +324,25 @@ class ObjectsController extends Controller
                     'data-dialog-message' => CHtml::encode($this->renderPartial('_collectionsToMoveToSelect', array('Object' => $Object, 'collectionsToMoveTo' => $collectionsToMoveTo), true)),
                 ),
                 'iconType' => 'move'
+            );
+        }
+        if (Yii::app()->user->checkAccess('oObjectEdit')) {
+            $pageMenu[] = array(
+                'label' => Yii::t('objects', 'Редактировать объект'),
+                'url' => $this->createUrl('update', array('id' => $id)),
+                'iconType' => 'edit'
+            );
+        }
+        if (Yii::app()->user->checkAccess('oObjectDelete')) {
+            $pageMenu[] = array(
+                'label' => Yii::t('objects', 'Удалить объект'),
+                'url' => $this->createUrl('delete', array('id' => $id)),
+                'itemOptions' => array(
+                    'class' => '_deleteObject',
+                    'data-dialog-title' => CHtml::encode(Yii::t('objects', 'Удалить объект?')),
+                    'data-dialog-message' => CHtml::encode(Yii::t('objects', 'Вы уверены, что хотите удалить объект? Его нельзя будет восстановить!')),
+                ),
+                'iconType' => 'delete'
             );
         }
         if (Yii::app()->user->checkAccess('oImageCreate')) {

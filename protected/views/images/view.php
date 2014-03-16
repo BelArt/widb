@@ -7,7 +7,7 @@ Yii::app()->clientScript->registerPackage('imageView');
 ?>
 
 <div class="entityThumbnail">
-    <img src="<?= CHtml::encode($Image->thumbnailBig) ?>" alt="<?= CHtml::encode($imageName) ?>" title="<?= CHtml::encode($imageName) ?>" />
+    <img src="<?= CHtml::encode($Image->thumbnailBig) ?>" alt="<?= CHtml::encode($imageName) ?>" title="<?= CHtml::encode($imageName) ?>" class="medium" />
 </div>
 
 <div class="entityDescription">

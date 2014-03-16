@@ -410,16 +410,38 @@ class Objects extends ActiveRecord
         $size = '';
 
         if (!empty($this->width)) {
-            $size .= OutputHelper::formatSize($this->width);
+            $size .= OutputHelper::formatNumber($this->width);
             if (!empty($this->height)) {
-                $size .= ' x '.OutputHelper::formatSize($this->height);
+                $size .= ' x '.OutputHelper::formatNumber($this->height);
             }
             if (!empty($this->depth)) {
-                $size .= ' x '.OutputHelper::formatSize($this->depth);
+                $size .= ' x '.OutputHelper::formatNumber($this->depth);
             }
             $size .= ' '.Yii::t('common', 'см');
         }
 
         return $size;
+    }
+
+    /**
+     * Возвращает инициалы автора объекта
+     * @return string
+     * @throws ObjectsException
+     */
+    public function getAuthorInitials()
+    {
+        if ($this->isNewRecord) {
+            throw new ObjectsException();
+        }
+
+        $authorInitials = '';
+
+        if (!empty($this->author->intials)) {
+            $authorInitials .= $this->author->intials;
+        } else {
+            $authorInitials .= Yii::t('objects', 'Автор неизвестен');
+        }
+
+        return $authorInitials;
     }
 }
