@@ -13,7 +13,7 @@ Yii::app()->clientScript->registerPackage('objectView');
     <p class="entitySubname">
         <span class="subname"><?= CHtml::encode($Object->authorInitials) ?></span>
         <?php if (!empty($Object->period)): ?>
-            <span class="subname">, <?= CHtml::encode($Object->period) ?></span>
+            <span class="subname">, <?= CHtml::encode(OutputHelper::stringToLower($Object->period)) ?></span>
         <?php endif; ?>
     </p>
 <?php endif; ?>

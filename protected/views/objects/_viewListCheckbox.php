@@ -25,7 +25,7 @@ $itemUrl = $this->createUrl('objects/view', array('id' => $data->id));
             <p class="itemListData1">
                 <span class='itemListAuthor'><?= CHtml::encode($data->getAuthorInitials()) ?></span>
                 <?php if (!empty($data->period)): ?>
-                    <span class="itemListCreationPeriod">, <?= CHtml::encode($data->period) ?></span>
+                    <span class="itemListCreationPeriod">, <?= CHtml::encode(OutputHelper::stringToLower($data->period)) ?></span>
                 <?php endif; ?>
             </p>
             <p class="itemListData2">
