@@ -51,7 +51,7 @@ $this->widget(
                     'class' => 'valignedMiddle halignedCenter'
                 ),
                 'htmlOptions' => array(
-                    'class' => 'itemTableAuthor'
+                    'class' => 'itemTableAuthor valignedMiddle'
                 ),
             ),
             array(
@@ -62,7 +62,7 @@ $this->widget(
                     'class' => 'valignedMiddle halignedCenter'
                 ),
                 'htmlOptions' => array(
-                    'class' => 'itemTableCreationPeriod'
+                    'class' => 'itemTableCreationPeriod valignedMiddle'
                 ),
             ),
             array(
@@ -73,7 +73,7 @@ $this->widget(
                     'class' => 'valignedMiddle halignedCenter'
                 ),
                 'htmlOptions' => array(
-                    'class' => 'itemTableInventoryNumber'
+                    'class' => 'itemTableInventoryNumber valignedMiddle'
                 ),
             ),
             array(
@@ -84,7 +84,7 @@ $this->widget(
                     'class' => 'valignedMiddle halignedCenter'
                 ),
                 'htmlOptions' => array(
-                    'class' => 'itemTableObjectType'
+                    'class' => 'itemTableObjectType valignedMiddle'
                 ),
             ),
             array(
@@ -95,12 +95,15 @@ $this->widget(
                     'class' => 'valignedMiddle halignedCenter'
                 ),
                 'htmlOptions' => array(
-                    'class' => 'itemTableSize'
+                    'class' => 'itemTableSize valignedMiddle'
                 ),
             ),
             array(
                 'header'=>'Действия',
-                'htmlOptions' => array('nowrap'=>'nowrap'),
+                'htmlOptions' => array(
+                    'nowrap' => 'nowrap',
+                    'class' => 'valignedMiddle'
+                ),
                 'class'=>'bootstrap.widgets.TbButtonColumn',
                 'viewButtonUrl' => 'Yii::app()->urlManager->createUrl("objects/view", array("id" => $data->id));',
                 'updateButtonUrl'=> null,
