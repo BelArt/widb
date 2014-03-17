@@ -140,7 +140,7 @@ $this->widget(
                 ),
             ),*/
             array(
-                'header'=>'Действия',
+                'header'=>'',
                 'htmlOptions' => array('nowrap'=>'nowrap'),
                 'class'=>'bootstrap.widgets.TbButtonColumn',
                 'viewButtonUrl' => 'Yii::app()->urlManager->createUrl("images/view", array("id" => $data->id));',
