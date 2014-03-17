@@ -38,7 +38,7 @@ $this->widget(
     )
 );
 ?>
-<div class="gape"></div>
+<!--<div class="gape"></div>-->
 <div class="row-fluid">
 <?
     $view = !empty($_GET['cv']) ? $_GET['cv'] : '';

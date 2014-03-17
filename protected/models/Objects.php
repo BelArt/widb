@@ -409,12 +409,12 @@ class Objects extends ActiveRecord
 
         $size = '';
 
-        if (!empty($this->width)) {
+        if ($this->width != '0.00') {
             $size .= OutputHelper::formatNumber($this->width);
-            if (!empty($this->height)) {
+            if ($this->height != '0.00') {
                 $size .= ' x '.OutputHelper::formatNumber($this->height);
             }
-            if (!empty($this->depth)) {
+            if ($this->depth != '0.00') {
                 $size .= ' x '.OutputHelper::formatNumber($this->depth);
             }
             $size .= ' '.Yii::t('common', 'см');
