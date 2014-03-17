@@ -62,7 +62,8 @@ $this->widget(
                     'class' => 'valignedMiddle halignedCenter'
                 ),
                 'htmlOptions' => array(
-                    'class' => 'itemTableCreationPeriod valignedMiddle'
+                    'class' => 'itemTableCreationPeriod valignedMiddle',
+                    'nowrap' => 'nowrap'
                 ),
             ),
             array(
@@ -95,11 +96,12 @@ $this->widget(
                     'class' => 'valignedMiddle halignedCenter'
                 ),
                 'htmlOptions' => array(
-                    'class' => 'itemTableSize valignedMiddle'
+                    'class' => 'itemTableSize valignedMiddle',
+                    'nowrap' => 'nowrap'
                 ),
             ),
             array(
-                'header'=>'Действия',
+                'header'=>'',
                 'htmlOptions' => array(
                     'nowrap' => 'nowrap',
                     'class' => 'valignedMiddle'
