@@ -25,7 +25,7 @@ $this->widget(
                 'sortable' => false
             ),
             array(
-                'header'=>'Действия',
+                'header'=>'',
                 'htmlOptions' => array('nowrap'=>'nowrap'),
                 'class'=>'bootstrap.widgets.TbButtonColumn',
                 'updateButtonUrl'=> 'Yii::app()->urlManager->createUrl("dictionaries/update", array("id" => $data->id, "type" => "photo_types"));',
