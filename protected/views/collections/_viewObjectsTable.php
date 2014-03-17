@@ -44,7 +44,7 @@ $this->widget(
                 ),
             ),
             array(
-                'value'=>'(!empty($data->author->initials) ? $data->author->initials : "")',
+                'value'=>'(!empty($data->getAuthorInitials()) ? $data->getAuthorInitials() : "")',
                 'header' => Yii::t('objects', 'Автор'),
                 'sortable' => false,
                 'headerHtmlOptions' => array(
