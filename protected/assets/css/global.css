@@ -95,12 +95,13 @@
     padding: 0;
     margin: 0;
     vertical-align: middle;
+    text-align: center;
 }
 .itemList TD {
     padding:0;
 }
 .itemList .itemListImageBlock IMG {
-    width: 65px;
+    /*width: 65px;*/
     /*height: 65px;*/
 }
 .itemList .itemListCheckboxBlock {
