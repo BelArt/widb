@@ -84,18 +84,18 @@ $this->widget(
                             'labelExpression' => '$data->name',
                             'urlExpression' => '$data->temporary ? Yii::app()->urlManager->createUrl("collections/viewTemp", array("id" => $data->id)) : Yii::app()->urlManager->createUrl("collections/view", array("id" => $data->id))',
                             'header'=>'Название',
+                            'headerHtmlOptions' => array(
+                                'class' => 'valignedMiddle halignedCenter'
+                            ),
                         ),
-                        array(
+                        /*array(
                             'header'=>'Действия',
                             'htmlOptions' => array('nowrap'=>'nowrap'),
                             'class'=>'bootstrap.widgets.TbButtonColumn',
                             'viewButtonUrl' => '$data->temporary ? Yii::app()->urlManager->createUrl("collections/viewTemp", array("id" => $data->id)) : Yii::app()->urlManager->createUrl("collections/view", array("id" => $data->id))',
                             'updateButtonUrl'=> null,
                             'deleteButtonUrl' => null,
-                            /*'buttons' => array(
-                                'view' => array('visible' => 'return false;')
-                            )*/
-                        )
+                        )*/
                     ),
                     'showTableOnEmpty' => false,
                     'emptyText' => ''
