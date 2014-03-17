@@ -42,6 +42,9 @@ $this->widget(
                 'headerHtmlOptions' => array(
                     'class' => 'valignedMiddle halignedCenter'
                 ),
+                'htmlOptions' => array(
+                    'class' => 'valignedMiddle'
+                ),
             ),
             array(
                 'value'=>'$data->getAuthorInitials()',
