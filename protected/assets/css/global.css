@@ -275,24 +275,6 @@
     float: right;
     margin: 0px 0px 0px 10px;
 }
-.sectionMenu {
-    background-color: #f5f5f5;
-    -webkit-border-radius: 4px;
-    -moz-border-radius: 4px;
-    border-radius: 4px;
-    border: 1px solid #ddd;
-}
-.sectionMenu TABLE {
-    margin: 0;
-}
-.sectionMenu TABLE TD {
-    padding: 0;
-}
-.sectionMenuIcon {
-    width: 20px;
-    height: 20px;
-    margin: 8px
-}
 .entitySubname {
     font-size: 0px;
     color: #848484;
@@ -309,4 +291,14 @@
     behavior: url(PIE.htc);
     border: 1px solid #ddd;
     margin: 10px 0px 10px 0px;
+}
+.detailViewNowrap, .detailViewNowrap TD {
+    white-space: nowrap;
+}
+.childrenMenuLevel1Wrapper {
+    float: right;
+    margin: 0px 0px 0px 20px;
+}
+.childrenMenuLevel2Wrapper {
+    float: right;
 }

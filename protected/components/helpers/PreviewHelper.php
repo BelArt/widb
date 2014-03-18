@@ -17,7 +17,7 @@ class PreviewHelper extends CApplicationComponent
     /**
      * @var integer размер квадрата большого превью, в px
      */
-    const PREVIEW_BIG_SIZE = 250;
+    const PREVIEW_BIG_SIZE = 1000;
 
     /**
      * @var string название маленькой превью

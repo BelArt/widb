@@ -1,71 +1,68 @@
 <?php
 /* @var $model Collections */
-
-$this->widget(
-    'bootstrap.widgets.TbMenu',
-    array(
-        'type' => 'pills',
-        'items' => array(
-            array(
-                'label' => Yii::t('common', 'С отмеченными'),
-                'itemOptions' => array('class' => 'nav-header')
-            ),
-            array(
-                'label' => Yii::t('common', 'Переместить'),
-                'url' => '#',
-                'itemOptions' => array(
-                    'class' => 'small ',
-                )
-            ),
-            array(
-                'label' => Yii::t('common', 'Удалить'),
-                'url' => '#',
-                'itemOptions' => array(
-                    'class' => 'small _deleteSelectedChildCollections',
-                    'data-dialog-title' => CHtml::encode(Yii::t('collections', 'Удалить выбранные дочерние коллекции?')),
-                    'data-dialog-message' => CHtml::encode(Yii::t('collections', 'Выбранные дочерние коллекции будут удалены, и их нельзя будет восстановить')),
-                )
-            ),
-        )
-    )
-);
 ?>
 
-<!--<div class="gapeSmall"></div>-->
-
+<div class="childrenMenuLevel1Wrapper">
 <?php
 
 $classThumbnails = (empty($_GET['cv']) || $_GET['cv'] == 'th') ? 'selected' : '';
 $classList = (!empty($_GET['cv']) && $_GET['cv'] == 'ls') ? 'selected' : '';
 $classTable = (!empty($_GET['cv']) && $_GET['cv'] == 'tb') ? 'selected' : '';
 
-$this->widget(
-    'bootstrap.widgets.TbMenu',
-    array(
-        'type' => 'pills',
-        'items' => array(
-            array(
-                'label' => Yii::t('common', 'Отображение'),
-                'itemOptions' => array('class' => 'nav-header')
-            ),
-            array(
-                'label' => Yii::t('common', 'Картинками'),
-                'url' => $this->createUrl('collections/view', array('id' => $model->id, 'cv' => 'th', 'ov' => (!empty($_GET['ov']) ? $_GET['ov'] : ''), 'tb' => 'cc')),
-                'itemOptions' => array('class' => 'small '.$classThumbnails)
-            ),
-            array(
-                'label' => Yii::t('common', 'Списком'),
-                'url' => $this->createUrl('collections/view', array('id' => $model->id, 'cv' => 'ls', 'ov' => (!empty($_GET['ov']) ? $_GET['ov'] : ''), 'tb' => 'cc')),
-                'itemOptions' => array('class' => 'small '.$classList)
-            ),
-            array(
-                'label' => Yii::t('common', 'Таблицей'),
-                'url' => $this->createUrl('collections/view', array('id' => $model->id, 'cv' => 'tb', 'ov' => (!empty($_GET['ov']) ? $_GET['ov'] : ''), 'tb' => 'cc')),
-                'itemOptions' => array('class' => 'small '.$classTable)
-            ),
-        )
+$this->widget('widgets.children_menu.ChildrenMenu', array(
+    'menuName' => Yii::t('common', 'Отображение'),
+    'menuItems' => array(
+        array(
+            'label' => Yii::t('common', 'Картинками'),
+            'url' => $this->createUrl('collections/view', array('id' => $model->id, 'cv' => 'th', 'ov' => (!empty($_GET['ov']) ? $_GET['ov'] : ''), 'tb' => 'cc')),
+            'tdOptions' => array('class' => 'childrenMenuItem '.$classThumbnails),
+            'iconType' => 'thumbs',
+        ),
+        array(
+            'label' => Yii::t('common', 'Списком'),
+            'url' => $this->createUrl('collections/view', array('id' => $model->id, 'cv' => 'ls', 'ov' => (!empty($_GET['ov']) ? $_GET['ov'] : ''), 'tb' => 'cc')),
+            'tdOptions' => array('class' => 'childrenMenuItem '.$classList),
+            'iconType' => 'list',
+        ),
+        array(
+            'label' => Yii::t('common', 'Таблицей'),
+            'url' => $this->createUrl('collections/view', array('id' => $model->id, 'cv' => 'tb', 'ov' => (!empty($_GET['ov']) ? $_GET['ov'] : ''), 'tb' => 'cc')),
+            'tdOptions' => array('class' => 'childrenMenuItem '.$classTable),
+            'iconType' => 'table',
+        ),
     )
-);
+));
 ?>
-<!--
-<div class="gape"></div>-->
+</div>
+
+<div class="childrenMenuLevel2Wrapper">
+<?php
+$this->widget('widgets.children_menu.ChildrenMenu', array(
+    'menuName' => Yii::t('common', 'С отмеченными'),
+    'menuItems' => array(
+        /*array(
+            'label' => Yii::t('common', 'Переместить'),
+            'url' => '#',
+            'tdOptions' => array('class' => 'childrenMenuItem '),
+            'iconType' => 'move',
+        ),*/
+        array(
+            'label' => Yii::t('common', 'Удалить'),
+            'url' => '#',
+            'itemOptions' => array(
+                'class' => '_deleteSelectedChildCollections',
+                'data-dialog-title' => CHtml::encode(Yii::t('collections', 'Удалить выбранные дочерние коллекции?')),
+                'data-dialog-message' => CHtml::encode(Yii::t('collections', 'Выбранные дочерние коллекции будут удалены, и их нельзя будет восстановить')),
+            ),
+            'tdOptions' => array('class' => 'childrenMenuItem '),
+            'iconType' => 'delete',
+        ),
+    )
+));
+?>
+</div>
+<!--<div class="gapeSmall"></div>-->
+
+<div class="clear"></div>
+
+<div class="gapeSmall"></div>

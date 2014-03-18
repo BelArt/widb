@@ -1,0 +1,28 @@
+.childrenMenu {
+    width: auto;
+    margin: 0;
+}
+.childrenMenuName {
+    font-size: 11px;
+    font-weight: bold;
+    line-height: 15px;
+    color: #999999;
+    text-transform: uppercase;
+    padding: 5px 10px 5px 5px;
+}
+.childrenMenuItem {
+    padding: 5px !important;
+    /*line-height: 13px;*/
+}
+.childrenMenuItem.selected {
+    background-color: #dbdbdb;
+}
+.childrenMenuItem:hover {
+    background-color: #eeeeee;
+}
+.childrenMenuItem.selected:hover {
+    background-color: #dbdbdb;
+}
+.childrenMenuItemIcon {
+    width: 13px;
+}

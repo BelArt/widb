@@ -202,24 +202,8 @@ class ObjectsController extends Controller
                 'value' => !empty($Object->inventory_number) ? CHtml::encode($Object->inventory_number) : ''
             ),
             array(
-                'label' => $Object->getAttributeLabel('description'),
-                'value' => !empty($Object->description) ? CHtml::encode($Object->description) : ''
-            ),
-            array(
                 'label' => $Object->getAttributeLabel('type_id'),
                 'value' => !empty($Object->type->name) ? CHtml::encode($Object->type->name) : ''
-            ),
-            array(
-                'label' => $Object->getAttributeLabel('width'),
-                'value' => $Object->width !== '0.00' ? CHtml::encode(OutputHelper::formatSize($Object->width)) : ''
-            ),
-            array(
-                'label' => $Object->getAttributeLabel('height'),
-                'value' => $Object->height !== '0.00' ? CHtml::encode(OutputHelper::formatSize($Object->height)) : ''
-            ),
-            array(
-                'label' => $Object->getAttributeLabel('depth'),
-                'value' => $Object->depth !== '0.00' ? CHtml::encode(OutputHelper::formatSize($Object->depth)) : ''
             ),
             array(
                 'label' => $Object->getAttributeLabel('department'),
@@ -228,6 +212,10 @@ class ObjectsController extends Controller
             array(
                 'label' => $Object->getAttributeLabel('keeper'),
                 'value' => !empty($Object->keeper) ? CHtml::encode($Object->keeper) : ''
+            ),
+            array(
+                'label' => $Object->getAttributeLabel('description'),
+                'value' => !empty($Object->description) ? CHtml::encode($Object->description) : ''
             ),
         );
 
@@ -244,16 +232,34 @@ class ObjectsController extends Controller
     {
         $attributes = array(
             array(
+                'label' => $Object->getAttributeLabel('width'),
+                'value' => $Object->width !== '0.00' ? CHtml::encode(OutputHelper::formatSize($Object->width)) : '',
+                'cssClass' => 'detailViewNowrap'
+            ),
+            array(
+                'label' => $Object->getAttributeLabel('height'),
+                'value' => $Object->height !== '0.00' ? CHtml::encode(OutputHelper::formatSize($Object->height)) : '',
+                'cssClass' => 'detailViewNowrap'
+            ),
+            array(
+                'label' => $Object->getAttributeLabel('depth'),
+                'value' => $Object->depth !== '0.00' ? CHtml::encode(OutputHelper::formatSize($Object->depth)) : '',
+                'cssClass' => 'detailViewNowrap'
+            ),
+            array(
                 'label' => $Object->getAttributeLabel('code'),
-                'value' => !empty($Object->code) ? CHtml::encode($Object->code) : ''
+                'value' => !empty($Object->code) ? CHtml::encode($Object->code) : '',
+                'cssClass' => 'detailViewNowrap'
             ),
             array(
                 'label' => $Object->getAttributeLabel('has_preview'),
-                'value' => !empty($Object->has_preview) ? CHtml::encode(Yii::t('common', 'Да')) : CHtml::encode(Yii::t('common', 'Нет'))
+                'value' => !empty($Object->has_preview) ? CHtml::encode(Yii::t('common', 'Да')) : CHtml::encode(Yii::t('common', 'Нет')),
+                'cssClass' => 'detailViewNowrap'
             ),
             array(
                 'label' => $Object->getAttributeLabel('sort'),
-                'value' => !empty($Object->sort) ? CHtml::encode($Object->sort) : ''
+                'value' => !empty($Object->sort) ? CHtml::encode($Object->sort) : '',
+                'cssClass' => 'detailViewNowrap'
             ),
         );
 
