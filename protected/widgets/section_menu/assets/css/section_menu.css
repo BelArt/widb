@@ -8,10 +8,13 @@
 .sectionMenu TABLE {
     margin: 0;
 }
-.sectionMenu TABLE TD {
+.sectionMenuItem {
     padding: 0;
 }
-.sectionMenuIcon {
+.sectionMenuItem:hover {
+    background-color: #eeeeee;
+}
+.sectionMenuItemIcon {
     width: 20px;
     height: 20px;
     margin: 8px
