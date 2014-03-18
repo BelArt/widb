@@ -554,6 +554,82 @@ class Collections extends ActiveRecord
     }
 
     /**
+     * Возвращает массив со структурой дерева обычных коллекций, доступных пользователю, для передачи в виджет CTreeView
+     * @return array
+     */
+    public static function getTreeNormal()
+    {
+        $idsOfCollectionsAllowedToUser = self::getIdsOfNormalCollectionsAllowedToUser(Yii::app()->user->id);
+
+        $Criteria = self::getAllowedNormalCollectionsCriteria(Yii::app()->user->id);
+
+        $allowedCollections = Collections::model()->findAll($Criteria);
+
+        $rootCollections = array();
+
+        foreach ($allowedCollections as $Collection) {
+            foreach ($allowedCollections as $CollectionChild) {
+                if ($CollectionChild->parent_id == $Collection->id) {
+                    $Collection->children[] = $CollectionChild;
+                }
+            }
+            if (empty($Collection->parent_id) || !in_array($Collection->parent_id, $idsOfCollectionsAllowedToUser)) {
+                $rootCollections[] = $Collection;
+            }
+        }
+
+        $result = array();
+
+        foreach ($rootCollections as $Collection) {
+            $itemUrl = $Collection->temporary ? Yii::app()->urlManager->createUrl('collections/viewTemp', array('id' => $Collection->id)) : Yii::app()->urlManager->createUrl('collections/view', array('id' => $Collection->id));
+            $result[] = array(
+                'text' => '<a href="'.$itemUrl.'">'.$Collection->name.'</a>',
+                'children' => self::getChildrenStructure($Collection),
+            );
+        }
+
+        return $result;
+    }
+
+    /**
+     * Возвращает массив со структурой дерева временных коллекций, доступных пользователю, для передачи в виджет CTreeView
+     * @return array
+     */
+    public static function getTreeTemp()
+    {
+        $idsOfCollectionsAllowedToUser = self::getIdsOfTempCollectionsAllowedToUser(Yii::app()->user->id);
+
+        $Criteria = self::getAllowedTempCollectionsCriteria(Yii::app()->user->id);
+
+        $allowedCollections = Collections::model()->findAll($Criteria);
+
+        $rootCollections = array();
+
+        foreach ($allowedCollections as $Collection) {
+            foreach ($allowedCollections as $CollectionChild) {
+                if ($CollectionChild->parent_id == $Collection->id) {
+                    $Collection->children[] = $CollectionChild;
+                }
+            }
+            if (empty($Collection->parent_id) || !in_array($Collection->parent_id, $idsOfCollectionsAllowedToUser)) {
+                $rootCollections[] = $Collection;
+            }
+        }
+
+        $result = array();
+
+        foreach ($rootCollections as $Collection) {
+            $itemUrl = $Collection->temporary ? Yii::app()->urlManager->createUrl('collections/viewTemp', array('id' => $Collection->id)) : Yii::app()->urlManager->createUrl('collections/view', array('id' => $Collection->id));
+            $result[] = array(
+                'text' => '<a href="'.$itemUrl.'">'.$Collection->name.'</a>',
+                'children' => self::getChildrenStructure($Collection),
+            );
+        }
+
+        return $result;
+    }
+
+    /**
      * Возвращает CDbCriteria для получения всех доступных пользователю коллекций
      * @param integer $userId айди пользователя
      * @return CDbCriteria для подстановки в DataProvider
@@ -562,6 +638,32 @@ class Collections extends ActiveRecord
     {
         $Criteria = new CDbCriteria();
         $Criteria->addInCondition('id', self::getIdsOfCollectionsAllowedToUser($userId));
+
+        return $Criteria;
+    }
+
+    /**
+     * Возвращает CDbCriteria для получения всех доступных пользователю обычных коллекций
+     * @param integer $userId айди пользователя
+     * @return CDbCriteria для подстановки в DataProvider
+     */
+    public static function getAllowedNormalCollectionsCriteria($userId)
+    {
+        $Criteria = new CDbCriteria();
+        $Criteria->addInCondition('id', self::getIdsOfNormalCollectionsAllowedToUser($userId));
+
+        return $Criteria;
+    }
+
+    /**
+     * Возвращает CDbCriteria для получения всех доступных пользователю временных коллекций
+     * @param integer $userId айди пользователя
+     * @return CDbCriteria для подстановки в DataProvider
+     */
+    public static function getAllowedTempCollectionsCriteria($userId)
+    {
+        $Criteria = new CDbCriteria();
+        $Criteria->addInCondition('id', self::getIdsOfTempCollectionsAllowedToUser($userId));
 
         return $Criteria;
     }

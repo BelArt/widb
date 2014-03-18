@@ -9,7 +9,7 @@ $itemUrl = $data->temporary ? $this->createUrl('collections/viewTemp', array('id
     <tr>
         <td class="itemListImageBlock">
 
-            <a href="<?= CHtml::encode($data->thumbnailBig) ?>" title="<?= CHtml::encode($data->name) ?>" class="thumbnail _fancybox">
+            <a href="<?= CHtml::encode($itemUrl) ?>" title="<?= CHtml::encode($data->name) ?>" class="thumbnail">
                 <table class="itemListImageWrapper">
                     <tr>
                         <td>

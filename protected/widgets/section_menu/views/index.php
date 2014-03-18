@@ -9,13 +9,13 @@
                     $itemOptions = '';
                     if (!empty($menuItem['itemOptions'])) {
                         foreach ($menuItem['itemOptions'] as $key => $val) {
-                            $itemOptions .= $key.' = "'.$val.'" ';
+                            $itemOptions .= $key.' = "'.CHtml::encode($val).'" ';
                         }
                     }
                 ?>
-                <td>
+                <td class="sectionMenuItem">
                     <a href="<?= CHtml::encode($menuItem['url']) ?>" title="<?= CHtml::encode($menuItem['label']) ?>" <?= $itemOptions ?>>
-                        <img class="sectionMenuIcon" src="<?= CHtml::encode($imagesFolderUrl.DIRECTORY_SEPARATOR.$iconTypes[$menuItem['iconType']]) ?>" />
+                        <img class="sectionMenuItemIcon" src="<?= CHtml::encode($imagesFolderUrl.DIRECTORY_SEPARATOR.$iconTypes[$menuItem['iconType']]) ?>" />
                     </a>
                 </td>
             <?php endforeach; ?>

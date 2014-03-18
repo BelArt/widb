@@ -1,4 +1,4 @@
-proto<?php
+<?php
 
 /**
  * This is the model class for table "{{user_allowed_collection}}".

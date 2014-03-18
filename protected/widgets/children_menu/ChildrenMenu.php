@@ -1,27 +1,30 @@
 <?php
 /**
- * Виджет для меню раздела
+ * Виджет для меню дочерних элементов - объектов в коллекции, изображений объекта и т.д.
  */
 
-class SectionMenu extends CWidget
+class ChildrenMenu extends CWidget
 {
+    public $menuName;
     public $menuItems;
 
     private $iconTypes = array(
-        'create_normal_col' => 'create_normal_col.png',
-        'create_temp_col' => 'create_temp_col.png',
-        'create' => 'create.png',
-        'edit' => 'edit.png',
+        'list' => 'list.png',
+        'table' => 'table.png',
+        'thumbs' => 'thumbs.png',
         'delete' => 'delete.png',
+        'download' => 'download.png',
+        'delete_from_temp' => 'delete_from_temp.png',
         'move' => 'move.png',
-        'add_to_temp' => 'add_to_temp.png',
-        'create_author' => 'create_author.png',
-        'create_object_type' => 'create_object_type.png',
-        'create_photo_type' => 'create_photo_type.png',
+        'add_to_temp' => 'add_to_temp.png'
     );
 
     public function run()
     {
+        if (empty($this->menuName)) {
+            throw new CException();
+        }
+
         if (empty($this->menuItems)) {
             return;
         }
@@ -32,12 +35,13 @@ class SectionMenu extends CWidget
 
         Yii::app()->clientScript->registerCssFile(
             Yii::app()->assetManager->publish(
-                Yii::getPathOfAlias('widgets.section_menu.assets.css').'/section_menu.css'
+                Yii::getPathOfAlias('widgets.children_menu.assets.css').'/children_menu.css'
             )
         );
 
         $this->render('index', array(
             'menuItems' => $this->menuItems,
+            'menuName' => $this->menuName,
             'imagesFolderUrl' => $imagesFolderUrl,
             'iconTypes' => $this->iconTypes
         ));

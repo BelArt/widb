@@ -49,7 +49,7 @@ Yii::app()->clientScript->registerPackage('objectView');
 
 <div class="clearBoth"></div>
 
-<!--<div class="gape"></div>-->
+<div class="gapeSmall"></div>
 
 <?php
 $this->widget(

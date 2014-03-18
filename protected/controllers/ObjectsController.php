@@ -107,7 +107,7 @@ class ObjectsController extends Controller
         $Collection = Collections::model()->findByPk($collectionId);
 
         if (empty($Collection) || $Collection->temporary == 1) {
-            throw new ObjectsControllerException();
+            throw new CException();
         }
 
         $filterChain->run();
@@ -202,24 +202,8 @@ class ObjectsController extends Controller
                 'value' => !empty($Object->inventory_number) ? CHtml::encode($Object->inventory_number) : ''
             ),
             array(
-                'label' => $Object->getAttributeLabel('description'),
-                'value' => !empty($Object->description) ? CHtml::encode($Object->description) : ''
-            ),
-            array(
                 'label' => $Object->getAttributeLabel('type_id'),
                 'value' => !empty($Object->type->name) ? CHtml::encode($Object->type->name) : ''
-            ),
-            array(
-                'label' => $Object->getAttributeLabel('width'),
-                'value' => $Object->width !== '0.00' ? CHtml::encode(OutputHelper::formatSize($Object->width)) : ''
-            ),
-            array(
-                'label' => $Object->getAttributeLabel('height'),
-                'value' => $Object->height !== '0.00' ? CHtml::encode(OutputHelper::formatSize($Object->height)) : ''
-            ),
-            array(
-                'label' => $Object->getAttributeLabel('depth'),
-                'value' => $Object->depth !== '0.00' ? CHtml::encode(OutputHelper::formatSize($Object->depth)) : ''
             ),
             array(
                 'label' => $Object->getAttributeLabel('department'),
@@ -228,6 +212,10 @@ class ObjectsController extends Controller
             array(
                 'label' => $Object->getAttributeLabel('keeper'),
                 'value' => !empty($Object->keeper) ? CHtml::encode($Object->keeper) : ''
+            ),
+            array(
+                'label' => $Object->getAttributeLabel('description'),
+                'value' => !empty($Object->description) ? CHtml::encode($Object->description) : ''
             ),
         );
 
@@ -244,16 +232,34 @@ class ObjectsController extends Controller
     {
         $attributes = array(
             array(
+                'label' => $Object->getAttributeLabel('width'),
+                'value' => $Object->width !== '0.00' ? CHtml::encode(OutputHelper::formatSize($Object->width)) : '',
+                'cssClass' => 'detailViewNowrap'
+            ),
+            array(
+                'label' => $Object->getAttributeLabel('height'),
+                'value' => $Object->height !== '0.00' ? CHtml::encode(OutputHelper::formatSize($Object->height)) : '',
+                'cssClass' => 'detailViewNowrap'
+            ),
+            array(
+                'label' => $Object->getAttributeLabel('depth'),
+                'value' => $Object->depth !== '0.00' ? CHtml::encode(OutputHelper::formatSize($Object->depth)) : '',
+                'cssClass' => 'detailViewNowrap'
+            ),
+            array(
                 'label' => $Object->getAttributeLabel('code'),
-                'value' => !empty($Object->code) ? CHtml::encode($Object->code) : ''
+                'value' => !empty($Object->code) ? CHtml::encode($Object->code) : '',
+                'cssClass' => 'detailViewNowrap'
             ),
             array(
                 'label' => $Object->getAttributeLabel('has_preview'),
-                'value' => !empty($Object->has_preview) ? CHtml::encode(Yii::t('common', 'Да')) : CHtml::encode(Yii::t('common', 'Нет'))
+                'value' => !empty($Object->has_preview) ? CHtml::encode(Yii::t('common', 'Да')) : CHtml::encode(Yii::t('common', 'Нет')),
+                'cssClass' => 'detailViewNowrap'
             ),
             array(
                 'label' => $Object->getAttributeLabel('sort'),
-                'value' => !empty($Object->sort) ? CHtml::encode($Object->sort) : ''
+                'value' => !empty($Object->sort) ? CHtml::encode($Object->sort) : '',
+                'cssClass' => 'detailViewNowrap'
             ),
         );
 
@@ -306,8 +312,8 @@ class ObjectsController extends Controller
                 'url' => '#',
                 'itemOptions' => array(
                     'class' => '_addObjectToTempCollection',
-                    'data-dialog-title' => CHtml::encode(Yii::t('objects', 'Выберите временную коллекцию, в которую хотите добавить объект')),
-                    'data-dialog-message' => CHtml::encode($this->renderPartial('_tempCollectionsSelect', array('Object' => $Object, 'tempCollections' => $tempCollections), true)),
+                    'data-dialog-title' => Yii::t('objects', 'Выберите временную коллекцию, в которую хотите добавить объект'),
+                    'data-dialog-message' => $this->renderPartial('_tempCollectionsSelect', array('Object' => $Object, 'tempCollections' => $tempCollections), true),
                 ),
                 'iconType' => 'add_to_temp'
             );
@@ -319,8 +325,8 @@ class ObjectsController extends Controller
                 'url' => '#',
                 'itemOptions' => array(
                     'class' => '_moveObjectToOtherCollection',
-                    'data-dialog-title' => CHtml::encode(Yii::t('objects', 'Выберите коллекцию, в которую хотите переместить объект/объекты')),
-                    'data-dialog-message' => CHtml::encode($this->renderPartial('_collectionsToMoveToSelect', array('Object' => $Object, 'collectionsToMoveTo' => $collectionsToMoveTo), true)),
+                    'data-dialog-title' => Yii::t('objects', 'Выберите коллекцию, в которую хотите переместить объект/объекты'),
+                    'data-dialog-message' => $this->renderPartial('_collectionsToMoveToSelect', array('Object' => $Object, 'collectionsToMoveTo' => $collectionsToMoveTo), true),
                 ),
                 'iconType' => 'move'
             );
@@ -338,8 +344,8 @@ class ObjectsController extends Controller
                 'url' => $this->createUrl('delete', array('id' => $id)),
                 'itemOptions' => array(
                     'class' => '_deleteObject',
-                    'data-dialog-title' => CHtml::encode(Yii::t('objects', 'Удалить объект?')),
-                    'data-dialog-message' => CHtml::encode(Yii::t('objects', 'Вы уверены, что хотите удалить объект? Его нельзя будет восстановить!')),
+                    'data-dialog-title' => Yii::t('objects', 'Удалить объект?'),
+                    'data-dialog-message' => Yii::t('objects', 'Вы уверены, что хотите удалить объект? Его нельзя будет восстановить!'),
                 ),
                 'iconType' => 'delete'
             );

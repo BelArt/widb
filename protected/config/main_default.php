@@ -19,7 +19,8 @@ return array(
     ),
 
     'aliases' => array(
-        'xupload' => 'ext.xupload'
+        'xupload' => 'ext.xupload',
+        'widgets' => 'application.widgets'
     ),
 
 	// autoloading model and component classes

@@ -1,4 +1,7 @@
 <?php
+/**
+ * Контроллер действий с изображениями
+ */
 
 class ImagesController extends Controller
 {
@@ -169,8 +172,8 @@ class ImagesController extends Controller
                 'url' => $this->createUrl('delete', array('id' => $id)),
                 'itemOptions' => array(
                     'class' => '_deleteImage',
-                    'data-dialog-title' => CHtml::encode(Yii::t('images', 'Удалить изображение?')),
-                    'data-dialog-message' => CHtml::encode(Yii::t('images', 'Вы уверены, что хотите удалить изображение? Его нельзя будет восстановить!')),
+                    'data-dialog-title' => Yii::t('images', 'Удалить изображение?'),
+                    'data-dialog-message' => Yii::t('images', 'Вы уверены, что хотите удалить изображение? Его нельзя будет восстановить!'),
                 ),
                 'iconType' => 'delete'
             );
@@ -240,13 +243,13 @@ class ImagesController extends Controller
     /**
      * Создание изображения
      * @param string $oi айди объекта, к которому относится изображение
-     * @throws ImagesControllerException
+     * @throws Exception
      */
     public function actionCreate($oi)
     {
         $Object = Objects::model()->findByPk($oi);
         if (empty($Object)) {
-            throw new ImagesControllerException();
+            throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
         }
 
         $Image = new Images();
@@ -274,7 +277,7 @@ class ImagesController extends Controller
             } catch (Exception $Exception) {
                 $Transaction->rollback();
                 PreviewHelper::clearUserPreviewsUploads();
-                throw new ImagesControllerException($Exception);
+                throw $Exception;
             }
         }
 
@@ -296,7 +299,7 @@ class ImagesController extends Controller
     /**
      * Редактирование изображения
      * @param $id айди изобржаения
-     * @throws ImagesControllerException
+     * @throws Exception
      */
     public function actionUpdate($id)
     {
@@ -331,14 +334,10 @@ class ImagesController extends Controller
                     $transaction->rollback();
                     PreviewHelper::clearUserPreviewsUploads();
                 }
-            } catch (ImagesControllerException $Exception) {
+            } catch (Exception $Exception) {
                 $transaction->rollback();
                 PreviewHelper::clearUserPreviewsUploads();
                 throw $Exception;
-            } catch (Exception $e) {
-                $transaction->rollback();
-                PreviewHelper::clearUserPreviewsUploads();
-                throw new ImagesControllerException($e);
             }
         }
 
@@ -362,24 +361,13 @@ class ImagesController extends Controller
     /**
      * Удаление изображения
      * @param $id айди изображения
-     * @throws ImagesControllerException
      */
     public function actionDelete($id)
     {
-        try {
-            $Object = $this->loadObject($id);
-            DeleteHelper::deleteImage($id);
-            Yii::app()->user->setFlash('success', Yii::t('images', 'Изображение удалено'));
-            $this->redirect(array('objects/view', 'id' => $Object->id));
-        } catch (ImagesControllerException $Exception) {
-            Yii::app()->user->setFlash('success', null);
-            throw $Exception;
-        } catch (DeleteHelperException $Exception) {
-            Yii::app()->user->setFlash('success', null);
-            throw new ImagesControllerException($Exception);
-        } catch (Exception $Exception) {
-            Yii::app()->user->setFlash('success', null);
-        }
+        $Object = $this->loadObject($id);
+        DeleteHelper::deleteImage($id);
+        Yii::app()->user->setFlash('success', Yii::t('images', 'Изображение удалено'));
+        $this->redirect(array('objects/view', 'id' => $Object->id));
     }
 
 }

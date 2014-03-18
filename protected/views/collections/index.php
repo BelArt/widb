@@ -4,41 +4,41 @@
 
 Yii::app()->clientScript->registerPackage('collections');
 ?>
+
+<div class="childrenMenuLevel1Wrapper">
 <?php
 
 $classThumbnails = (empty($_GET['cv']) || $_GET['cv'] == 'th') ? 'selected' : '';
 $classList = (!empty($_GET['cv']) && $_GET['cv'] == 'ls') ? 'selected' : '';
 $classTable = (!empty($_GET['cv']) && $_GET['cv'] == 'tb') ? 'selected' : '';
 
-$this->widget(
-    'bootstrap.widgets.TbMenu',
-    array(
-        'type' => 'pills',
-        'items' => array(
-            array(
-                'label' => Yii::t('common', 'Отображение'),
-                'itemOptions' => array('class' => 'nav-header')
-            ),
-            array(
-                'label' => Yii::t('common', 'Картинками'),
-                'url' => $this->createUrl('collections/index', array('cv' => 'th')),
-                'itemOptions' => array('class' => 'small '.$classThumbnails)
-            ),
-            array(
-                'label' => Yii::t('common', 'Списком'),
-                'url' => $this->createUrl('collections/index', array('cv' => 'ls')),
-                'itemOptions' => array('class' => 'small '.$classList)
-            ),
-            array(
-                'label' => Yii::t('common', 'Таблицей'),
-                'url' => $this->createUrl('collections/index', array('cv' => 'tb')),
-                'itemOptions' => array('class' => 'small '.$classTable)
-            ),
-        )
+$this->widget('widgets.children_menu.ChildrenMenu', array(
+    'menuName' => Yii::t('common', 'Отображение'),
+    'menuItems' => array(
+        array(
+            'label' => Yii::t('common', 'Картинками'),
+            'url' => $this->createUrl('collections/index', array('cv' => 'th')),
+            'tdOptions' => array('class' => 'childrenMenuItem '.$classThumbnails),
+            'iconType' => 'thumbs',
+        ),
+        array(
+            'label' => Yii::t('common', 'Списком'),
+            'url' => $this->createUrl('collections/index', array('cv' => 'ls')),
+            'tdOptions' => array('class' => 'childrenMenuItem '.$classList),
+            'iconType' => 'list',
+        ),
+        array(
+            'label' => Yii::t('common', 'Таблицей'),
+            'url' => $this->createUrl('collections/index', array('cv' => 'tb')),
+            'tdOptions' => array('class' => 'childrenMenuItem '.$classTable),
+            'iconType' => 'table',
+        ),
     )
-);
+));
 ?>
-<!--<div class="gape"></div>-->
+</div>
+<div class="clear"></div>
+<div class="gapeSmall"></div>
 <div class="row-fluid">
 <?
     $view = !empty($_GET['cv']) ? $_GET['cv'] : '';
