@@ -302,3 +302,13 @@
 .childrenMenuLevel2Wrapper {
     float: right;
 }
+.sidebar2 {
+    padding: 20px;
+    /*background-color: #F5F5F5;*/
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    behavior: url(PIE.htc);
+    border: 1px solid #ddd;
+    margin: 10px 0px 10px 0px;
+}

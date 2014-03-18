@@ -1,6 +1,7 @@
 <?php /* @var $this Controller */ ?>
 <?php $this->beginContent('//layouts/main'); ?>
 <div class="span-8 first">
+
     <?php /*if (!empty($this->pageMenu)): */?><!--
         <div id="page-menu">
             <?php
@@ -15,16 +16,34 @@
             */?>
         </div>
     --><?php /*endif; */?>
+
     <div id="sidebar">
         <?php
             $this->widget('CTreeView', array(
-                'data' => Collections::getTree(),
+                'data' => Collections::getTreeNormal(),
                 'htmlOptions' => array(
                     'class' => 'filetree'
                 )
             ));
         ?>
     </div><!-- sidebar -->
+
+    <?php
+        $treeTemp = Collections::getTreeTemp();
+    ?>
+    <?php if ($treeTemp): ?>
+        <div class="sidebar2">
+            <?php
+            $this->widget('CTreeView', array(
+                'data' => $treeTemp,
+                'htmlOptions' => array(
+                    'class' => 'filetree'
+                )
+            ));
+            ?>
+        </div>
+    <?php endif; ?>
+
     <?php if ($this->getAdminMenu()): ?>
         <div id="admin-menu">
             <?php
@@ -36,6 +55,7 @@
             ?>
         </div>
     <?php endif; ?>
+
 </div>
 <div class="span-21 last">
 	<div id="content">
