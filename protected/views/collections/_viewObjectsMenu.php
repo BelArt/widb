@@ -50,8 +50,8 @@
                 'url' => '#',
                 'itemOptions' => array(
                     'class' => '_addObjectsToTempCollection',
-                    'data-dialog-title' => CHtml::encode(Yii::t('objects', 'Выберите временную коллекцию, в которую хотите добавить объекты')),
-                    'data-dialog-message' => CHtml::encode($this->renderPartial('_tempCollectionsSelect', array('tempCollections' => $tempCollectionsAllowedToUser), true)),
+                    'data-dialog-title' => Yii::t('objects', 'Выберите временную коллекцию, в которую хотите добавить объекты'),
+                    'data-dialog-message' => $this->renderPartial('_tempCollectionsSelect', array('tempCollections' => $tempCollectionsAllowedToUser), true),
                 ),
                 'tdOptions' => array('class' => 'childrenMenuItem'),
                 'iconType' => 'add_to_temp',
@@ -64,8 +64,8 @@
                 'url' => '#',
                 'itemOptions' => array(
                     'class' => '_moveObjectsToOtherCollection',
-                    'data-dialog-title' => CHtml::encode(Yii::t('objects', 'Выберите коллекцию, в которую хотите переместить объект/объекты')),
-                    'data-dialog-message' => CHtml::encode($this->renderPartial('_collectionsToMoveToSelect', array('collectionsToMoveTo' => $collectionsToMoveTo), true)),
+                    'data-dialog-title' => Yii::t('objects', 'Выберите коллекцию, в которую хотите переместить объект/объекты'),
+                    'data-dialog-message' => $this->renderPartial('_collectionsToMoveToSelect', array('collectionsToMoveTo' => $collectionsToMoveTo), true),
                 ),
                 'tdOptions' => array('class' => 'childrenMenuItem'),
                 'iconType' => 'move',
@@ -78,8 +78,8 @@
                 'url' => '#',
                 'itemOptions' => array(
                     'class' => '_deleteSelectedObjects',
-                    'data-dialog-title' => CHtml::encode(Yii::t('objects', 'Удалить выбранные объекты?')),
-                    'data-dialog-message' => CHtml::encode(Yii::t('objects', 'Выбранные объекты будут удалены, и их нельзя будет восстановить')),
+                    'data-dialog-title' => Yii::t('objects', 'Удалить выбранные объекты?'),
+                    'data-dialog-message' => Yii::t('objects', 'Выбранные объекты будут удалены, и их нельзя будет восстановить'),
                 ),
                 'tdOptions' => array('class' => 'childrenMenuItem'),
                 'iconType' => 'delete',
@@ -101,8 +101,8 @@
                     'url' => '#',
                     'itemOptions' => array(
                         'class' => '_deleteSelectedObjectsFromTempCollection',
-                        'data-dialog-title' => CHtml::encode(Yii::t('objects', 'Удалить выбранные объекты из временной коллекции?')),
-                        'data-dialog-message' => CHtml::encode(Yii::t('objects', 'Выбранные объекты будут удалены из временной коллекции')),
+                        'data-dialog-title' => Yii::t('objects', 'Удалить выбранные объекты из временной коллекции?'),
+                        'data-dialog-message' => Yii::t('objects', 'Выбранные объекты будут удалены из временной коллекции'),
                         'data-temp-collection-id' => $model->id
                     ),
                     'tdOptions' => array('class' => 'childrenMenuItem'),

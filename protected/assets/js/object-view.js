@@ -20,6 +20,15 @@ $(function(){
 
         var $this = $(this);
 
+        var idsOfImagesToDelete = [];
+        $('._imageItem:checked').each(function(){
+            idsOfImagesToDelete.push($(this).data('image-id'));
+        });
+        // если не выбрали объекты - ничего не делаем
+        if (idsOfImagesToDelete.length == 0) {
+            return false;
+        }
+
         showDialog(
             $this.data('dialog-title'),
             $this.data('dialog-message'),

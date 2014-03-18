@@ -195,8 +195,8 @@ class CollectionsController extends Controller
                 'iconType' => 'delete',
                 'itemOptions' => array(
                     'class' => '_deleteCollection',
-                    'data-dialog-title' => CHtml::encode(Yii::t('collections', 'Удалить коллекцию?')),
-                    'data-dialog-message' => CHtml::encode(Yii::t('collections', 'Вы уверены, что хотите удалить коллекцию? Ее нельзя будет восстановить!')),
+                    'data-dialog-title' => Yii::t('collections', 'Удалить коллекцию?'),
+                    'data-dialog-message' => Yii::t('collections', 'Вы уверены, что хотите удалить коллекцию? Ее нельзя будет восстановить!'),
                 )
             );
         }
@@ -329,8 +329,8 @@ class CollectionsController extends Controller
                 'url' => $this->createUrl('collections/deleteTemp', array('id' => $id)),
                 'itemOptions' => array(
                     'class' => '_deleteTempCollection',
-                    'data-dialog-title' => CHtml::encode(Yii::t('collections', 'Удалить временную коллекцию?')),
-                    'data-dialog-message' => CHtml::encode(Yii::t('collections', 'Вы уверены, что хотите удалить временную коллекцию? Ее нельзя будет восстановить!')),
+                    'data-dialog-title' => Yii::t('collections', 'Удалить временную коллекцию?'),
+                    'data-dialog-message' => Yii::t('collections', 'Вы уверены, что хотите удалить временную коллекцию? Ее нельзя будет восстановить!'),
                 ),
                 'iconType' => 'delete'
             );

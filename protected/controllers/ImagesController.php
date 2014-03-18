@@ -172,8 +172,8 @@ class ImagesController extends Controller
                 'url' => $this->createUrl('delete', array('id' => $id)),
                 'itemOptions' => array(
                     'class' => '_deleteImage',
-                    'data-dialog-title' => CHtml::encode(Yii::t('images', 'Удалить изображение?')),
-                    'data-dialog-message' => CHtml::encode(Yii::t('images', 'Вы уверены, что хотите удалить изображение? Его нельзя будет восстановить!')),
+                    'data-dialog-title' => Yii::t('images', 'Удалить изображение?'),
+                    'data-dialog-message' => Yii::t('images', 'Вы уверены, что хотите удалить изображение? Его нельзя будет восстановить!'),
                 ),
                 'iconType' => 'delete'
             );
@@ -243,7 +243,7 @@ class ImagesController extends Controller
     /**
      * Создание изображения
      * @param string $oi айди объекта, к которому относится изображение
-     * @throws ImagesControllerException
+     * @throws Exception
      */
     public function actionCreate($oi)
     {
@@ -299,7 +299,7 @@ class ImagesController extends Controller
     /**
      * Редактирование изображения
      * @param $id айди изобржаения
-     * @throws ImagesControllerException
+     * @throws Exception
      */
     public function actionUpdate($id)
     {

@@ -107,7 +107,7 @@ class ObjectsController extends Controller
         $Collection = Collections::model()->findByPk($collectionId);
 
         if (empty($Collection) || $Collection->temporary == 1) {
-            throw new ObjectsControllerException();
+            throw new CException();
         }
 
         $filterChain->run();
@@ -312,8 +312,8 @@ class ObjectsController extends Controller
                 'url' => '#',
                 'itemOptions' => array(
                     'class' => '_addObjectToTempCollection',
-                    'data-dialog-title' => CHtml::encode(Yii::t('objects', 'Выберите временную коллекцию, в которую хотите добавить объект')),
-                    'data-dialog-message' => CHtml::encode($this->renderPartial('_tempCollectionsSelect', array('Object' => $Object, 'tempCollections' => $tempCollections), true)),
+                    'data-dialog-title' => Yii::t('objects', 'Выберите временную коллекцию, в которую хотите добавить объект'),
+                    'data-dialog-message' => $this->renderPartial('_tempCollectionsSelect', array('Object' => $Object, 'tempCollections' => $tempCollections), true),
                 ),
                 'iconType' => 'add_to_temp'
             );
@@ -325,8 +325,8 @@ class ObjectsController extends Controller
                 'url' => '#',
                 'itemOptions' => array(
                     'class' => '_moveObjectToOtherCollection',
-                    'data-dialog-title' => CHtml::encode(Yii::t('objects', 'Выберите коллекцию, в которую хотите переместить объект/объекты')),
-                    'data-dialog-message' => CHtml::encode($this->renderPartial('_collectionsToMoveToSelect', array('Object' => $Object, 'collectionsToMoveTo' => $collectionsToMoveTo), true)),
+                    'data-dialog-title' => Yii::t('objects', 'Выберите коллекцию, в которую хотите переместить объект/объекты'),
+                    'data-dialog-message' => $this->renderPartial('_collectionsToMoveToSelect', array('Object' => $Object, 'collectionsToMoveTo' => $collectionsToMoveTo), true),
                 ),
                 'iconType' => 'move'
             );
@@ -344,8 +344,8 @@ class ObjectsController extends Controller
                 'url' => $this->createUrl('delete', array('id' => $id)),
                 'itemOptions' => array(
                     'class' => '_deleteObject',
-                    'data-dialog-title' => CHtml::encode(Yii::t('objects', 'Удалить объект?')),
-                    'data-dialog-message' => CHtml::encode(Yii::t('objects', 'Вы уверены, что хотите удалить объект? Его нельзя будет восстановить!')),
+                    'data-dialog-title' => Yii::t('objects', 'Удалить объект?'),
+                    'data-dialog-message' => Yii::t('objects', 'Вы уверены, что хотите удалить объект? Его нельзя будет восстановить!'),
                 ),
                 'iconType' => 'delete'
             );

@@ -9,7 +9,7 @@
                     $itemOptions = '';
                     if (!empty($menuItem['itemOptions'])) {
                         foreach ($menuItem['itemOptions'] as $key => $val) {
-                            $itemOptions .= $key.' = "'.$val.'" ';
+                            $itemOptions .= $key.' = "'.CHtml::encode($val).'" ';
                         }
                     }
                 ?>

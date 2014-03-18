@@ -33,6 +33,15 @@ $(function(){
 
         var $this = $(this);
 
+        var idsOfObjectsToDelete = [];
+        $('._objectItem:checked').each(function(){
+            idsOfObjectsToDelete.push($(this).data('object-id'));
+        });
+        // если не выбрали объекты - ничего не делаем
+        if (idsOfObjectsToDelete.length == 0) {
+            return false;
+        }
+
         showDialog(
             $this.data('dialog-title'),
             $this.data('dialog-message'),
@@ -87,6 +96,15 @@ $(function(){
     $('._deleteSelectedObjectsFromTempCollection').click(function(){
 
         var $this = $(this);
+
+        var idsOfObjectsToDelete = [];
+        $('._objectItem:checked').each(function(){
+            idsOfObjectsToDelete.push($(this).data('object-id'));
+        });
+        // если не выбрали объекты - ничего не делаем
+        if (idsOfObjectsToDelete.length == 0) {
+            return false;
+        }
 
         showDialog(
             $this.data('dialog-title'),
@@ -185,6 +203,15 @@ $(function(){
     $('._deleteSelectedChildCollections').click(function(){
 
         var $this = $(this);
+
+        var idsOfCollectionsToDelete = [];
+        $('._collectionItem:checked').each(function(){
+            idsOfCollectionsToDelete.push($(this).data('collection-id'));
+        });
+        // если не выбрали объекты - ничего не делаем
+        if (idsOfCollectionsToDelete.length == 0) {
+            return false;
+        }
 
         showDialog(
             $this.data('dialog-title'),

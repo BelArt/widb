@@ -16,7 +16,7 @@
                 $tdOptions = '';
                 if (!empty($menuItem['tdOptions'])) {
                     foreach ($menuItem['tdOptions'] as $key => $val) {
-                        $tdOptions .= $key.'="'.$val.'" ';
+                        $tdOptions .= $key.'="'.CHtml::encode($val).'" ';
                     }
                 }
             ?>

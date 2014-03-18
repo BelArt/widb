@@ -51,8 +51,8 @@ $this->widget('widgets.children_menu.ChildrenMenu', array(
             'url' => '#',
             'itemOptions' => array(
                 'class' => '_deleteSelectedImages',
-                'data-dialog-title' => CHtml::encode(Yii::t('images', 'Удалить выбранные изображения?')),
-                'data-dialog-message' => CHtml::encode(Yii::t('images', 'Выбранные изображения будут удалены, и их нельзя будет восстановить')),
+                'data-dialog-title' => Yii::t('images', 'Удалить выбранные изображения?'),
+                'data-dialog-message' => Yii::t('images', 'Выбранные изображения будут удалены, и их нельзя будет восстановить'),
             ),
             'tdOptions' => array('class' => 'childrenMenuItem '),
             'iconType' => 'delete',
