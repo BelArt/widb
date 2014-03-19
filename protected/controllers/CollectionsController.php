@@ -164,6 +164,9 @@ class CollectionsController extends Controller
             case 'tb': // таблицей
                 $renderViewChildCollections = '_viewChildCollectionsTable';
                 break;
+            case '': // картинками
+                $renderViewChildCollections = '_viewChildCollectionsThumbnails';
+                break;
         }
 
         return $renderViewChildCollections;
@@ -187,8 +190,9 @@ class CollectionsController extends Controller
             case 'tb': // таблицей
                 $renderViewObjects = '_viewObjectsTable';
                 break;
-            default: // картинками
+            case '': // картинками
                 $renderViewObjects = '_viewObjectsThumbnails';
+                break;
         }
 
         return $renderViewObjects;

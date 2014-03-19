@@ -3,7 +3,7 @@
 /* @var $valueSet array */
 /* @var $varName string */
 ?>
-<table>
+<table class="perPageToggleContainer">
     <tr>
         <td class="perPageToggleTextContainer"><?= CHtml::encode($text) ?></td>
         <td class="perPageToggleSelectContainer">
