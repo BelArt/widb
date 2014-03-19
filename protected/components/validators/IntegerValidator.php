@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * Валидатор целочисленных значений.
+ *
+ * Общий принцип валидации: сначала проверяется, пустое ли значение, и разрешены ли пустые значения.
+ * Дальше проверяется по правилу, причем правило основано на предположении, что значение не пустое, т.к. пустые значения
+ * отсекли на предыдущем шаге.
+ */
 class IntegerValidator extends CValidator
 {
     public $allowEmpty = false;
@@ -12,7 +19,7 @@ class IntegerValidator extends CValidator
     {
         $value = $object->$attribute;
 
-        if ($this->allowEmpty && $this->isEmpty($value, true))
+        if ($this->allowEmpty && ($this->isEmpty($value, true) || $value == '0'))
         {
             return;
         }

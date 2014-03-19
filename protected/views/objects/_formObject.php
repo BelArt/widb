@@ -37,6 +37,10 @@ echo $form->select2Row($model,'author_id',
     )
 );
 
+echo $form->textFieldRow($model,'author_text', array(
+    'class' => 'input-xlarge _objectForm_hideErrorsKeypress',
+));
+
 echo $form->select2Row($model,'type_id',
     array(
         'asDropDownList' => true,
@@ -46,7 +50,7 @@ echo $form->select2Row($model,'type_id',
 );
 
 echo $form->textFieldRow($model,'period', array(
-    'class' => 'input-large _objectForm_hideErrorsKeypress'
+    'class' => 'input-xlarge _objectForm_hideErrorsKeypress'
 ));
 
 echo $form->textFieldRow($model,'inventory_number', array(
@@ -54,7 +58,7 @@ echo $form->textFieldRow($model,'inventory_number', array(
 ));
 
 echo $form->textFieldRow($model,'code', array(
-    'class' => 'input-small _objectForm_hideErrorsKeypress _translitDestination'
+    'class' => 'input-small _objectForm_hideErrorsChange _translitDestination'
 ));
 
 echo $form->textFieldRow($model,'width', array(

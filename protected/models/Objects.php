@@ -48,20 +48,22 @@ class Objects extends ActiveRecord
 	public function rules()
 	{
 		return array(
-
+            // сначала обязательные
             array('name, type_id, inventory_number, code', 'required', 'except' => 'delete'),
-            array('has_preview', 'boolean', 'except' => 'delete'),
-            array('author_id, type_id, sort', 'application.components.validators.EmptyOrPositiveIntegerValidator', 'skipOnError' => true, 'except' => 'delete'),
-            array('period, code, department, keeper', 'length', 'max'=>150, 'except' => 'delete'),
-            array('inventory_number', 'length', 'max'=>50, 'except' => 'delete'),
-            array('width, height, depth', 'numerical', 'numberPattern' => '/^\d\d{0,2}(\.\d{1,2})?$/', 'message' => Yii::t('objects', 'значение должно быть в формате xxx.xx'), 'allowEmpty' => true, 'except' => 'delete'),
+            // потом проверки на формат
+            // если атрибут не указан в обязательных, то свойство allowEmpty должно быть true, иначе false
+            // самописные валидаторы по умолчанию имеют allowEmpty = false
+            array('author_id, collection_id', 'application.components.validators.IntegerValidator', 'skipOnError' => true, 'allowEmpty' => true, 'except' => 'delete'),
+            array('type_id', 'application.components.validators.IntegerValidator', 'skipOnError' => true, 'except' => 'delete'),
             array('code', 'application.components.validators.CodeValidator', 'skipOnError' => true, 'except' => 'delete'),
-
+            array('width, height, depth', 'numerical', 'numberPattern' => '/^\d\d{0,2}(\.\d{1,2})?$/', 'message' => Yii::t('objects', 'значение должно быть в формате xxx.xx'), 'allowEmpty' => true, 'except' => 'delete'),
+            array('has_preview', 'boolean', 'strict' => true, 'skipOnError' => true, 'except' => 'delete'),
+            array('sort', 'application.components.validators.IntegerValidator', 'skipOnError' => true, 'allowEmpty' => true, 'except' => 'delete'),
+            // потом отдельно на длину
+            array('name, code, department, keeper, period, author_text', 'length', 'max'=>150, 'except' => 'delete', 'skipOnError' => true),
+            array('inventory_number', 'length', 'max'=>50, 'except' => 'delete', 'skipOnError' => true),
+            // и безопасные
             array('description', 'safe'),
-
-			// The following rule is used by search().
-			// @todo Please remove those attributes that should not be searched.
-			//array('id, author_id, type_id, collection_id, name, description, inventory_number, inventory_number_en, code, width, height, depth, has_preview, department, keeper, date_create, date_modify, date_delete, sort, deleted', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -106,6 +108,7 @@ class Objects extends ActiveRecord
             'sort' => Yii::t('common', 'Сортировка'),
             'preview' => Yii::t('common', 'Превью'),
             'size' => Yii::t('common', 'Размер'),
+            'author_text' => Yii::t('objects', 'Автор (текстом)'),
         );
     }
 
@@ -438,6 +441,8 @@ class Objects extends ActiveRecord
 
         if (!empty($this->author->intials)) {
             $authorInitials .= $this->author->intials;
+        } elseif(!empty($this->author_text)) {
+            $authorInitials .= $this->author_text;
         } else {
             $authorInitials .= Yii::t('objects', 'Автор неизвестен');
         }
