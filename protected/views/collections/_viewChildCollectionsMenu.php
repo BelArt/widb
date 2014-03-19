@@ -61,7 +61,6 @@ $this->widget('widgets.children_menu.ChildrenMenu', array(
 ));
 ?>
 </div>
-<!--<div class="gapeSmall"></div>-->
 
 <div class="clear"></div>
 

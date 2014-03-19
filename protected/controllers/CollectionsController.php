@@ -2,7 +2,7 @@
 
 class CollectionsController extends Controller
 {
-    private $collection;
+    private $_collection;
 
 	/**
 	 * @return array action filters
@@ -11,7 +11,7 @@ class CollectionsController extends Controller
 	{
 		return array(
 			'accessControl', // perform access control for CRUD operations
-			//'postOnly + delete', // we only allow deletion via POST request
+            'forActionView + view'
 		);
 	}
 
@@ -83,21 +83,76 @@ class CollectionsController extends Controller
 
 
     /**
-     * Просмотр обычной коллекции
-     * @param string $id айди коллекции
+     * Просмотр обычной коллекции.
+     *
+     * @param int $id айди коллекции
      * @param string $cv как отображать дочерние коллекции: th - картинками, ls - списком, tb - таблицей
      * @param string $ov как отображать объекты в коллекции: th - картинками, ls - списком, tb - таблицей
      * @param string $tb какая вкладка открыта (параметр используется уже во view): cc - дочерние коллекции, ob - объекты
-     * @throws CHttpException
+     * @param int $opp - кол-во выводимых объектов на страницу
      */
-    public function actionView($id, $cv = 'th', $ov = 'th', $tb = 'cc')
+    public function actionView($id, $cv = 'th', $ov = 'th', $tb = 'cc', $opp = 10)
 	{
-        $model = $this->loadCollection($id);
+        $Collection = $this->loadCollection($id);
 
-        if ($model->temporary) {
+        $this->setPageParamsForActionView($id);
+
+		$this->render('viewNormal', array(
+            'model' => $Collection,
+            'ObjectsDataProvider' => $this->getCollectionObjectsDataProviderForActionView($id,$opp),
+            'ChildCollectionsDataProvider' => $this->getChildCollectionDataProviderForActionView($id),
+            'renderViewChildCollections' => $this->getChildCollectionsViewName($cv),
+            'renderViewObjects' => $this->getCollectionObjectsViewName($ov),
+            'tempCollectionsAllowedToUser' => Collections::getTempCollectionsAllowedToUser(Yii::app()->user->id),
+            'collectionsToMoveTo' => Collections::getAllNormalCollectionsExcept($id)
+        ));
+	}
+
+    public function filterForActionView($filterChain)
+    {
+        /*
+         * Проверяем первый параметр - айди коллекции
+         * если чот-то не так, что будет брошено исключение в методе loadCollection()
+         * Заодно подгрузим модель коллекции
+         */
+        $Collection = $this->loadCollection(Yii::app()->request->getQuery('id'));
+
+        // проверяем, что колелкция не временная
+        if ($Collection->temporary) {
             throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
         }
 
+        // тип отображения дочерних коллекций
+        if (!in_array(Yii::app()->request->getQuery('cv',''), array('th','ls','tb',''))) {
+            throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
+        }
+
+        // тип отображения объектов в коллекции
+        if (!in_array(Yii::app()->request->getQuery('ov',''), array('th','ls','tb',''))) {
+            throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
+        }
+
+        // какая вкладка открыта
+        if (!in_array(Yii::app()->request->getQuery('tb',''), array('cc','ob',''))) {
+            throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
+        }
+
+        // кол-во объектов на страницу
+        $objectsPerPage = Yii::app()->request->getQuery('opp');
+        if (!empty($objectsPerPage) && !preg_match('/^[1-9]{1}\d*$/', $objectsPerPage)) {
+            throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
+        }
+
+        $filterChain->run();
+    }
+
+    /**
+     * Возвращает имя вью, которую надо исопльзовать для рендеринга дочерних коллекций
+     * @param string $cv параметр, определяющий вью
+     * @return string имя вью
+     */
+    private function getChildCollectionsViewName($cv)
+    {
         // как отображать дочерние коллекции
         switch ($cv) {
             case 'th': // картинками
@@ -109,10 +164,18 @@ class CollectionsController extends Controller
             case 'tb': // таблицей
                 $renderViewChildCollections = '_viewChildCollectionsTable';
                 break;
-            default: // картинками
-                $renderViewChildCollections = '_viewChildCollectionsThumbnails';
         }
 
+        return $renderViewChildCollections;
+    }
+
+    /**
+     * Возвращает имя вью, которую надо исопльзовать для рендеринга объектов коллекции
+     * @param string $ov параметр, определяющий вью
+     * @return string имя вью
+     */
+    private function getCollectionObjectsViewName($ov)
+    {
         // как отображать объекты в коллекции
         switch ($ov) {
             case 'th': // картинками
@@ -128,40 +191,21 @@ class CollectionsController extends Controller
                 $renderViewObjects = '_viewObjectsThumbnails';
         }
 
-        $ObjectsCriteria = new CDbCriteria();
-        $ObjectsCriteria->condition = 't.collection_id = :collection_id';
-        $ObjectsCriteria->params = array(':collection_id' => $id);
-        $ObjectsCriteria->with = array('author');
+        return $renderViewObjects;
+    }
 
-        $ObjectsDataProvider = new CActiveDataProvider('Objects', array(
-            'criteria' => $ObjectsCriteria,
-            'pagination' => array(
-                'pageVar' => 'p',
-            ),
-        ));
-
-        $ChildCollectionsDataProvider = new CActiveDataProvider(
-            'Collections',
-            array(
-                'criteria' => array(
-                    'condition' => 'parent_id = :parent_id',
-                    'params' => array(':parent_id' => $id)
-                ),
-                'pagination' => array(
-                    'pageVar' => 'p',
-                    // чтобы правильно строить урлы пейджера на вкладке Дочерние коллекции при просмотре картинками
-                    'params' => (empty($_GET['tb']) ? array('id' => $id,'tb' => 'cc', 'cv' => 'th') : null)
-                ),
-            )
-        );
-
-        $tempCollectionsAllowedToUser = Collections::getTempCollectionsAllowedToUser(Yii::app()->user->id);
-
-        $collectionsToMoveTo = Collections::getAllNormalCollectionsExcept($id);
+    /**
+     * Устанавливаем параметры страницы коллекции - тайтл, крошки и т.д.
+     *
+     * @param int $id айди коллекции
+     */
+    private function setPageParamsForActionView($id)
+    {
+        $Collection = $this->loadCollection($id);
 
         // параметры страницы
-        $this->pageTitle = array($model->name);
-        $this->breadcrumbs = array($model->name);
+        $this->pageTitle = array($Collection->name);
+        $this->breadcrumbs = array($Collection->name);
         //$this->pageName = $model->name;
         $pageMenu = array();
         if (Yii::app()->user->checkAccess('oCollectionCreate')) {
@@ -182,9 +226,9 @@ class CollectionsController extends Controller
             $pageMenu[] = array(
                 'label' => Yii::t('collections', 'Редактировать коллекцию'),
                 'url' => $this->createUrl(
-                    'collections/update',
-                    array('id' => $id)
-                ),
+                        'collections/update',
+                        array('id' => $id)
+                    ),
                 'iconType' => 'edit'
             );
         }
@@ -208,20 +252,58 @@ class CollectionsController extends Controller
             );
         }
         $this->pageMenu = $pageMenu;
+    }
 
-		$this->render(
-            'viewNormal',
+    /**
+     * Возвращает датапровайдер дочерних коллекци.
+     *
+     * @param int $id айди коллекции
+     * @return CActiveDataProvider датапровайдер дочерних коллекци
+     */
+    private function getChildCollectionDataProviderForActionView($id)
+    {
+        $ChildCollectionsDataProvider = new CActiveDataProvider(
+            'Collections',
             array(
-                'model' => $model,
-                'ObjectsDataProvider' => $ObjectsDataProvider,
-                'ChildCollectionsDataProvider' => $ChildCollectionsDataProvider,
-                'renderViewChildCollections' => $renderViewChildCollections,
-                'renderViewObjects' => $renderViewObjects,
-                'tempCollectionsAllowedToUser' => $tempCollectionsAllowedToUser,
-                'collectionsToMoveTo' => $collectionsToMoveTo
+                'criteria' => array(
+                    'condition' => 'parent_id = :parent_id',
+                    'params' => array(':parent_id' => $id)
+                ),
+                'pagination' => array(
+                    'pageVar' => 'p',
+                    // чтобы правильно строить урлы пейджера на вкладке Дочерние коллекции при просмотре картинками
+                    'params' => (empty($_GET['tb']) ? array('id' => $id,'tb' => 'cc', 'cv' => 'th') : null)
+                ),
             )
         );
-	}
+
+        return $ChildCollectionsDataProvider;
+    }
+
+    /**
+     * Возвращает датапровайдер объектов коллекции.
+     *
+     * @param int $id айди коллекции
+     * @param int $opp кол-во объектов на страницу
+     * @return CActiveDataProvider датапровайдер объектов коллекци
+     */
+    private function getCollectionObjectsDataProviderForActionView($id, $opp)
+    {
+        $ObjectsCriteria = new CDbCriteria();
+        $ObjectsCriteria->condition = 't.collection_id = :collection_id';
+        $ObjectsCriteria->params = array(':collection_id' => $id);
+        $ObjectsCriteria->with = array('author');
+
+        $ObjectsDataProvider = new CActiveDataProvider('Objects', array(
+            'criteria' => $ObjectsCriteria,
+            'pagination' => array(
+                'pageVar' => 'p',
+                'pageSize' => $opp
+            ),
+        ));
+
+        return $ObjectsDataProvider;
+    }
 
     /**
      * Просмотр временной коллекции
@@ -657,39 +739,26 @@ class CollectionsController extends Controller
 	}
 
 	/**
-	 * Returns the data model based on the primary key given in the GET variable.
-	 * If the data model is not found, an HTTP exception will be raised.
-	 * @param integer $id the ID of the model to be loaded
-	 * @return Collections the loaded model
-	 * @throws CHttpException
+     * Загружает модель коллекции.
+     *
+     * @param int $id айди коллекции
+     * @return mixed модель коллекции (Collections) или null, если айди не передан
+     * @throws CHttpException
 	 */
 	public function loadCollection($id)
 	{
-        if (!empty($id)) {
-            if (empty($this->collection)) {
-                $this->collection = Collections::model()->findByPk($id);
-
-                if (empty($this->collection)) {
-                    throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
-                }
-            }
-
-            return $this->collection;
-        } else {
+        if (empty($id)) {
             return null;
         }
-	}
 
-	/**
-	 * Performs the AJAX validation.
-	 * @param Collections $model the model to be validated
-	 */
-	/*protected function performAjaxValidation($model)
-	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='collections-form')
-		{
-			echo CActiveForm::validate($model);
-			Yii::app()->end();
-		}
-	}*/
+        if (empty($this->_collection)) {
+            $this->_collection = Collections::model()->findByPk($id);
+
+            if (empty($this->_collection)) {
+                throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
+            }
+        }
+
+        return $this->_collection;
+	}
 }
