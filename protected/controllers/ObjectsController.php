@@ -13,6 +13,9 @@ class ObjectsController extends Controller
 		return array(
 			'accessControl', // perform access control for CRUD operations
 			'forActionCreate + create',
+            'forActionView + view',
+            'forActionDelete + delete',
+            'forActionUpdate + update',
 		);
 	}
 
@@ -51,7 +54,10 @@ class ObjectsController extends Controller
     }
 
 	/**
-     * Создание объекта
+     * Создание объекта.
+     *
+     * @param int $ci айди коллекции, в которой создается объект
+     * @throws Exception
 	 */
 	public function actionCreate($ci)
 	{
@@ -107,7 +113,7 @@ class ObjectsController extends Controller
         $Collection = Collections::model()->findByPk($collectionId);
 
         if (empty($Collection) || $Collection->temporary == 1) {
-            throw new CException();
+            throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
         }
 
         $filterChain->run();
@@ -115,7 +121,7 @@ class ObjectsController extends Controller
 
     /**
      * Возвращает модель объекта
-     * @param $id айди объекта
+     * @param int $id айди объекта
      * @return Objects модель объекта
      * @throws CHttpException
      */
@@ -138,7 +144,7 @@ class ObjectsController extends Controller
 
     /**
      * Возвращает модель коллекции, к которой принадлежит объект
-     * @param $id айди объекта
+     * @param int $id айди объекта
      * @return Collections модель коллекции, к которой принадлежит объект
      * @throws CException
      */
@@ -186,6 +192,23 @@ class ObjectsController extends Controller
             'attributesForMainDetailViewWidget' => $this->getAttributesForMainDetailViewWidget($Object),
             'attributesForSystemDetailViewWidget' => $this->getAttributesForSystemDetailViewWidget($Object),
         ));
+    }
+
+    public function filterForActionView($filterChain)
+    {
+        /*
+         * Проверяем первый параметр - айди объекта
+         * если чот-то не так, что будет брошено исключение в методе loadObject()
+         * Заодно подгрузим модель объекта
+         */
+        $this->loadObject(Yii::app()->request->getQuery('id'));
+
+        // тип отображения изображений
+        if (!in_array(Yii::app()->request->getQuery('iv',''), array('th','ls','tb',''))) {
+            throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
+        }
+
+        $filterChain->run();
     }
 
     /**
@@ -283,8 +306,6 @@ class ObjectsController extends Controller
             case 'tb': // таблицей
                 $objectsImagesViewName = '_viewImagesTable';
                 break;
-            default: // картинками
-                $objectsImagesViewName = '_viewImagesThumbnails';
         }
 
         return $objectsImagesViewName;
@@ -383,6 +404,18 @@ class ObjectsController extends Controller
         }
     }
 
+    public function filterForActionDelete($filterChain)
+    {
+        /*
+         * Проверяем первый параметр - айди объекта
+         * если чот-то не так, что будет брошено исключение в методе loadObject()
+         * Заодно подгрузим модель объекта
+         */
+        $this->loadObject(Yii::app()->request->getQuery('id'));
+
+        $filterChain->run();
+    }
+
     /**
      * Редактирование объекта
      * @param int $id айди объекта
@@ -438,5 +471,17 @@ class ObjectsController extends Controller
             'photoUploadModel' => $PhotoUploadModel,
             'view' => $view
         ));
+    }
+
+    public function filterForActionUpdate($filterChain)
+    {
+        /*
+         * Проверяем первый параметр - айди объекта
+         * если чот-то не так, что будет брошено исключение в методе loadObject()
+         * Заодно подгрузим модель объекта
+         */
+        $this->loadObject(Yii::app()->request->getQuery('id'));
+
+        $filterChain->run();
     }
 }

@@ -119,6 +119,13 @@
     ?>
 </div>
 
+<div class="childrenMenuLevel3Wrapper">
+    <?php
+    $this->widget('widgets.per_page_toggle.PerPageToggle', array(
+        'varName' => 'opp'
+    ));
+    ?>
+</div>
 
 <div class="clear"></div>
 
