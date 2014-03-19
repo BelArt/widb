@@ -1,17 +1,13 @@
 <?php
 
+/**
+ * Валидатор поля Код.
+ */
 class CodeValidator extends CValidator
 {
-    public $pattern = '/^[a-z0-9_]{3,}$/';
+    public $pattern = '/^[a-z0-9_\-]{3,}$/';
     public $allowEmpty = false;
 
-    /**
-     * Validates the attribute of the object.
-     * If there is any error, the error message is added to the object.
-     * @param CModel $object the object being validated
-     * @param string $attribute the attribute being validated
-     * @throws ValidatorException
-     */
     protected function validateAttribute($object, $attribute)
     {
         $value = $object->$attribute;
@@ -23,7 +19,7 @@ class CodeValidator extends CValidator
 
         if(!preg_match($this->pattern, $object->$attribute))
         {
-            $this->addError($object, $attribute, Yii::t('common', 'Значение должно содержать только символы a-z, 0-9 и _'));
+            $this->addError($object, $attribute, Yii::t('common', 'Значение должно содержать только символы a-z, 0-9, - и _'));
         }
 
         $condition = '';

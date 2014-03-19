@@ -20,7 +20,8 @@ return array(
 
     'aliases' => array(
         'xupload' => 'ext.xupload',
-        'widgets' => 'application.widgets'
+        'widgets' => 'application.widgets',
+        'validators' => 'application.components.validators'
     ),
 
 	// autoloading model and component classes

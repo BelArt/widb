@@ -43,7 +43,10 @@ $(function(){
         if ($(this).val() != translitSourceLastValue) {
             translitSourceLastValue = $(this).val();
             $(this).liTranslit({
-                elAlias: $('._translitDestination')
+                elAlias: $('._translitDestination'),
+                translated: function(el, text, eventType){
+                    $('._translitDestination').trigger('change');
+                }
             });
         }
     });
