@@ -11,7 +11,11 @@ class CollectionsController extends Controller
 	{
 		return array(
 			'accessControl', // perform access control for CRUD operations
-            'forActionView + view'
+            'forActionView + view',
+            'forActionViewTemp + viewTemp',
+            array(
+                'application.components.SaveGetParamsToSessionFilter + view, viewTemp',
+            ),
 		);
 	}
 
@@ -88,10 +92,10 @@ class CollectionsController extends Controller
      * @param int $id айди коллекции
      * @param string $cv как отображать дочерние коллекции: th - картинками, ls - списком, tb - таблицей
      * @param string $ov как отображать объекты в коллекции: th - картинками, ls - списком, tb - таблицей
-     * @param string $tb какая вкладка открыта (параметр используется уже во view): cc - дочерние коллекции, ob - объекты
-     * @param int $opp - кол-во выводимых объектов на страницу
+     * @param string $tb какая вкладка открыта: cc - дочерние коллекции, ob - объекты
+     * @param string $opp - кол-во выводимых объектов на страницу
      */
-    public function actionView($id, $cv = 'th', $ov = 'th', $tb = 'cc', $opp = 10)
+    public function actionView($id, $cv = 'th', $ov = 'th', $tb = 'ob', $opp = '10')
 	{
         $Collection = $this->loadCollection($id);
 
@@ -101,10 +105,11 @@ class CollectionsController extends Controller
             'model' => $Collection,
             'ObjectsDataProvider' => $this->getCollectionObjectsDataProviderForActionView($id,$opp),
             'ChildCollectionsDataProvider' => $this->getChildCollectionDataProviderForActionView($id),
-            'renderViewChildCollections' => $this->getChildCollectionsViewName($cv),
+            'renderViewChildCollections' => $this->getChildCollectionsViewNameForActionView($cv),
             'renderViewObjects' => $this->getCollectionObjectsViewName($ov),
             'tempCollectionsAllowedToUser' => Collections::getTempCollectionsAllowedToUser(Yii::app()->user->id),
-            'collectionsToMoveTo' => Collections::getAllNormalCollectionsExcept($id)
+            'collectionsToMoveTo' => Collections::getAllNormalCollectionsExcept($id),
+            'activeTab' => $this->getNameOfActiveTabForActionView($tb)
         ));
 	}
 
@@ -151,7 +156,7 @@ class CollectionsController extends Controller
      * @param string $cv параметр, определяющий вью
      * @return string имя вью
      */
-    private function getChildCollectionsViewName($cv)
+    private function getChildCollectionsViewNameForActionView($cv)
     {
         // как отображать дочерние коллекции
         switch ($cv) {
@@ -310,36 +315,143 @@ class CollectionsController extends Controller
     }
 
     /**
-     * Просмотр временной коллекции
-     * @param string $id айди коллекции
-     * @param string $cv как отображать дочерние коллекции: th - картинками, ls - списком, tb - таблицей
-     * @param string $ov как отображать объекты в коллекции: th - картинками, ls - списком, tb - таблицей
-     * @param string $tb какая вкладка открыта (параметр используется уже во view): cc - дочерние коллекции, ob - объекты
-     * @throws CHttpException
+     * Возвращает тип таба, который дожен быть открыт.
+     *
+     * @param string $tb какая вкладка открыта: cc - дочерние коллекции, ob - объекты
+     * @return string тип таба, который дожен быть открыт
      */
-    public function actionViewTemp($id, /*$cv = 'th',*/ $ov = 'th'/*, $tb = 'cc'*/)
+    private function getNameOfActiveTabForActionView($tb)
     {
-        $model = $this->loadCollection($id);
+        // какая вкладка открыта
+        switch ($tb) {
+            case 'cc': // дочерние коллекции
+                $activeTab = 'childCollections';
+                break;
+            case 'ob': // объекты
+                $activeTab = 'objects';
+                break;
+            case '': // объекты
+                $activeTab = 'objects';
+                break;
+        }
 
-        if (!$model->temporary) {
+        return $activeTab;
+    }
+
+    /**
+     * Просмотр временной коллекции
+     * @param int $id айди коллекции
+     * @param string $ov как отображать объекты в коллекции: th - картинками, ls - списком, tb - таблицей
+     * @param int $opp - кол-во выводимых объектов на страницу
+     */
+    public function actionViewTemp($id, $ov = 'th', $opp = 10)
+    {
+        $Collection = $this->loadCollection($id);
+        $this->setPageParamsForActionViewTemp($id);
+
+        $this->render('viewTemp', array(
+            'model' => $Collection,
+            'ObjectsDataProvider' => $this->getCollectionObjectsDataProviderForActionViewTemp($id, $opp),
+            'renderViewObjects' => $this->getCollectionObjectsViewName($ov),
+            'tempCollectionsAllowedToUser' => Collections::getTempCollectionsAllowedToUser(Yii::app()->user->id),
+        ));
+    }
+
+    public function filterForActionViewTemp($filterChain)
+    {
+        /*
+         * Проверяем первый параметр - айди коллекции
+         * если чот-то не так, что будет брошено исключение в методе loadCollection()
+         * Заодно подгрузим модель коллекции
+         */
+        $Collection = $this->loadCollection(Yii::app()->request->getQuery('id'));
+
+        // проверяем, что колелкция не временная
+        if (!$Collection->temporary) {
             throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
         }
 
-        // как отображать объекты в коллекции
-        switch ($ov) {
-            case 'th': // картинками
-                $renderViewObjects = '_viewObjectsThumbnails';
-                break;
-            case 'ls': // списком
-                $renderViewObjects = '_viewObjectsList';
-                break;
-            case 'tb': // таблицей
-                $renderViewObjects = '_viewObjectsTable';
-                break;
-            default: // картинками
-                $renderViewObjects = '_viewObjectsThumbnails';
+        // тип отображения объектов в коллекции
+        if (!in_array(Yii::app()->request->getQuery('ov',''), array('th','ls','tb',''))) {
+            throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
         }
 
+        // кол-во объектов на страницу
+        $objectsPerPage = Yii::app()->request->getQuery('opp');
+        if (!empty($objectsPerPage) && !preg_match('/^[1-9]{1}\d*$/', $objectsPerPage)) {
+            throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
+        }
+
+        $filterChain->run();
+    }
+
+    /**
+     * Устанавливаем параметры страницы временной коллекции - тайтл, крошки и т.д.
+     *
+     * @param int $id айди коллекции
+     */
+    private function setPageParamsForActionViewTemp($id)
+    {
+        $Collection = $this->loadCollection($id);
+
+        // параметры страницы
+        $this->pageTitle = array($Collection->name);
+        $this->breadcrumbs = array($Collection->name);
+        //$this->pageName = $model->name;
+        $pageMenu = array();
+        if (Yii::app()->user->checkAccess('oCollectionCreate')) {
+            $pageMenu[] = array(
+                'label' => Yii::t('collections', 'Создать коллекцию'),
+                'url' => $this->createUrl('collections/create'),
+                'iconType' => 'create_normal_col'
+            );
+        }
+        if (Yii::app()->user->checkAccess('oTempCollectionCreate')) {
+            $pageMenu[] = array(
+                'label' => Yii::t('collections', 'Создать временную коллекцию'),
+                'url' => $this->createUrl('collections/createTemp'),
+                'iconType' => 'create_temp_col'
+            );
+        }
+        if (Yii::app()->user->checkAccess('oTempCollectionEdit', array(
+            'Collection' => $Collection
+        ))) {
+            $pageMenu[] = array(
+                'label' => Yii::t('collections', 'Редактировать временную коллекцию'),
+                'url' => $this->createUrl(
+                        'collections/updateTemp',
+                        array('id' => $id)
+                    ),
+                'iconType' => 'edit'
+                //'itemOptions' => array('class' => 'small')
+            );
+        }
+        if (Yii::app()->user->checkAccess('oTempCollectionDelete', array(
+            'Collection' => $Collection
+        ))) {
+            $pageMenu[] = array(
+                'label' => Yii::t('collections', 'Удалить временную коллекцию'),
+                'url' => $this->createUrl('collections/deleteTemp', array('id' => $id)),
+                'itemOptions' => array(
+                    'class' => '_deleteTempCollection',
+                    'data-dialog-title' => Yii::t('collections', 'Удалить временную коллекцию?'),
+                    'data-dialog-message' => Yii::t('collections', 'Вы уверены, что хотите удалить временную коллекцию? Ее нельзя будет восстановить!'),
+                ),
+                'iconType' => 'delete'
+            );
+        }
+        $this->pageMenu = $pageMenu;
+    }
+
+    /**
+     * Возвращает датапровайдер объектов временной коллекции.
+     *
+     * @param int $id айди коллекции
+     * @param int $opp кол-во объектов на страницу
+     * @return CActiveDataProvider датапровайдер объектов временной коллекци
+     */
+    private function getCollectionObjectsDataProviderForActionViewTemp($id, $opp)
+    {
         $TempCollectionObjectsCriteria = new CDbCriteria();
         $TempCollectionObjectsCriteria->select = 'object_id';
         $TempCollectionObjectsCriteria->condition = 'collection_id = :collection_id';
@@ -362,78 +474,11 @@ class CollectionsController extends Controller
             'criteria' => $ObjectsCriteria,
             'pagination' => array(
                 'pageVar' => 'p',
+                'pageSize' => $opp
             ),
         ));
 
-        $tempCollectionsAllowedToUser = Collections::getTempCollectionsAllowedToUser(Yii::app()->user->id);
-
-        // параметры страницы
-        $this->pageTitle = array($model->name);
-        $this->breadcrumbs = array($model->name);
-        //$this->pageName = $model->name;
-        $pageMenu = array();
-        if (Yii::app()->user->checkAccess('oCollectionCreate')) {
-            $pageMenu[] = array(
-                'label' => Yii::t('collections', 'Создать коллекцию'),
-                'url' => $this->createUrl('collections/create'),
-                'iconType' => 'create_normal_col'
-            );
-        }
-        if (Yii::app()->user->checkAccess('oTempCollectionCreate')) {
-            $pageMenu[] = array(
-                'label' => Yii::t('collections', 'Создать временную коллекцию'),
-                'url' => $this->createUrl('collections/createTemp'),
-                'iconType' => 'create_temp_col'
-            );
-        }
-        if (Yii::app()->user->checkAccess(
-                'oTempCollectionEdit',
-                array(
-                    'Collection' => $model
-                )
-            )
-        ) {
-            $pageMenu[] = array(
-                'label' => Yii::t('collections', 'Редактировать временную коллекцию'),
-                'url' => $this->createUrl(
-                        'collections/updateTemp',
-                        array('id' => $id)
-                    ),
-                'iconType' => 'edit'
-                //'itemOptions' => array('class' => 'small')
-            );
-        }
-        if (Yii::app()->user->checkAccess(
-                'oTempCollectionDelete',
-                array(
-                    'Collection' => $model
-                )
-            )
-        ) {
-            $pageMenu[] = array(
-                'label' => Yii::t('collections', 'Удалить временную коллекцию'),
-                'url' => $this->createUrl('collections/deleteTemp', array('id' => $id)),
-                'itemOptions' => array(
-                    'class' => '_deleteTempCollection',
-                    'data-dialog-title' => Yii::t('collections', 'Удалить временную коллекцию?'),
-                    'data-dialog-message' => Yii::t('collections', 'Вы уверены, что хотите удалить временную коллекцию? Ее нельзя будет восстановить!'),
-                ),
-                'iconType' => 'delete'
-            );
-        }
-        $this->pageMenu = $pageMenu;
-
-        $this->render(
-            'viewTemp',
-            array(
-                'model' => $model,
-                'ObjectsDataProvider' => $ObjectsDataProvider,
-                //'ChildCollectionsDataProvider' => $ChildCollectionsDataProvider,
-                //'renderViewChildCollections' => $renderViewChildCollections,
-                'renderViewObjects' => $renderViewObjects,
-                'tempCollectionsAllowedToUser' => $tempCollectionsAllowedToUser,
-            )
-        );
+        return $ObjectsDataProvider;
     }
 
 	/**
@@ -573,7 +618,7 @@ class CollectionsController extends Controller
                         PreviewHelper::changePreviewPath($oldCollection, $_POST['Collections']['code']);
                     }
                     $transaction->commit();
-                    $this->redirect(array('view','id'=>$model->id));
+                    $this->redirect(Yii::app()->urlManager->createNormalCollectionUrl($model));
                 } else {
                     $transaction->rollback();
                     PreviewHelper::clearUserPreviewsUploads();
@@ -587,7 +632,7 @@ class CollectionsController extends Controller
 
         // параметры страницы
         $this->pageTitle = array($model->name, Yii::t('collections', 'Редактирование коллекции'));
-        $this->breadcrumbs = array($model->name => array('collections/view', 'id' => $id), Yii::t('collections', 'Редактирование коллекции'));
+        $this->breadcrumbs = array($model->name => Yii::app()->urlManager->createNormalCollectionUrl($model), Yii::t('collections', 'Редактирование коллекции'));
         $this->pageName = $model->name;
 
 		$this->render('update',array(
@@ -637,7 +682,7 @@ class CollectionsController extends Controller
                         PreviewHelper::changePreviewPath($oldCollection, $_POST['Collections']['code']);
                     }
                     $transaction->commit();
-                    $this->redirect(array('viewTemp','id'=>$model->id));
+                    $this->redirect(Yii::app()->urlManager->createTempCollectionUrl($model));
                 } else {
                     $transaction->rollback();
                     PreviewHelper::clearUserPreviewsUploads();
@@ -651,7 +696,7 @@ class CollectionsController extends Controller
 
         // параметры страницы
         $this->pageTitle = array($model->name, Yii::t('collections', 'Редактирование временной коллекции'));
-        $this->breadcrumbs = array($model->name => array('collections/viewTemp', 'id' => $id), Yii::t('collections', 'Редактирование временной коллекции'));
+        $this->breadcrumbs = array($model->name => Yii::app()->urlManager->createTempCollectionUrl($model), Yii::t('collections', 'Редактирование временной коллекции'));
         $this->pageName = $model->name;
 
         $this->render('update',array(

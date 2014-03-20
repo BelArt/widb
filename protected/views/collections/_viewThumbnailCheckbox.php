@@ -2,11 +2,11 @@
 /* @var $this CollectionsController */
 /* @var $data Collections */
 
-$itemUrl = $data->temporary ? $this->createUrl('collections/viewTemp', array('id' => $data->id)) : $this->createUrl('collections/view', array('id' => $data->id));
+$itemUrl = Yii::app()->urlManager->createNormalCollectionUrl($data);
 ?>
 
 <li class="itemThumbnail">
-    <a href="<?= CHtml::encode($data->thumbnailBig) ?>" class="thumbnail _fancybox" title="<?= CHtml::encode($data->name) ?>">
+    <a href="<?= CHtml::encode($itemUrl) ?>" class="thumbnail _fancybox" title="<?= CHtml::encode($data->name) ?>">
         <table class="itemThumbnailImageWrapper">
             <tr>
                 <td>

@@ -16,6 +16,9 @@ class ObjectsController extends Controller
             'forActionView + view',
             'forActionDelete + delete',
             'forActionUpdate + update',
+            array(
+                'application.components.SaveGetParamsToSessionFilter + view',
+            ),
 		);
 	}
 
@@ -68,8 +71,7 @@ class ObjectsController extends Controller
 
         $view = '_formObject';
 
-		// Uncomment the following line if AJAX validation is needed
-		// $this->performAjaxValidation($model);
+        $Collection = Collections::model()->findByPk($ci);
 
         if(isset($_POST['Objects']))
         {
@@ -80,7 +82,7 @@ class ObjectsController extends Controller
                 $model->collection_id = $ci;
                 if ($model->save()) {
                     $transaction->commit();
-                    $this->redirect(array('collections/view', 'id' => $ci));
+                    $this->redirect(Yii::app()->urlManager->createNormalCollectionUrl($Collection));
                 } else {
                     $transaction->rollback();
                     PreviewHelper::clearUserPreviewsUploads();
@@ -96,7 +98,7 @@ class ObjectsController extends Controller
 
         // параметры страницы
         $this->pageTitle = array($Collection->name, Yii::t('objects', 'Создание объекта'));
-        $this->breadcrumbs = array($Collection->name => array('collections/view', 'id' => $ci), Yii::t('objects', 'Создание объекта'));
+        $this->breadcrumbs = array($Collection->name => Yii::app()->urlManager->createNormalCollectionUrl($Collection), Yii::t('objects', 'Создание объекта'));
         $this->pageName = Yii::t('objects', 'Создание объекта');
 
 		$this->render('create',array(
@@ -174,21 +176,13 @@ class ObjectsController extends Controller
     public function actionView($id, $iv = 'th')
     {
         $Object = $this->loadObject($id);
-        $ImagesDataProvider = new CActiveDataProvider('Images', array(
-            'criteria' => array(
-                'condition' => 'object_id = :object_id',
-                'params' => array(':object_id' => $id),
-                'with' => array('photoType'),
-            ),
-            'pagination' => array(
-                'pageVar' => 'p',
-            ),
-        ));
+
         $this->setPageParamsForActionView($id);
+
         $this->render('view', array(
             'Object' => $Object,
             'renderViewImages' => $this->getObjectsImagesViewName($iv),
-            'ImagesDataProvider' => $ImagesDataProvider,
+            'ImagesDataProvider' => $this->getImagesDataProviderForActionView($id),
             'attributesForMainDetailViewWidget' => $this->getAttributesForMainDetailViewWidget($Object),
             'attributesForSystemDetailViewWidget' => $this->getAttributesForSystemDetailViewWidget($Object),
         ));
@@ -209,6 +203,28 @@ class ObjectsController extends Controller
         }
 
         $filterChain->run();
+    }
+
+    /**
+     * Возвращает датапровайдер изображений объекта.
+     *
+     * @param int $id айди объекта
+     * @return CActiveDataProvider датапровайдер изображений объекта
+     */
+    private function getImagesDataProviderForActionView($id)
+    {
+        $ImagesDataProvider = new CActiveDataProvider('Images', array(
+            'criteria' => array(
+                'condition' => 'object_id = :object_id',
+                'params' => array(':object_id' => $id),
+                'with' => array('photoType'),
+            ),
+            'pagination' => array(
+                'pageVar' => 'p',
+            ),
+        ));
+
+        return $ImagesDataProvider;
     }
 
     /**
@@ -322,7 +338,7 @@ class ObjectsController extends Controller
         $Collection = $this->loadCollection($id);
 
         $this->pageTitle = array($Collection->name, $Object->name);
-        $this->breadcrumbs = array($Collection->name => array('collections/view', 'id' => $Collection->id), $Object->name);
+        $this->breadcrumbs = array($Collection->name => Yii::app()->urlManager->createNormalCollectionUrl($Collection), $Object->name);
         $this->pageName = $Object->name;
 
         $pageMenu = array();
@@ -394,7 +410,7 @@ class ObjectsController extends Controller
                 'success',
                 Yii::t('objects', 'Объект удален')
             );
-            $this->redirect(array('collections/view', 'id' => $Collection->id));
+            $this->redirect(Yii::app()->urlManager->createNormalCollectionUrl($Collection));
         } else {
             Yii::app()->user->setFlash(
                 'error',
@@ -449,7 +465,7 @@ class ObjectsController extends Controller
                         PreviewHelper::changePreviewPath($oldObject, $_POST['Objects']['code']);
                     }
                     $transaction->commit();
-                    $this->redirect(array('view','id'=>$Object->id));
+                    $this->redirect(Yii::app()->urlManager->createObjectUrl($Object));
                 } else {
                     $transaction->rollback();
                     PreviewHelper::clearUserPreviewsUploads();
@@ -463,7 +479,7 @@ class ObjectsController extends Controller
 
         // параметры страницы
         $this->pageTitle = array($Collection->name, $Object->name, Yii::t('objects', 'Редактирование объекта'));
-        $this->breadcrumbs = array($Collection->name => array('collections/view', 'id' => $Collection->id), $Object->name => array('objects/view', 'id' => $Object->id), Yii::t('objects', 'Редактирование объекта'));
+        $this->breadcrumbs = array($Collection->name => Yii::app()->urlManager->createNormalCollectionUrl($Collection), $Object->name => Yii::app()->urlManager->createObjectUrl($Object), Yii::t('objects', 'Редактирование объекта'));
         $this->pageName = $Object->name;
 
         $this->render('update',array(

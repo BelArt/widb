@@ -2,7 +2,7 @@
 /* @var $this CollectionsController */
 /* @var $data Collections */
 
-$itemUrl = $this->createUrl('objects/view', array('id' => $data->id));
+$itemUrl = Yii::app()->urlManager->createObjectUrl($data);
 ?>
 
 <table class="itemList">

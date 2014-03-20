@@ -2,7 +2,7 @@
 /* @var $this ObjectsController */
 /* @var $data Objects */
 
-$itemUrl = $this->createUrl('objects/view', array('id' => $data->id));
+$itemUrl = Yii::app()->urlManager->createObjectUrl($data);
 ?>
 
 <li class="itemThumbnail" >

@@ -67,6 +67,7 @@ return array(
             'pdoClass' => 'NestedPDO',
         ),
 		'urlManager'=>array(
+            'class' => 'MyUrlManager',
 			'urlFormat'=>'path',
             'showScriptName' => false,
 			'rules'=>array(

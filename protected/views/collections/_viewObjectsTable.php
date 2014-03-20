@@ -34,7 +34,7 @@ $this->widget(
             array(
                 'class' => 'CLinkColumn',
                 'labelExpression' => '$data->name',
-                'urlExpression' => 'Yii::app()->urlManager->createUrl("objects/view", array("id" => $data->id))',
+                'urlExpression' => 'Yii::app()->urlManager->createObjectUrl($data)',
                 'header'=>'Название',
                 'linkHtmlOptions' => array(
                     'class' => '_objectLinkInTableRow'
@@ -110,7 +110,7 @@ $this->widget(
                     'class' => 'valignedMiddle'
                 ),
                 'class'=>'bootstrap.widgets.TbButtonColumn',
-                'viewButtonUrl' => 'Yii::app()->urlManager->createUrl("objects/view", array("id" => $data->id));',
+                'viewButtonUrl' => 'Yii::app()->urlManager->createObjectUrl($data)',
                 'updateButtonUrl'=> null,
                 'deleteButtonUrl' => null,
                 'buttons' => array(

@@ -28,7 +28,7 @@ $this->widget(
             array(
                 'class' => 'CLinkColumn',
                 'labelExpression' => '$data->name',
-                'urlExpression' => 'Yii::app()->urlManager->createUrl("collections/view", array("id" => $data->id))',
+                'urlExpression' => 'Yii::app()->urlManager->createNormalCollectionUrl($data)',
                 'header'=>'Название',
                 'linkHtmlOptions' => array(
                     'class' => '_collectionLinkInTableRow'
@@ -38,7 +38,7 @@ $this->widget(
                 'header'=>'Действия',
                 'htmlOptions' => array('nowrap'=>'nowrap'),
                 'class'=>'bootstrap.widgets.TbButtonColumn',
-                'viewButtonUrl' => 'Yii::app()->urlManager->createUrl("collections/view", array("id" => $data->id));',
+                'viewButtonUrl' => 'Yii::app()->urlManager->createNormalCollectionUrl($data)',
                 'updateButtonUrl'=> null,
                 'deleteButtonUrl' => null,
                 'buttons' => array(

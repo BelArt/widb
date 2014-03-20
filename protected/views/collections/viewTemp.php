@@ -8,13 +8,13 @@
 Yii::app()->clientScript->registerPackage('collectionView');
 ?>
 
-<?php /*$this->renderPartial('_viewDescription', array('model' => $model)); */?>
-
-<!--<div class="gape"></div>-->
-
 <div class="">
-    <?php
-    $this->renderPartial($renderViewObjects, array('ObjectsDataProvider' => $ObjectsDataProvider, 'model' => $model, 'tempCollectionsAllowedToUser' => $tempCollectionsAllowedToUser));
-    ?>
+<?php
+    $this->renderPartial($renderViewObjects, array(
+        'ObjectsDataProvider' => $ObjectsDataProvider,
+        'model' => $model,
+        'tempCollectionsAllowedToUser' => $tempCollectionsAllowedToUser
+    ));
+?>
 </div>
 

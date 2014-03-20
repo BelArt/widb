@@ -2,14 +2,14 @@
 /* @var $this CollectionsController */
 /* @var $data Collections */
 
-$itemUrl = $data->temporary ? $this->createUrl('collections/viewTemp', array('id' => $data->id)) : $this->createUrl('collections/view', array('id' => $data->id));
+$itemUrl = Yii::app()->urlManager->createNormalCollectionUrl($data);
 ?>
 
 <table class="itemList">
     <tr>
         <td class="itemListCheckboxBlock"><input type="checkbox" class="_collectionItem" data-collection-id="<?= $data->id ?>" /></td>
         <td class="itemListImageBlock">
-            <a href="<?= CHtml::encode($data->thumbnailBig) ?>" title="<?= CHtml::encode($data->name) ?>" class="thumbnail _fancybox">
+            <a href="<?= CHtml::encode($itemUrl) ?>" title="<?= CHtml::encode($data->name) ?>" class="thumbnail _fancybox">
                 <table class="itemListImageWrapper">
                     <tr>
                         <td>

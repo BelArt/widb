@@ -151,8 +151,8 @@ class ImagesController extends Controller
         // параметры страницы
         $this->pageTitle = array($Collection->name, $Object->name, $Image->name);
         $this->breadcrumbs = array(
-            $Collection->name => array('collections/view', 'id' => $Collection->id),
-            $Object->name => array('objects/view', 'id' => $Object->id),
+            $Collection->name => Yii::app()->urlManager->createNormalCollectionUrl($Collection),
+            $Object->name => Yii::app()->urlManager->createObjectUrl($Object),
             $Image->name
         );
         $this->pageName = $Image->name;
@@ -269,7 +269,7 @@ class ImagesController extends Controller
                 $Image->object_id = $oi;
                 if ($Image->save()) {
                     $Transaction->commit();
-                    $this->redirect(array('objects/view', 'id' => $oi));
+                    $this->redirect(Yii::app()->urlManager->createObjectUrl($Object));
                 } else {
                     $Transaction->rollback();
                     PreviewHelper::clearUserPreviewsUploads();
@@ -284,8 +284,8 @@ class ImagesController extends Controller
         // параметры страницы
         $this->pageTitle = array($Object->collection->name, $Object->name, Yii::t('images', 'Создание изображения'));
         $this->breadcrumbs = array(
-            $Object->collection->name => array('collections/view', 'id' => $Object->collection->id),
-            $Object->name => array('objects/view', 'id' => $oi),
+            $Object->collection->name => Yii::app()->urlManager->createNormalCollectionUrl($Object->collection),
+            $Object->name => Yii::app()->urlManager->createObjectUrl($Object),
             Yii::t('images', 'Создание изображения')
         );
         $this->pageName = Yii::t('images', 'Создание изображения');
@@ -344,8 +344,8 @@ class ImagesController extends Controller
         // параметры страницы
         $this->pageTitle = array($Collection->name, $Object->name, $imageName, Yii::t('images', 'Редактирование изображения'));
         $this->breadcrumbs = array(
-            $Collection->name => array('collections/view', 'id' => $Collection->id),
-            $Object->name => array('objects/view', 'id' => $Object->id),
+            $Collection->name => Yii::app()->urlManager->createNormalCollectionUrl($Collection),
+            $Object->name => Yii::app()->urlManager->createObjectUrl($Object),
             $imageName => array('images/view', 'id' => $id),
             Yii::t('images', 'Редактирование изображения')
         );
@@ -367,7 +367,7 @@ class ImagesController extends Controller
         $Object = $this->loadObject($id);
         DeleteHelper::deleteImage($id);
         Yii::app()->user->setFlash('success', Yii::t('images', 'Изображение удалено'));
-        $this->redirect(array('objects/view', 'id' => $Object->id));
+        $this->redirect(Yii::app()->urlManager->createObjectUrl($Object));
     }
 
 }

@@ -14,19 +14,26 @@ $this->widget('widgets.children_menu.ChildrenMenu', array(
     'menuItems' => array(
         array(
             'label' => Yii::t('common', 'Картинками'),
-            'url' => $this->createUrl('collections/view', array('id' => $model->id, 'cv' => 'th', 'ov' => (!empty($_GET['ov']) ? $_GET['ov'] : ''), 'tb' => 'cc')),
+            'url' => Yii::app()->urlManager->createNormalCollectionUrl($model, array('cv' => 'th', 'tb' => 'cc')),
+
+
+
+            //$this->createUrl('collections/view', array('id' => $model->id, 'cv' => 'th', 'ov' => (!empty($_GET['ov']) ? $_GET['ov'] : ''), 'tb' => 'cc')),
+
+
+
             'tdOptions' => array('class' => 'childrenMenuItem '.$classThumbnails),
             'iconType' => 'thumbs',
         ),
         array(
             'label' => Yii::t('common', 'Списком'),
-            'url' => $this->createUrl('collections/view', array('id' => $model->id, 'cv' => 'ls', 'ov' => (!empty($_GET['ov']) ? $_GET['ov'] : ''), 'tb' => 'cc')),
+            'url' => Yii::app()->urlManager->createNormalCollectionUrl($model, array('cv' => 'ls', 'tb' => 'cc')),
             'tdOptions' => array('class' => 'childrenMenuItem '.$classList),
             'iconType' => 'list',
         ),
         array(
             'label' => Yii::t('common', 'Таблицей'),
-            'url' => $this->createUrl('collections/view', array('id' => $model->id, 'cv' => 'tb', 'ov' => (!empty($_GET['ov']) ? $_GET['ov'] : ''), 'tb' => 'cc')),
+            'url' => Yii::app()->urlManager->createNormalCollectionUrl($model, array('cv' => 'tb', 'tb' => 'cc')),
             'tdOptions' => array('class' => 'childrenMenuItem '.$classTable),
             'iconType' => 'table',
         ),

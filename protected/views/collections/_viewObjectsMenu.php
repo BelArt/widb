@@ -16,19 +16,20 @@
         'menuItems' => array(
             array(
                 'label' => Yii::t('common', 'Картинками'),
-                'url' => $this->createUrl($model->temporary ? 'collections/viewTemp' : 'collections/view', array('id' => $model->id, 'ov' => 'th', 'cv' => (!empty($_GET['cv']) ? $_GET['cv'] : ''), 'tb' => 'ob')),
+                //'url' => $this->createUrl($model->temporary ? 'collections/viewTemp' : 'collections/view', array('id' => $model->id, 'ov' => 'th', 'cv' => (!empty($_GET['cv']) ? $_GET['cv'] : ''), 'tb' => 'ob')),
+                'url' => $model->temporary ? Yii::app()->urlManager->createTempCollectionUrl($model, array('ov' => 'th', 'tb' => 'ob')) : Yii::app()->urlManager->createNormalCollectionUrl($model, array('ov' => 'th', 'tb' => 'ob')),
                 'tdOptions' => array('class' => 'childrenMenuItem '.$classThumbnails),
                 'iconType' => 'thumbs',
             ),
             array(
                 'label' => Yii::t('common', 'Списком'),
-                'url' => $this->createUrl($model->temporary ? 'collections/viewTemp' : 'collections/view', array('id' => $model->id, 'ov' => 'ls', 'cv' => (!empty($_GET['cv']) ? $_GET['cv'] : ''), 'tb' => 'ob')),
+                'url' => $model->temporary ? Yii::app()->urlManager->createTempCollectionUrl($model, array('ov' => 'ls', 'tb' => 'ob')) : Yii::app()->urlManager->createNormalCollectionUrl($model, array('ov' => 'ls', 'tb' => 'ob')),
                 'tdOptions' => array('class' => 'childrenMenuItem '.$classList),
                 'iconType' => 'list',
             ),
             array(
                 'label' => Yii::t('common', 'Таблицей'),
-                'url' => $this->createUrl($model->temporary ? 'collections/viewTemp' : 'collections/view', array('id' => $model->id, 'ov' => 'tb', 'cv' => (!empty($_GET['cv']) ? $_GET['cv'] : ''), 'tb' => 'ob')),
+                'url' => $model->temporary ? Yii::app()->urlManager->createTempCollectionUrl($model, array('ov' => 'tb', 'tb' => 'ob')) : Yii::app()->urlManager->createNormalCollectionUrl($model, array('ov' => 'tb', 'tb' => 'ob')),
                 'tdOptions' => array('class' => 'childrenMenuItem '.$classTable),
                 'iconType' => 'table',
             ),

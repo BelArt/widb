@@ -2,7 +2,7 @@
 /* @var $this CollectionsController */
 /* @var $data Collections */
 
-$itemUrl = $data->temporary ? $this->createUrl('collections/viewTemp', array('id' => $data->id)) : $this->createUrl('collections/view', array('id' => $data->id));
+$itemUrl = Yii::app()->urlManager->createNormalCollectionUrl($data);
 ?>
 
 <table class="itemList">
