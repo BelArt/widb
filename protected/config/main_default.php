@@ -10,7 +10,7 @@ return array(
 	'name'=>'WIDB',
     'language'=>'ru',
     //'sourceLanguage'=>'ru',
-    'homeUrl' => array('collections/index'),
+    'homeUrl' => array('collections/index', 'cv' => 'th'),
 
 	// preloading 'log' component
 	'preload'=>array(
