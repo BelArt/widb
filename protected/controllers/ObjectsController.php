@@ -173,7 +173,7 @@ class ObjectsController extends Controller
      * @param string $id айди объекта
      * @param string $iv как отображать изображения: th - картинками, ls - списком, tb - таблицей
      */
-    public function actionView($id, $iv = 'th')
+    public function actionView($id, $iv)
     {
         $Object = $this->loadObject($id);
 
@@ -198,7 +198,7 @@ class ObjectsController extends Controller
         $this->loadObject(Yii::app()->request->getQuery('id'));
 
         // тип отображения изображений
-        if (!in_array(Yii::app()->request->getQuery('iv',''), array('th','ls','tb',''))) {
+        if (!in_array(Yii::app()->request->getQuery('iv'), array('th','ls','tb'))) {
             throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
         }
 

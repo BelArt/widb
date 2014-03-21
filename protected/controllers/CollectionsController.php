@@ -96,7 +96,7 @@ class CollectionsController extends Controller
      * @param string $tb какая вкладка открыта: cc - дочерние коллекции, ob - объекты
      * @param string $opp - кол-во выводимых объектов на страницу
      */
-    public function actionView($id, $cv = 'th', $ov = 'th', $tb = 'ob', $opp = '10')
+    public function actionView($id, $cv, $ov, $tb, $opp)
 	{
         $Collection = $this->loadCollection($id);
 
@@ -129,23 +129,23 @@ class CollectionsController extends Controller
         }
 
         // тип отображения дочерних коллекций
-        if (!in_array(Yii::app()->request->getQuery('cv',''), array('th','ls','tb',''))) {
+        if (!in_array(Yii::app()->request->getQuery('cv'), array('th','ls','tb'))) {
             throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
         }
 
         // тип отображения объектов в коллекции
-        if (!in_array(Yii::app()->request->getQuery('ov',''), array('th','ls','tb',''))) {
+        if (!in_array(Yii::app()->request->getQuery('ov'), array('th','ls','tb'))) {
             throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
         }
 
         // какая вкладка открыта
-        if (!in_array(Yii::app()->request->getQuery('tb',''), array('cc','ob',''))) {
+        if (!in_array(Yii::app()->request->getQuery('tb'), array('cc','ob'))) {
             throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
         }
 
         // кол-во объектов на страницу
         $objectsPerPage = Yii::app()->request->getQuery('opp');
-        if (!empty($objectsPerPage) && !preg_match('/^[1-9]{1}\d*$/', $objectsPerPage)) {
+        if (!preg_match('/^[1-9]{1}\d*$/', $objectsPerPage)) {
             throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
         }
 
@@ -170,9 +170,6 @@ class CollectionsController extends Controller
             case 'tb': // таблицей
                 $renderViewChildCollections = '_viewChildCollectionsTable';
                 break;
-            case '': // картинками
-                $renderViewChildCollections = '_viewChildCollectionsThumbnails';
-                break;
         }
 
         return $renderViewChildCollections;
@@ -195,9 +192,6 @@ class CollectionsController extends Controller
                 break;
             case 'tb': // таблицей
                 $renderViewObjects = '_viewObjectsTable';
-                break;
-            case '': // картинками
-                $renderViewObjects = '_viewObjectsThumbnails';
                 break;
         }
 
@@ -331,21 +325,19 @@ class CollectionsController extends Controller
             case 'ob': // объекты
                 $activeTab = 'objects';
                 break;
-            case '': // объекты
-                $activeTab = 'objects';
-                break;
         }
 
         return $activeTab;
     }
 
     /**
-     * Просмотр временной коллекции
+     * Просмотр временной коллекции.
+     *
      * @param int $id айди коллекции
      * @param string $ov как отображать объекты в коллекции: th - картинками, ls - списком, tb - таблицей
      * @param int $opp - кол-во выводимых объектов на страницу
      */
-    public function actionViewTemp($id, $ov = 'th', $opp = 10)
+    public function actionViewTemp($id, $ov, $opp)
     {
         $Collection = $this->loadCollection($id);
         $this->setPageParamsForActionViewTemp($id);
@@ -373,13 +365,13 @@ class CollectionsController extends Controller
         }
 
         // тип отображения объектов в коллекции
-        if (!in_array(Yii::app()->request->getQuery('ov',''), array('th','ls','tb',''))) {
+        if (!in_array(Yii::app()->request->getQuery('ov'), array('th','ls','tb'))) {
             throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
         }
 
         // кол-во объектов на страницу
         $objectsPerPage = Yii::app()->request->getQuery('opp');
-        if (!empty($objectsPerPage) && !preg_match('/^[1-9]{1}\d*$/', $objectsPerPage)) {
+        if (!preg_match('/^[1-9]{1}\d*$/', $objectsPerPage)) {
             throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
         }
 
@@ -748,7 +740,7 @@ class CollectionsController extends Controller
      * Страница со списком всех коллекций, главная страница
      * @param string $cv как отображать коллекции: th - картинками, ls - списком, tb - таблицей
      */
-    public function actionIndex($cv = 'th')
+    public function actionIndex($cv)
 	{
         $this->setPageParamsForActionIndex();
 		$this->render('index', array(
@@ -760,7 +752,7 @@ class CollectionsController extends Controller
     public function filterForActionIndex($filterChain)
     {
         // тип отображения коллекций
-        if (!in_array(Yii::app()->request->getQuery('cv',''), array('th','ls','tb',''))) {
+        if (!in_array(Yii::app()->request->getQuery('cv'), array('th','ls','tb'))) {
             throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
         }
 
@@ -818,9 +810,6 @@ class CollectionsController extends Controller
                 break;
             case 'tb': // таблицей
                 $viewType = 'table';
-                break;
-            case '': // картинками
-                $viewType = 'thumbnails';
                 break;
         }
 
