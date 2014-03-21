@@ -9,7 +9,8 @@
 class MyUrlManager extends CUrlManager
 {
     /**
-     * @var array дефолтные значения GET-параметров для действия просмотра обычной коллекции
+     * @var array дефолтные значения GET-параметров для действия просмотра обычной коллекции. Все они появятся в
+     * соответствующем урле
      */
     private $normalCollectionUrlDefaultParams = array(
         'ov' => 'th',
@@ -19,7 +20,8 @@ class MyUrlManager extends CUrlManager
     );
 
     /**
-     * @var array дефолтные значения GET-параметров для действия просмотра временной коллекции
+     * @var array дефолтные значения GET-параметров для действия просмотра временной коллекции. Все они появятся в
+     * соответствующем урле
      */
     private $tempCollectionUrlDefaultParams = array(
         'ov' => 'th',
@@ -27,10 +29,19 @@ class MyUrlManager extends CUrlManager
     );
 
     /**
-     * @var array дефолтные значения GET-параметров для действия просмотра объекта
+     * @var array дефолтные значения GET-параметров для действия просмотра объекта. Все они появятся в
+     * соответствующем урле
      */
     private $objectUrlDefaultParams = array(
         'iv' => 'th',
+    );
+
+    /**
+     * @var array дефолтные значения GET-параметров для действия просмотра всех коллекций. Все они появятся в
+     * соответствующем урле
+     */
+    private $collectionsUrlDefaultParams = array(
+        'cv' => 'th',
     );
 
     /**
@@ -43,12 +54,12 @@ class MyUrlManager extends CUrlManager
     public function createNormalCollectionUrl(Collections $Collection, array $params = array())
     {
         if ($Collection->temporary || $Collection->isNewRecord) {
-            throw new CException();
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
         return $this->createUrl('collections/view', array_merge(
             array('id' => $Collection->id),
-            $this->getNormalCollectionUrlParams($params)
+            $this->getFinalUrlParams($params, 'normalCollection')
         ));
     }
 
@@ -62,12 +73,12 @@ class MyUrlManager extends CUrlManager
     public function createTempCollectionUrl(Collections $Collection, array $params = array())
     {
         if (!$Collection->temporary || $Collection->isNewRecord) {
-            throw new CException();
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
         return $this->createUrl('collections/viewTemp', array_merge(
             array('id' => $Collection->id),
-            $this->getTempCollectionUrlParams($params)
+            $this->getFinalUrlParams($params, 'tempCollection')
         ));
     }
 
@@ -81,64 +92,49 @@ class MyUrlManager extends CUrlManager
     public function createObjectUrl(Objects $Object, array $params = array())
     {
         if ($Object->isNewRecord) {
-            throw new CException();
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
         return $this->createUrl('objects/view', array_merge(
             array('id' => $Object->id),
-            $this->getObjectUrlParams($params)
+            $this->getFinalUrlParams($params, 'objects')
         ));
     }
 
-    private function getNormalCollectionUrlParams(array $params)
+    /**
+     * Создает урл "с сохраненными настройками отображения" на страницу просмотра всех коллекций.
+     * @param array $params GET-параметры, которыми надо перезаписать дефолтные параметры
+     * @return string урл "с сохраненными настройками отображения" на страницу объекта
+     * @throws CException
+     */
+    public function createCollectionsUrl(array $params = array())
     {
-        $result = array();
-
-        foreach ($this->normalCollectionUrlDefaultParams as $paramName => $paramDefaultValue) {
-
-            $paramValue = null;
-
-            if (!empty($params[$paramName])) {
-                $paramValue = $params[$paramName];
-            } elseif (Yii::app()->user->hasState($this->getKeyPrefixForDisplaySettings().$paramName)) {
-                $paramValue = Yii::app()->user->getState($this->getKeyPrefixForDisplaySettings().$paramName);
-            } else {
-                $paramValue = $paramDefaultValue;
-            }
-
-            $result[$paramName] = $paramValue;
-        }
-
-        return $result;
+        return $this->createUrl('collections/index', $this->getFinalUrlParams($params, 'collections'));
     }
 
-    private function getTempCollectionUrlParams(array $params)
+    private function getFinalUrlParams(array $params, $type)
     {
         $result = array();
 
-        foreach ($this->tempCollectionUrlDefaultParams as $paramName => $paramDefaultValue) {
-
-            $paramValue = null;
-
-            if (!empty($params[$paramName])) {
-                $paramValue = $params[$paramName];
-            } elseif (Yii::app()->user->hasState($this->getKeyPrefixForDisplaySettings().$paramName)) {
-                $paramValue = Yii::app()->user->getState($this->getKeyPrefixForDisplaySettings().$paramName);
-            } else {
-                $paramValue = $paramDefaultValue;
-            }
-
-            $result[$paramName] = $paramValue;
+        $defaultParamsArray = array();
+        switch ($type) {
+            case 'normalCollection':
+                $defaultParamsArray = $this->normalCollectionUrlDefaultParams;
+                break;
+            case 'tempCollection':
+                $defaultParamsArray = $this->tempCollectionUrlDefaultParams;
+                break;
+            case 'objects':
+                $defaultParamsArray = $this->objectUrlDefaultParams;
+                break;
+            case 'collections':
+                $defaultParamsArray = $this->collectionsUrlDefaultParams;
+                break;
+            default:
+                throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
-        return $result;
-    }
-
-    private function getObjectUrlParams(array $params)
-    {
-        $result = array();
-
-        foreach ($this->objectUrlDefaultParams as $paramName => $paramDefaultValue) {
+        foreach ($defaultParamsArray as $paramName => $paramDefaultValue) {
 
             $paramValue = null;
 
@@ -189,5 +185,14 @@ class MyUrlManager extends CUrlManager
     public function getKeyPrefixForDisplaySettings()
     {
         return '_displaySettings_';
+    }
+
+    /**
+     * Возвращает дефолтные GET-параметры для страницы просмотра всех коллекций.
+     * @return array дефолтные GET-параметры для страницы просмотра всех коллекций
+     */
+    public function getCollectionsUrlDefaultParams()
+    {
+        return $this->collectionsUrlDefaultParams;
     }
 } 

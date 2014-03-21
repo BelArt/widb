@@ -15,13 +15,6 @@ $this->widget('widgets.children_menu.ChildrenMenu', array(
         array(
             'label' => Yii::t('common', 'Картинками'),
             'url' => Yii::app()->urlManager->createNormalCollectionUrl($model, array('cv' => 'th', 'tb' => 'cc')),
-
-
-
-            //$this->createUrl('collections/view', array('id' => $model->id, 'cv' => 'th', 'ov' => (!empty($_GET['ov']) ? $_GET['ov'] : ''), 'tb' => 'cc')),
-
-
-
             'tdOptions' => array('class' => 'childrenMenuItem '.$classThumbnails),
             'iconType' => 'thumbs',
         ),

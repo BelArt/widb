@@ -17,19 +17,19 @@ $this->widget('widgets.children_menu.ChildrenMenu', array(
     'menuItems' => array(
         array(
             'label' => Yii::t('common', 'Картинками'),
-            'url' => $this->createUrl('collections/index', array('cv' => 'th')),
+            'url' => Yii::app()->urlManager->createCollectionsUrl(array('cv' => 'th')),
             'tdOptions' => array('class' => 'childrenMenuItem '.$classThumbnails),
             'iconType' => 'thumbs',
         ),
         array(
             'label' => Yii::t('common', 'Списком'),
-            'url' => $this->createUrl('collections/index', array('cv' => 'ls')),
+            'url' => Yii::app()->urlManager->createCollectionsUrl(array('cv' => 'ls')),
             'tdOptions' => array('class' => 'childrenMenuItem '.$classList),
             'iconType' => 'list',
         ),
         array(
             'label' => Yii::t('common', 'Таблицей'),
-            'url' => $this->createUrl('collections/index', array('cv' => 'tb')),
+            'url' => Yii::app()->urlManager->createCollectionsUrl(array('cv' => 'tb')),
             'tdOptions' => array('class' => 'childrenMenuItem '.$classTable),
             'iconType' => 'table',
         ),
@@ -41,21 +41,17 @@ $this->widget('widgets.children_menu.ChildrenMenu', array(
 <div class="gapeSmall"></div>
 <div class="row-fluid">
 <?
-    $view = !empty($_GET['cv']) ? $_GET['cv'] : '';
-    switch ($view) {
-        case 'th':
-            $this->widget(
-                'bootstrap.widgets.TbThumbnails',
-                array(
-                    'dataProvider' => $dataProvider,
-                    'template' => '{items}'.PHP_EOL.'{pager}',
-                    'itemView' => '_viewThumbnailNoCheckbox',
-                    'ajaxUpdate' => false,
-                    //'htmlOptions' => array('class' => 'collections_thumbnails')
-                )
-            );
+    switch ($viewType) {
+        case 'thumbnails':
+            $this->widget('bootstrap.widgets.TbThumbnails', array(
+                'dataProvider' => $dataProvider,
+                'template' => '{items}'.PHP_EOL.'{pager}',
+                'itemView' => '_viewThumbnailNoCheckbox',
+                'ajaxUpdate' => false,
+                //'htmlOptions' => array('class' => 'collections_thumbnails')
+            ));
             break;
-        case 'ls':
+        case 'list':
             $this->widget('bootstrap.widgets.TbListView', array(
                 'dataProvider' => $dataProvider,
                 'itemView'=>'_viewListNoCheckbox',
@@ -64,54 +60,40 @@ $this->widget('widgets.children_menu.ChildrenMenu', array(
                 'emptyText' => ''
             ));
             break;
-        case 'tb':
-            $this->widget(
-                'bootstrap.widgets.TbGridView',
-                array(
-                    'type' => 'striped bordered',
-                    'dataProvider' => $dataProvider,
-                    'template' => "{items}\n{pager}",
-                    'ajaxUpdate' => false,
-                    'columns' => array(
-                        /*array(
-                            'class' => 'CCheckBoxColumn',
-                            'value' => 'return null;',
-                            'checked' => 'return null;',
-                            'selectableRows' => 2,
-                        ),*/
-                        array(
-                            'class' => 'CLinkColumn',
-                            'labelExpression' => '$data->name',
-                            'urlExpression' => '$data->temporary ? Yii::app()->urlManager->createUrl("collections/viewTemp", array("id" => $data->id)) : Yii::app()->urlManager->createUrl("collections/view", array("id" => $data->id))',
-                            'header'=>'Название',
-                            'headerHtmlOptions' => array(
-                                'class' => 'valignedMiddle halignedCenter'
-                            ),
+        case 'table':
+            $this->widget('bootstrap.widgets.TbGridView', array(
+                'type' => 'striped bordered',
+                'dataProvider' => $dataProvider,
+                'template' => "{items}\n{pager}",
+                'ajaxUpdate' => false,
+                'columns' => array(
+                    /*array(
+                        'class' => 'CCheckBoxColumn',
+                        'value' => 'return null;',
+                        'checked' => 'return null;',
+                        'selectableRows' => 2,
+                    ),*/
+                    array(
+                        'class' => 'CLinkColumn',
+                        'labelExpression' => '$data->name',
+                        'urlExpression' => '$data->temporary ? Yii::app()->urlManager->createTempCollectionUrl($data) : Yii::app()->urlManager->createNormalCollectionUrl($data)',
+                        'header'=>'Название',
+                        'headerHtmlOptions' => array(
+                            'class' => 'valignedMiddle halignedCenter'
                         ),
-                        /*array(
-                            'header'=>'Действия',
-                            'htmlOptions' => array('nowrap'=>'nowrap'),
-                            'class'=>'bootstrap.widgets.TbButtonColumn',
-                            'viewButtonUrl' => '$data->temporary ? Yii::app()->urlManager->createUrl("collections/viewTemp", array("id" => $data->id)) : Yii::app()->urlManager->createUrl("collections/view", array("id" => $data->id))',
-                            'updateButtonUrl'=> null,
-                            'deleteButtonUrl' => null,
-                        )*/
                     ),
-                    'showTableOnEmpty' => false,
-                    'emptyText' => ''
-                )
-            );
-            break;
-        default:
-            $this->widget(
-                'bootstrap.widgets.TbThumbnails',
-                array(
-                    'dataProvider' => $dataProvider,
-                    'template' => "{items}\n{pager}",
-                    'itemView' => '_viewThumbnailNoCheckbox',
-                    //'htmlOptions' => array('class' => 'collections_thumbnails')
-                )
-            );
+                    /*array(
+                        'header'=>'Действия',
+                        'htmlOptions' => array('nowrap'=>'nowrap'),
+                        'class'=>'bootstrap.widgets.TbButtonColumn',
+                        'viewButtonUrl' => '$data->temporary ? Yii::app()->urlManager->createUrl("collections/viewTemp", array("id" => $data->id)) : Yii::app()->urlManager->createUrl("collections/view", array("id" => $data->id))',
+                        'updateButtonUrl'=> null,
+                        'deleteButtonUrl' => null,
+                    )*/
+                ),
+                'showTableOnEmpty' => false,
+                'emptyText' => ''
+            ));
             break;
     }
 

@@ -36,6 +36,8 @@ class SaveGetParamsToSessionFilter extends CFilter
             $actionDefaultGetParams = Yii::app()->urlManager->getTempCollectionUrlDefaultParams();
         } elseif (Yii::app()->controller->id == 'objects' && Yii::app()->controller->action->id == 'view') {
             $actionDefaultGetParams = Yii::app()->urlManager->getObjectUrlDefaultParams();
+        } elseif (Yii::app()->controller->id == 'collections' && Yii::app()->controller->action->id == 'index') {
+            $actionDefaultGetParams = Yii::app()->urlManager->getCollectionsUrlDefaultParams();
         }
 
         return $actionDefaultGetParams;

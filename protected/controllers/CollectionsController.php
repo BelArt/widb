@@ -13,8 +13,9 @@ class CollectionsController extends Controller
 			'accessControl', // perform access control for CRUD operations
             'forActionView + view',
             'forActionViewTemp + viewTemp',
+            'forActionIndex + index',
             array(
-                'application.components.SaveGetParamsToSessionFilter + view, viewTemp',
+                'application.components.SaveGetParamsToSessionFilter + view, viewTemp, index',
             ),
 		);
 	}
@@ -749,11 +750,28 @@ class CollectionsController extends Controller
      */
     public function actionIndex($cv = 'th')
 	{
-        $allowedCollectionsCriteria = Collections::getAllowedCollectionsCriteria(Yii::app()->user->id);
+        $this->setPageParamsForActionIndex();
+		$this->render('index', array(
+			'dataProvider' => $this->getCollectionsDataProviderForActionIndex(),
+            'viewType' => $this->getCollectionsViewTypeForActionIndex($cv),
+		));
+	}
 
-		$dataProvider=new CActiveDataProvider('Collections',
+    public function filterForActionIndex($filterChain)
+    {
+        // тип отображения коллекций
+        if (!in_array(Yii::app()->request->getQuery('cv',''), array('th','ls','tb',''))) {
+            throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
+        }
+
+        $filterChain->run();
+    }
+
+    private function getCollectionsDataProviderForActionIndex()
+    {
+        $dataProvider = new CActiveDataProvider('Collections',
             array(
-                'criteria' => $allowedCollectionsCriteria,
+                'criteria' => Collections::getAllowedCollectionsCriteria(Yii::app()->user->id),
                 'pagination'=>array(
                     //'pageSize' => 2,
                     'pageVar' => 'p'
@@ -761,6 +779,11 @@ class CollectionsController extends Controller
             )
         );
 
+        return $dataProvider;
+    }
+
+    private function setPageParamsForActionIndex()
+    {
         // параметры страницы
         //$this->pageTitle = array(Yii::t('collections', 'Коллекции'));
         //$this->breadcrumbs = array(Yii::t('collections', 'Коллекции'));
@@ -781,11 +804,28 @@ class CollectionsController extends Controller
             );
         }
         $this->pageMenu = $pageMenu;
+    }
 
-		$this->render('index',array(
-			'dataProvider' => $dataProvider,
-		));
-	}
+    private function getCollectionsViewTypeForActionIndex($cv)
+    {
+        // как отображать коллекции
+        switch ($cv) {
+            case 'th': // картинками
+                $viewType = 'thumbnails';
+                break;
+            case 'ls': // списком
+                $viewType = 'list';
+                break;
+            case 'tb': // таблицей
+                $viewType = 'table';
+                break;
+            case '': // картинками
+                $viewType = 'thumbnails';
+                break;
+        }
+
+        return $viewType;
+    }
 
 	/**
      * Загружает модель коллекции.

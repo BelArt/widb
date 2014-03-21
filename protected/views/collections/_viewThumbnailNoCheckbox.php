@@ -2,7 +2,7 @@
 /* @var $this CollectionsController */
 /* @var $data Collections */
 
-$itemUrl = Yii::app()->urlManager->createNormalCollectionUrl($data);
+$itemUrl = $data->temporary ? Yii::app()->urlManager->createTempCollectionUrl($data) : Yii::app()->urlManager->createNormalCollectionUrl($data);
 ?>
 
 <li class="itemThumbnail">

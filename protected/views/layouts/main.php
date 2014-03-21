@@ -85,6 +85,7 @@
             <?php
             $this->widget('bootstrap.widgets.TbBreadcrumbs', array(
                 'links' => $this->breadcrumbs,
+                'homeLink' => CHtml::link(Yii::t('common', 'Главная'), Yii::app()->urlManager->createCollectionsUrl()),
             ));
             ?>
         </div>
