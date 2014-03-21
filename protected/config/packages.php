@@ -20,7 +20,7 @@ return array(
     'global' => array(
         'basePath'=>'application.assets',
         'css'=>array('css/global.css', 'plugins/fancybox2/jquery.fancybox.css'),
-        'js'=>array('js/global.js', 'plugins/fancybox2/jquery.fancybox.pack.js'),
+        'js'=>array('js/global.js', 'plugins/fancybox2/jquery.fancybox.pack.js', 'plugins/jsuri/Uri.js'),
         'depends' => array('layoutFix')
     ),
     'emptyLayout' => array(

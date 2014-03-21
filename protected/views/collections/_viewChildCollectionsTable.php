@@ -31,7 +31,7 @@ $this->widget(
                 'urlExpression' => 'Yii::app()->urlManager->createNormalCollectionUrl($data)',
                 'header'=>'Название',
                 'linkHtmlOptions' => array(
-                    'class' => '_collectionLinkInTableRow'
+                    'class' => '_collectionLinkInTableRow _normalCollectionLink'
                 )
             ),
             array(
@@ -42,8 +42,14 @@ $this->widget(
                 'updateButtonUrl'=> null,
                 'deleteButtonUrl' => null,
                 'buttons' => array(
-                    'delete' => array('visible' => 'false')
-                )
+                    'delete' => array('visible' => 'false'),
+                    'view' => array(
+                        'options' => array(
+                            'class' => '_normalCollectionLink'
+                        )
+                    )
+                ),
+
             )
         ),
         'showTableOnEmpty' => false,

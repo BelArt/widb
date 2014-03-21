@@ -386,4 +386,9 @@ $(function(){
         return false;
     });
 
+    // формируем заново все ссылки на нормальные коллекции - чтобы "запомнить" выбор таба
+    $('._normalCollectionTab').click(function(){
+        reloadNormalCollectionsLinks($(this).data('tab'));
+    });
+
 });

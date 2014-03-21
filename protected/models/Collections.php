@@ -180,7 +180,7 @@ class Collections extends ActiveRecord
         foreach ($Collection->children as $ChildCollection) {
             $itemUrl = $ChildCollection->temporary ? Yii::app()->urlManager->createTempCollectionUrl($ChildCollection) : Yii::app()->urlManager->createNormalCollectionUrl($ChildCollection);
             $result[] = array(
-                'text' => '<a href="'.$itemUrl.'">'.$ChildCollection->name.'</a>',
+                'text' => '<a '.($ChildCollection->temporary ? '' : 'class="_normalCollectionLink"').' href="'.$itemUrl.'">'.$ChildCollection->name.'</a>',
                 'children' => self::getChildrenStructure($ChildCollection),
             );
         }
@@ -545,7 +545,7 @@ class Collections extends ActiveRecord
         foreach ($rootCollections as $Collection) {
             $itemUrl = $Collection->temporary ? Yii::app()->urlManager->createTempCollectionUrl($Collection) : Yii::app()->urlManager->createNormalCollectionUrl($Collection);
             $result[] = array(
-                'text' => '<a href="'.$itemUrl.'">'.$Collection->name.'</a>',
+                'text' => '<a '.($Collection->temporary ? '' : 'class="_normalCollectionLink"').' href="'.$itemUrl.'">'.$Collection->name.'</a>',
                 'children' => self::getChildrenStructure($Collection),
             );
         }
@@ -583,7 +583,7 @@ class Collections extends ActiveRecord
         foreach ($rootCollections as $Collection) {
             $itemUrl = Yii::app()->urlManager->createNormalCollectionUrl($Collection);
             $result[] = array(
-                'text' => '<a href="'.$itemUrl.'">'.$Collection->name.'</a>',
+                'text' => '<a class="_normalCollectionLink" href="'.$itemUrl.'">'.$Collection->name.'</a>',
                 'children' => self::getChildrenStructure($Collection),
             );
         }

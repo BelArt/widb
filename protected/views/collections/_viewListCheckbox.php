@@ -9,7 +9,7 @@ $itemUrl = $data->temporary ? Yii::app()->urlManager->createTempCollectionUrl($d
     <tr>
         <td class="itemListCheckboxBlock"><input type="checkbox" class="_collectionItem" data-collection-id="<?= $data->id ?>" /></td>
         <td class="itemListImageBlock">
-            <a href="<?= CHtml::encode($itemUrl) ?>" title="<?= CHtml::encode($data->name) ?>" class="thumbnail _fancybox">
+            <a href="<?= CHtml::encode($itemUrl) ?>" title="<?= CHtml::encode($data->name) ?>" class="thumbnail _normalCollectionLink">
                 <table class="itemListImageWrapper">
                     <tr>
                         <td>
@@ -20,7 +20,7 @@ $itemUrl = $data->temporary ? Yii::app()->urlManager->createTempCollectionUrl($d
             </a>
         </td>
         <td class="itemListDescriptionBlock">
-            <p class="itemListName"><a href='<?= CHtml::encode($itemUrl) ?>'><?= CHtml::encode($data->name) ?></a></p>
+            <p class="itemListName"><a href='<?= CHtml::encode($itemUrl) ?>' class="_normalCollectionLink"><?= CHtml::encode($data->name) ?></a></p>
         </td>
     </tr>
 </table>

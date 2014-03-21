@@ -25,7 +25,11 @@ $this->widget('bootstrap.widgets.TbTabs', array(
                     'tempCollectionsAllowedToUser' => $tempCollectionsAllowedToUser,
                     'collectionsToMoveTo' => $collectionsToMoveTo
             ), true),
-            'active' => $activeTab == 'objects'
+            'active' => $activeTab == 'objects',
+            'itemOptions' => array(
+                'class' => '_normalCollectionTab',
+                'data-tab' => 'ob'
+            )
         ),
         array(
             'label' => Yii::t('collections', 'Дочерние коллекции'),
@@ -33,10 +37,17 @@ $this->widget('bootstrap.widgets.TbTabs', array(
                 'ChildCollectionsDataProvider' => $ChildCollectionsDataProvider,
                 'model' => $model
             ), true),
-            'active' => $activeTab == 'childCollections'
+            'active' => $activeTab == 'childCollections',
+            'itemOptions' => array(
+                'class' => '_normalCollectionTab',
+                'data-tab' => 'cc'
+            )
         ),
 
     ),
+    'events' => array(
+        'activate' => 'reloadNormalCollectionsLinks'
+    )
 ));
 ?>
 

@@ -39,12 +39,6 @@ class PerPageToggle extends CWidget
 
         Yii::app()->clientScript->registerScriptFile(
             Yii::app()->assetManager->publish(
-                Yii::getPathOfAlias('widgets.per_page_toggle.assets.js').'/Uri.js'
-            )
-        );
-
-        Yii::app()->clientScript->registerScriptFile(
-            Yii::app()->assetManager->publish(
                 Yii::getPathOfAlias('widgets.per_page_toggle.assets.js').'/per-page-toggle.js'
             )
         );
