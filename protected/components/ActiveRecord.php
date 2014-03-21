@@ -121,4 +121,20 @@ class ActiveRecord extends CActiveRecord
         return file_exists($previewFolder) && is_dir($previewFolder);
     }
 
+    /**
+     * Returns a value indicating whether the attribute is required.
+     * This is determined by checking if the attribute is associated with a
+     * {@link CRequiredValidator} validation rule in the current {@link scenario}.
+     * @param string $attribute attribute name
+     * @return boolean whether the attribute is required
+     */
+    public function isAttributeRequired($attribute)
+    {
+        foreach($this->getValidators($attribute) as $validator)
+        {
+            if($validator instanceof CRequiredValidator || $validator instanceof MyRequiredValidator)
+                return true;
+        }
+        return false;
+    }
 }

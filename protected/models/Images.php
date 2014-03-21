@@ -23,12 +23,14 @@
  * @property integer $deleted
  * @property string $code
  * @property string $date_photo
+ * @property float $width_cm
+ * @property float $height_cm
  */
 class Images extends ActiveRecord
 {
-    private $thumbnailBig;
-    private $thumbnailMedium;
-    private $thumbnailSmall;
+    private $_thumbnailBig;
+    private $_thumbnailMedium;
+    private $_thumbnailSmall;
 
 	/**
 	 * @return string the associated database table name
@@ -43,24 +45,26 @@ class Images extends ActiveRecord
 	 */
 	public function rules()
 	{
-		// NOTE: you should only define rules for those attributes that
-		// will receive user inputs.
 		return array(
             // сначала обязательные
-            array('photo_type_id, width, height, dpi, original, source, request, code, date_photo', 'required', 'except' => 'delete'),
-            // потом общие проверки на формат, тип данных и т.д.
-            // общий принцип - если атрибут указан в обязательных, то свойство allowEmpty должно быть false, иначе - true
-            // поэтому все самописные валидаторы по умолчанию имеют allowEmpty=false
-            array('photo_type_id', 'application.components.validators.IntegerValidator', 'skipOnError' => true, 'except' => 'delete'),
+            array(
+                'photo_type_id, width, height, dpi, original, source, request, code, date_photo, width_cm, height_cm',
+                'validators.MyRequiredValidator',
+                'except' => 'delete'
+            ),
+            // потом проверки на формат
+            array('photo_type_id', 'validators.IntegerValidator', 'skipOnError' => true, 'except' => 'delete'),
             array('has_preview, deepzoom', 'boolean', 'strict' => true, 'skipOnError' => true, 'except' => 'delete'),
-            array('width, height, dpi', 'application.components.validators.IntegerValidator', 'skipOnError' => true, 'except' => 'delete'),
-            array('sort', 'application.components.validators.IntegerValidator', 'skipOnError' => true, 'allowEmpty' => true, 'except' => 'delete'),
-            array('code', 'application.components.validators.CodeValidator', 'skipOnError' => true, 'except' => 'delete'),
+            array('width, height, dpi', 'validators.IntegerValidator', 'skipOnError' => true, 'except' => 'delete'),
+            array('sort', 'validators.IntegerValidator', 'skipOnError' => true, 'except' => 'delete'),
+            array('code', 'validators.CodeValidator', 'skipOnError' => true, 'except' => 'delete'),
             array('date_photo', 'date', 'skipOnError' => true, 'allowEmpty' => false, 'format' => 'dd.MM.yyyy', 'except' => 'delete'),
+            array('width_cm, height_cm', 'validators.MyFloatValidator', 'maxIntegerSize' => 3, 'maxFractionalSize' => 2,  'except' => 'delete', 'skipOnError' => true),
             // потом отдельно на длину
-            array('photo_type_id, sort', 'length', 'max'=>10, 'except' => 'delete'),
-            array('width, height, dpi', 'length', 'max'=>8, 'except' => 'delete'),
-            array('original, source, request, code', 'length', 'max'=>150, 'except' => 'delete'),
+            array('photo_type_id, sort', 'length', 'max'=>10, 'except' => 'delete', 'skipOnError' => true),
+            array('width, height, dpi', 'length', 'max'=>8, 'except' => 'delete', 'skipOnError' => true),
+            array('width_cm, height_cm', 'length', 'max'=>6, 'except' => 'delete', 'skipOnError' => true),
+            array('original, source, request, code', 'length', 'max'=>150, 'except' => 'delete', 'skipOnError' => true),
             // и безопасные
             array('description', 'safe'),
 		);
@@ -102,6 +106,8 @@ class Images extends ActiveRecord
             'date_photo' => Yii::t('images', 'Дата съемки'),
             'sort' => Yii::t('common', 'Сортировка'),
             'preview' => Yii::t('common', 'Превью'),
+            'width_cm' => Yii::t('images', 'Ширина, в см'),
+            'height_cm' => Yii::t('images', 'Высота, в см'),
 		);
 	}
 
@@ -126,17 +132,13 @@ class Images extends ActiveRecord
 
     public function beforeSave()
     {
-        try {
-            if (parent::beforeSave()) {
-                $this->formatDatePhotoFieldForSavingIntoDB();
-                return true;
-            } else {
-                return false;
-            }
-        } catch (ImagesException $Exception) {
-            throw $Exception;
-        } catch (Exception $Exception) {
-            throw new ImagesException($Exception);
+        if (parent::beforeSave()) {
+            $this->formatDatePhotoFieldForSavingIntoDB();
+            $this->formatFloatFieldForSavingIntoDB('width_cm');
+            $this->formatFloatFieldForSavingIntoDB('height_cm');
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -144,6 +146,13 @@ class Images extends ActiveRecord
     {
         if (!empty($this->date_photo)) {
             $this->date_photo = Yii::app()->dateFormatter->format('yyyy-MM-dd', strtotime($this->date_photo));
+        }
+    }
+
+    private function formatFloatFieldForSavingIntoDB($fieldName)
+    {
+        if (!empty($this->$fieldName)) {
+            $this->$fieldName = str_replace(',', '.', $this->$fieldName);
         }
     }
 
@@ -166,42 +175,42 @@ class Images extends ActiveRecord
      */
     private function setThumbnails()
     {
-        $this->thumbnailBig = PreviewHelper::getBigThumbnailForImage($this);
-        $this->thumbnailMedium = PreviewHelper::getMediumThumbnailForImage($this);
-        $this->thumbnailSmall = PreviewHelper::getSmallThumbnailForImage($this);
+        $this->_thumbnailBig = PreviewHelper::getBigThumbnailForImage($this);
+        $this->_thumbnailMedium = PreviewHelper::getMediumThumbnailForImage($this);
+        $this->_thumbnailSmall = PreviewHelper::getSmallThumbnailForImage($this);
     }
 
     public function getThumbnailBig()
     {
         if ($this->isNewRecord) {
-            throw new ImagesException();
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
-        return $this->thumbnailBig;
+        return $this->_thumbnailBig;
     }
 
     public function getThumbnailMedium()
     {
         if ($this->isNewRecord) {
-            throw new ImagesException();
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
-        return $this->thumbnailMedium;
+        return $this->_thumbnailMedium;
     }
 
     public function getThumbnailSmall()
     {
         if ($this->isNewRecord) {
-            throw new ImagesException();
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
-        return $this->thumbnailSmall;
+        return $this->_thumbnailSmall;
     }
 
     public function getName()
     {
         if ($this->isNewRecord) {
-            throw new CException();
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
         $name = $this->width.' x '.$this->height.' '.Yii::t('common', 'px');
@@ -233,42 +242,35 @@ class Images extends ActiveRecord
 
     /**
      * Удаляет изображение
-     * @throws ImagesException
+     * @throws Exception
      */
     public function deleteImage()
     {
+        if ($this->isNewRecord) {
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
+        }
+
+        $Transaction = Yii::app()->db->beginTransaction();
+
         try {
-            if ($this->isNewRecord) {
-                throw new ImagesException();
-            }
-            $Transaction = Yii::app()->db->beginTransaction();
-            try {
-                $this->deleteRecord();
-                PreviewHelper::deletePreview($this);
-                $Transaction->commit();
-            } catch (ImagesException $Exception) {
-                $Transaction->rollback();
-                throw $Exception;
-            } catch (Exception $Exception) {
-                $Transaction->rollback();
-                throw new ImagesException($Exception);
-            }
-        } catch (ImagesException $Exception) {
-            throw $Exception;
+            $this->deleteRecord();
+            PreviewHelper::deletePreview($this);
+            $Transaction->commit();
         } catch (Exception $Exception) {
-            throw new ImagesException($Exception);
+            $Transaction->rollback();
+            throw $Exception;
         }
     }
 
     /**
      * Возвращает разрешение изображения
      * @return string разрешение изображения
-     * @throws ImagesException
+     * @throws CException
      */
     public function getResolution()
     {
         if ($this->isNewRecord) {
-            throw new ImagesException();
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
         $resolution = '';
@@ -288,7 +290,7 @@ class Images extends ActiveRecord
     public function getPhotoDateWithIntroWord()
     {
         if ($this->isNewRecord) {
-            throw new CException();
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
         $result = '';

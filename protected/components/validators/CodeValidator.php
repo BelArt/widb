@@ -6,13 +6,13 @@
 class CodeValidator extends CValidator
 {
     public $pattern = '/^[a-z0-9_\-]{3,}$/';
-    public $allowEmpty = false;
+    public $allowEmpty = true;
 
     protected function validateAttribute($object, $attribute)
     {
         $value = $object->$attribute;
 
-        if ($this->allowEmpty && $this->isEmpty($value, true))
+        if ($this->allowEmpty && $this->isEmpty($value))
         {
             return;
         }

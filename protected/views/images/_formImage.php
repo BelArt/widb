@@ -47,6 +47,18 @@ echo $form->textFieldRow($Image,'height', array(
     'append' => Yii::t('common', 'px')
 ));
 
+echo $form->textFieldRow($Image,'width_cm', array(
+    'class' => 'input-small _imageForm_hideErrorsKeypress',
+    'value' => $Image->width_cm == '0.00' ? '' : OutputHelper::formatNumber($Image->width_cm),
+    'append' => Yii::t('common', 'см')
+));
+
+echo $form->textFieldRow($Image,'height_cm', array(
+    'class' => 'input-small _imageForm_hideErrorsKeypress',
+    'value' => $Image->height_cm == '0.00' ? '' : OutputHelper::formatNumber($Image->height_cm),
+    'append' => Yii::t('common', 'см')
+));
+
 echo $form->textFieldRow($Image,'dpi', array(
     'class' => 'input-small _imageForm_hideErrorsKeypress',
     'value' => $Image->dpi == '0' ? '' : null,

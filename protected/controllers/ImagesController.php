@@ -225,16 +225,29 @@ class ImagesController extends Controller
     {
         $attributes = array();
         $attributes[] = array(
+            'label' => $Image->getAttributeLabel('width'),
+            'value' => CHtml::encode(!empty($Image->width_cm) ? OutputHelper::formatSize($Image->width_cm) : ''),
+            'cssClass' => 'detailViewNowrap'
+        );
+        $attributes[] = array(
+            'label' => $Image->getAttributeLabel('height'),
+            'value' => CHtml::encode(!empty($Image->height_cm) ? OutputHelper::formatSize($Image->height_cm) : ''),
+            'cssClass' => 'detailViewNowrap'
+        );
+        $attributes[] = array(
             'label' => $Image->getAttributeLabel('code'),
-            'value' => CHtml::encode(!empty($Image->code) ? $Image->code : '')
+            'value' => CHtml::encode(!empty($Image->code) ? $Image->code : ''),
+            'cssClass' => 'detailViewNowrap'
         );
         $attributes[] = array(
             'label' => $Image->getAttributeLabel('has_preview'),
-            'value' => CHtml::encode($Image->has_preview ? Yii::t('common', 'Да') : Yii::t('common', 'Нет'))
+            'value' => CHtml::encode($Image->has_preview ? Yii::t('common', 'Да') : Yii::t('common', 'Нет')),
+            'cssClass' => 'detailViewNowrap'
         );
         $attributes[] = array(
             'label' => $Image->getAttributeLabel('sort'),
-            'value' => CHtml::encode(!empty($Image->sort) ? $Image->sort : '')
+            'value' => CHtml::encode(!empty($Image->sort) ? $Image->sort : ''),
+            'cssClass' => 'detailViewNowrap'
         );
 
         return $attributes;

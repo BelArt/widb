@@ -2,14 +2,9 @@
 
 /**
  * Валидатор целочисленных значений.
- *
- * Общий принцип валидации: сначала проверяется, пустое ли значение, и разрешены ли пустые значения.
- * Дальше проверяется по правилу, причем правило основано на предположении, что значение не пустое, т.к. пустые значения
- * отсекли на предыдущем шаге.
  */
-class IntegerValidator extends CValidator
+class IntegerValidator extends MyValidator
 {
-    public $allowEmpty = false;
     public $onlyPositive = true;
 
     protected $positiveIntegerPattern = '/^[1-9]{1}\d*$/';
@@ -19,7 +14,7 @@ class IntegerValidator extends CValidator
     {
         $value = $object->$attribute;
 
-        if ($this->allowEmpty && ($this->isEmpty($value, true) || $value == '0'))
+        if ($this->allowEmpty && $this->isEmpty($value))
         {
             return;
         }

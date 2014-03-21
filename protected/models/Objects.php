@@ -56,12 +56,13 @@ class Objects extends ActiveRecord
             array('author_id, collection_id', 'application.components.validators.IntegerValidator', 'skipOnError' => true, 'allowEmpty' => true, 'except' => 'delete'),
             array('type_id', 'application.components.validators.IntegerValidator', 'skipOnError' => true, 'except' => 'delete'),
             array('code', 'application.components.validators.CodeValidator', 'skipOnError' => true, 'except' => 'delete'),
-            array('width, height, depth', 'numerical', 'numberPattern' => '/^\d\d{0,2}(\.\d{1,2})?$/', 'message' => Yii::t('objects', 'значение должно быть в формате xxx.xx'), 'allowEmpty' => true, 'except' => 'delete'),
+            array('width, height, depth', 'validators.MyFloatValidator', 'maxIntegerSize' => 3, 'maxFractionalSize' => 2,  'except' => 'delete', 'skipOnError' => true),
             array('has_preview', 'boolean', 'strict' => true, 'skipOnError' => true, 'except' => 'delete'),
             array('sort', 'application.components.validators.IntegerValidator', 'skipOnError' => true, 'allowEmpty' => true, 'except' => 'delete'),
             // потом отдельно на длину
             array('name, code, department, keeper, period, author_text', 'length', 'max'=>150, 'except' => 'delete', 'skipOnError' => true),
             array('inventory_number', 'length', 'max'=>50, 'except' => 'delete', 'skipOnError' => true),
+            array('width, height, depth', 'length', 'max'=>6, 'except' => 'delete', 'skipOnError' => true),
             // и безопасные
             array('description', 'safe'),
 		);
@@ -448,5 +449,24 @@ class Objects extends ActiveRecord
         }
 
         return $authorInitials;
+    }
+
+    public function beforeSave()
+    {
+        if (parent::beforeSave()) {
+            $this->formatFloatFieldForSavingIntoDB('width');
+            $this->formatFloatFieldForSavingIntoDB('height');
+            $this->formatFloatFieldForSavingIntoDB('depth');
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private function formatFloatFieldForSavingIntoDB($fieldName)
+    {
+        if (!empty($this->$fieldName)) {
+            $this->$fieldName = str_replace(',', '.', $this->$fieldName);
+        }
     }
 }
