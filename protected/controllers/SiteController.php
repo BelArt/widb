@@ -7,6 +7,24 @@ class SiteController extends Controller
         return array(
             'ajaxOnly + ajax',
             'forActionSearch + search',
+            'accessControl', // perform access control for CRUD operations
+        );
+    }
+
+    public function accessRules()
+    {
+        return array(
+            array('allow',
+                'actions' => array('index', 'login'),
+                'users' => array('*'),
+            ),
+            array('allow',
+                'actions' => array('logout', 'ajax', 'search', 'upload'),
+                'users' => array('@'),
+            ),
+            array('deny',  // deny all users
+                'users' => array('*'),
+            ),
         );
     }
 
@@ -16,18 +34,6 @@ class SiteController extends Controller
 	public function actions()
 	{
 		return array(
-			// captcha action renders the CAPTCHA image displayed on the contact page
-			'captcha'=>array(
-				'class'=>'CCaptchaAction',
-				'backColor'=>0xFFFFFF,
-			),
-			// page action renders "static" pages stored under 'protected/views/site/pages'
-			// They can be accessed via: index.php?r=site/page&view=FileName
-            // @todo убрать
-			'page'=>array(
-				'class'=>'CViewAction',
-			),
-
             'upload' => array(
                 'class'=>'xupload.actions.XUploadAction',
                 'path' => Yii::getPathOfAlias('webroot').DIRECTORY_SEPARATOR.Yii::app()->params['filesFolder'].DIRECTORY_SEPARATOR.Yii::app()->params['tempFilesFolder'],
@@ -50,33 +56,6 @@ class SiteController extends Controller
 
         $this->login('index');
     }
-
-	/**
-	 * Displays the contact page
-     * @todo убрать
-	 */
-	public function actionContact()
-	{
-		$model=new ContactForm;
-		if(isset($_POST['ContactForm']))
-		{
-			$model->attributes=$_POST['ContactForm'];
-			if($model->validate())
-			{
-				$name='=?UTF-8?B?'.base64_encode($model->name).'?=';
-				$subject='=?UTF-8?B?'.base64_encode($model->subject).'?=';
-				$headers="From: $name <{$model->email}>\r\n".
-					"Reply-To: {$model->email}\r\n".
-					"MIME-Version: 1.0\r\n".
-					"Content-Type: text/plain; charset=UTF-8";
-
-				mail(Yii::app()->params['adminEmail'],$subject,$model->body,$headers);
-				Yii::app()->user->setFlash('contact','Thank you for contacting us. We will respond to you as soon as possible.');
-				$this->refresh();
-			}
-		}
-		$this->render('contact',array('model'=>$model));
-	}
 
     /**
      * Displays the login page
@@ -472,6 +451,7 @@ class SiteController extends Controller
 
         $Criteria->compare('name', $query, true, 'OR');
         $Criteria->compare('description', $query, true, 'OR');
+        $Criteria->mergeWith(Collections::getAllowedCollectionsCriteria(Yii::app()->user->id));
 
         return Collections::model()->findAll($Criteria);
     }
@@ -495,6 +475,7 @@ class SiteController extends Controller
         $Criteria->addSearchCondition('authors.name', $query, true, 'OR');
         $Criteria->addSearchCondition('authors.middlename', $query, true, 'OR');
         $Criteria->addSearchCondition('authors.initials', $query, true, 'OR');
+        $Criteria->addInCondition('t.collection_id', Collections::getIdsOfNormalCollectionsAllowedToUser(Yii::app()->user->id));
 
         return Objects::model()->findAll($Criteria);
     }
@@ -503,15 +484,17 @@ class SiteController extends Controller
     {
         $Criteria = new CDbCriteria;
 
-        $Criteria->compare('description', $query, true, 'OR');
-        $Criteria->compare('width', $query, true, 'OR');
-        $Criteria->compare('height', $query, true, 'OR');
-        $Criteria->compare('dpi', $query, true, 'OR');
-        $Criteria->compare('original', $query, true, 'OR');
-        $Criteria->compare('source', $query, true, 'OR');
-        $Criteria->compare('request', $query, true, 'OR');
-        $Criteria->compare('width_cm', $query, true, 'OR');
-        $Criteria->compare('height_cm', $query, true, 'OR');
+        $Criteria->compare('t.description', $query, true, 'OR');
+        $Criteria->compare('t.width', $query, true, 'OR');
+        $Criteria->compare('t.height', $query, true, 'OR');
+        $Criteria->compare('t.dpi', $query, true, 'OR');
+        $Criteria->compare('t.original', $query, true, 'OR');
+        $Criteria->compare('t.source', $query, true, 'OR');
+        $Criteria->compare('t.request', $query, true, 'OR');
+        $Criteria->compare('t.width_cm', $query, true, 'OR');
+        $Criteria->compare('t.height_cm', $query, true, 'OR');
+        $Criteria->join .= ' JOIN {{objects}} AS objects ON t.object_id = objects.id';
+        $Criteria->addInCondition('objects.collection_id', Collections::getIdsOfNormalCollectionsAllowedToUser(Yii::app()->user->id));
 
         return Images::model()->findAll($Criteria);
     }
