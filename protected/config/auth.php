@@ -11,12 +11,6 @@ return array(
         'bizRule' => null,
         'data' => null
     ),
-    'oUserView' => array(
-        'type' => CAuthItem::TYPE_OPERATION,
-        'description' => 'Просмотр Пользователя',
-        'bizRule' => null,
-        'data' => null
-    ),
     'oUserCreate' => array(
         'type' => CAuthItem::TYPE_OPERATION,
         'description' => 'Создание Пользователя',

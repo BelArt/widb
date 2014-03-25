@@ -47,10 +47,24 @@ class DictionariesController extends Controller
      */
     public function actionView()
     {
-        $AuthorsDataProvider = new CActiveDataProvider('Authors');
-        $ObjectTypesDataProvider = new CActiveDataProvider('ObjectTypes');
-        $PhotoTypesDataProvider = new CActiveDataProvider('PhotoTypes');
+        $AuthorsDataProvider = new CActiveDataProvider('Authors', array(
+            'pagination' => array(
+                'pageVar' => 'p',
+            ),
+        ));
+        $ObjectTypesDataProvider = new CActiveDataProvider('ObjectTypes', array(
+            'pagination' => array(
+                'pageVar' => 'p',
+            ),
+        ));
+        $PhotoTypesDataProvider = new CActiveDataProvider('PhotoTypes', array(
+            'pagination' => array(
+                'pageVar' => 'p',
+            ),
+        ));
+
         $this->setPageParamsForActionView();
+
         $this->render('view', array(
             'AuthorsDataProvider' => $AuthorsDataProvider,
             'ObjectTypesDataProvider' => $ObjectTypesDataProvider,
