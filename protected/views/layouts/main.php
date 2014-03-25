@@ -46,27 +46,7 @@
                             ),true
                         ),
                         '<p class="pull-right navbarItem navbarUserInfo">Вы зашли как <strong>'.Yii::app()->user->name.'</strong></p>',
-
-                        '<!--
-<form class="navbar-form pull-right navbarItem" action="#">
-                            <div class="input-prepend">
-                                <span class="add-on">
-                                    <i class="icon-search"></i>
-                                </span>
-                                <input class="input-large" placeholder="Поиск" name="" id="" type="text">
-                            </div>
-                            <select name="" id="" class="navbarSelect">
-                                <option value="0">Выберите поле</option>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                            </select>
-                            <button type="submit" class="btn navbarBtnSubmit">Искать</button>
-                        </form>-->
-',
-
+                        $this->widget('widgets.search_form.SearchForm', array(), true),
                     )
                 )
             );

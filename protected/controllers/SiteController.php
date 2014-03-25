@@ -6,6 +6,7 @@ class SiteController extends Controller
     {
         return array(
             'ajaxOnly + ajax',
+            'forActionSearch + search',
         );
     }
 
@@ -404,6 +405,124 @@ class SiteController extends Controller
                 );
             }
         }
+    }
+
+    public function actionSearch()
+    {
+        $query = Yii::app()->request->getQuery('search');
+        $category = Yii::app()->request->getQuery('category');
+
+        if (empty($query)) {
+            Yii::app()->request->redirect($_SERVER['HTTP_REFERER']);
+        }
+
+        $this->setPageParamsForActionSearch();
+
+        $this->render('search', array(
+            'resultsDataProvider' => $this->getResultsDataProviderForActionSearch($query, $category),
+        ));
+    }
+
+    public function filterForActionSearch($filterChain)
+    {
+        Yii::import('widgets.search_form.SearchForm');
+
+        if (!in_array(Yii::app()->request->getQuery('category'), SearchForm::getCategoryValues())) {
+            throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
+        }
+
+        $filterChain->run();
+    }
+
+    private function setPageParamsForActionSearch()
+    {
+        // параметры страницы
+        $this->pageTitle = array(Yii::t('common','Поиск'));
+        $this->breadcrumbs = array(Yii::t('common','Поиск'));
+    }
+
+    private function getResultsDataProviderForActionSearch($query, $category)
+    {
+        $result = array();
+        switch ($category) {
+            case SearchForm::COLLECTIONS_VALUE:
+                $result = $this->getCollectionsFoundModels($query);
+                break;
+            case SearchForm::OBJECTS_VALUE:
+                $result = $this->getObjectsFoundModels($query);
+                break;
+            case SearchForm::IMAGES_VALUE:
+                $result = $this->getImagesFoundModels($query);
+                break;
+            case SearchForm::ALL_VALUE:
+                $result = $this->getAllFoundModels($query);
+                break;
+        }
+
+        return new CArrayDataProvider($result, array(
+            'pagination' => array(
+                'pageVar' => 'p'
+            ),
+        ));
+    }
+
+    private function getCollectionsFoundModels($query)
+    {
+        $Criteria = new CDbCriteria;
+
+        $Criteria->compare('name', $query, true, 'OR');
+        $Criteria->compare('description', $query, true, 'OR');
+
+        return Collections::model()->findAll($Criteria);
+    }
+
+    private function getObjectsFoundModels($query)
+    {
+        $Criteria = new CDbCriteria;
+
+        $Criteria->compare('t.name', $query, true, 'OR');
+        $Criteria->compare('t.description', $query, true, 'OR');
+        $Criteria->compare('t.inventory_number', $query, true, 'OR');
+        $Criteria->compare('t.width', $query, true, 'OR');
+        $Criteria->compare('t.height', $query, true, 'OR');
+        $Criteria->compare('t.depth', $query, true, 'OR');
+        $Criteria->compare('t.department', $query, true, 'OR');
+        $Criteria->compare('t.keeper', $query, true, 'OR');
+        $Criteria->compare('t.period', $query, true, 'OR');
+        $Criteria->compare('t.author_text', $query, true, 'OR');
+        $Criteria->join .= ' LEFT JOIN {{authors}} AS authors ON t.author_id = authors.id';
+        $Criteria->addSearchCondition('authors.surname', $query, true, 'OR');
+        $Criteria->addSearchCondition('authors.name', $query, true, 'OR');
+        $Criteria->addSearchCondition('authors.middlename', $query, true, 'OR');
+        $Criteria->addSearchCondition('authors.initials', $query, true, 'OR');
+
+        return Objects::model()->findAll($Criteria);
+    }
+
+    private function getImagesFoundModels($query)
+    {
+        $Criteria = new CDbCriteria;
+
+        $Criteria->compare('description', $query, true, 'OR');
+        $Criteria->compare('width', $query, true, 'OR');
+        $Criteria->compare('height', $query, true, 'OR');
+        $Criteria->compare('dpi', $query, true, 'OR');
+        $Criteria->compare('original', $query, true, 'OR');
+        $Criteria->compare('source', $query, true, 'OR');
+        $Criteria->compare('request', $query, true, 'OR');
+        $Criteria->compare('width_cm', $query, true, 'OR');
+        $Criteria->compare('height_cm', $query, true, 'OR');
+
+        return Images::model()->findAll($Criteria);
+    }
+
+    private function getAllFoundModels($query)
+    {
+        return array_merge(
+            $this->getCollectionsFoundModels($query),
+            $this->getObjectsFoundModels($query),
+            $this->getImagesFoundModels($query)
+        );
     }
 
 }
