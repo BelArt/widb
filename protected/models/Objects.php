@@ -440,8 +440,8 @@ class Objects extends ActiveRecord
 
         $authorInitials = '';
 
-        if (!empty($this->author->intials)) {
-            $authorInitials .= $this->author->intials;
+        if (!empty($this->author->initials)) {
+            $authorInitials .= $this->author->initials;
         } elseif(!empty($this->author_text)) {
             $authorInitials .= $this->author_text;
         } else {

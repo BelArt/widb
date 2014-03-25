@@ -1,0 +1,15 @@
+.searchForm {
+    margin-right: 0px;
+    margin-left: 25px;
+}
+.searchForm .searchFormSelect {
+    margin-top: -5px;
+    width: auto;
+}
+.searchForm .searchFormBtnSubmit {
+    margin-top: -5px;
+}
+.searchForm .searchFormCategoryText {
+    margin-right: 5px;
+    margin-left: 15px;
+}
