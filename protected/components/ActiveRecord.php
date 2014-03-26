@@ -5,39 +5,35 @@
  */
 class ActiveRecord extends CActiveRecord
 {
-    public function beforeSave()
+    protected function beforeSave()
     {
-        if (parent::beforeSave()) {
+        $now = new CDbExpression('NOW()');
+        $userId = Yii::app()->user->id;
 
-            $now = new CDbExpression('NOW()');
-            $userId = Yii::app()->user->id;
-
-            switch ($this->scenario) {
-                case 'insert':
-                    $this->date_create = $now;
-                    $this->date_modify = $now;
-                    $this->user_create = $userId;
-                    $this->user_modify = $userId;
-                    break;
-                case 'update':
-                    $this->date_modify = $now;
-                    $this->user_modify = $userId;
-                    break;
-                case PreviewHelper::SCENARIO_SAVE_PREVIEWS:
-                    break;
-                case 'delete':
-                    $this->date_delete = $now;
-                    $this->date_modify = $now;
-                    $this->user_delete = $userId;
-                    $this->user_modify = $userId;
-                    break;
-                default:
-                    throw new CException(Yii::t('common', 'Произошла ошибка!'));
-            }
-            return true;
-        } else {
-            return false;
+        switch ($this->scenario) {
+            case 'insert':
+                $this->date_create = $now;
+                $this->date_modify = $now;
+                $this->user_create = $userId;
+                $this->user_modify = $userId;
+                break;
+            case 'update':
+                $this->date_modify = $now;
+                $this->user_modify = $userId;
+                break;
+            case PreviewHelper::SCENARIO_SAVE_PREVIEWS:
+                break;
+            case 'delete':
+                $this->date_delete = $now;
+                $this->date_modify = $now;
+                $this->user_delete = $userId;
+                $this->user_modify = $userId;
+                break;
+            default:
+                throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
+
+        return parent::beforeSave();
     }
 
     /**

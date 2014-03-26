@@ -79,6 +79,8 @@ class UsersController extends Controller
         if(isset($_POST['Users']))
         {
             $User->attributes = $_POST['Users'];
+            $User->newPassword = $_POST['Users']['newPassword'];
+            $User->repeatNewPassword = $_POST['Users']['repeatNewPassword'];
 
             if ($User->save()) {
                 $this->redirect(array('view'));
@@ -142,6 +144,8 @@ class UsersController extends Controller
         if(isset($_POST['Users']))
         {
             $User->attributes = $_POST['Users'];
+            $User->newPassword = $_POST['Users']['newPassword'];
+            $User->repeatNewPassword = $_POST['Users']['repeatNewPassword'];
 
             if ($User->save()) {
                 $this->redirect(array('view'));

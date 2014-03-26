@@ -5,3 +5,8 @@ SPAN.help-inline.error {
     background-color: transparent;
     margin: 30px 0px 0px 0px;
 }
+.passwordErrorMessage {
+    color:#b94a48;
+    font-size: 14px;
+    margin-left: 10px;
+}

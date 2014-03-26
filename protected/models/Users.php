@@ -20,6 +20,9 @@
  */
 class Users extends ActiveRecord
 {
+    public $newPassword;
+    public $repeatNewPassword;
+
 	/**
 	 * @return string the associated database table name
 	 */
@@ -51,7 +54,7 @@ class Users extends ActiveRecord
 		);
 	}
 
-    public function validatorRole($attribute, $params = array())
+    public function validatorRole($attribute, $params)
     {
         $roles = array_keys($this->getArrayOfPossibleRoles());
 
@@ -60,7 +63,37 @@ class Users extends ActiveRecord
         }
     }
 
-	/**
+    protected function beforeValidate()
+    {
+        $this->validateNewPassword();
+
+        return parent::beforeValidate();
+    }
+
+    private function validateNewPassword()
+    {
+        if ($this->newPassword != $this->repeatNewPassword) {
+            $this->addError('password', Yii::t('admin', 'Пароли не совпадают!'));
+        }
+    }
+
+    protected function beforeSave()
+    {
+        if ($this->scenario == 'insert' || $this->scenario == 'update') {
+            $this->preparePasswordForSaving();
+        }
+
+        return parent::beforeSave();
+    }
+
+    private function preparePasswordForSaving()
+    {
+        if (!empty($this->newPassword)) {
+            $this->password = CPasswordHelper::hashPassword($this->newPassword);
+        }
+    }
+
+    /**
 	 * @return array relational rules.
 	 */
 	public function relations()
@@ -143,4 +176,24 @@ class Users extends ActiveRecord
 
         parent::deleteRecord();
     }
+
+    /*public function getNewPassword()
+    {
+        return $this->_newPassword;
+    }
+
+    public function getRepeatNewPassword()
+    {
+        return $this->_repeatNewPassword;
+    }
+
+    public function setNewPassword($val)
+    {
+        $this->_newPassword = $val;
+    }
+
+    public function setRepeatNewPassword($val)
+    {
+        $this->_repeatNewPassword = $val;
+    }*/
 }

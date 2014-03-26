@@ -31,4 +31,17 @@ $(function(){
         $Obj.parents('.controls').prev('label.error').removeClass('error');
     });
 
+    // проверяем, совпадают ли пароль и его повтор
+    $('._repeatPasswordField, ._passwordField').on('propertychange change keyup paste input', function(){
+        /*console.log($(this).val());
+        console.log($('._repeatPasswordField').val());*/
+        var password = $('._passwordField').val();
+        var repeatPassword = $('._repeatPasswordField').val();
+        if (password != repeatPassword) {
+            $('._passwordErrorMessage').show();
+        } else {
+            $('._passwordErrorMessage').hide();
+        }
+    });
+
 });
