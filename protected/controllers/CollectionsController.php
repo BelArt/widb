@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Контроллер коллекций
+ */
 class CollectionsController extends Controller
 {
     private $_collection;
@@ -13,6 +16,10 @@ class CollectionsController extends Controller
 			'accessControl', // perform access control for CRUD operations
             'forActionView + view',
             'forActionViewTemp + viewTemp',
+            'forActionUpdate + update',
+            'forActionUpdateTemp + updateTemp',
+            'forActionDelete + delete',
+            'forActionDeleteTemp + deleteTemp',
             'forActionIndex + index',
             array(
                 'application.components.SaveGetParamsToSessionFilter + view, viewTemp, index',
@@ -124,7 +131,7 @@ class CollectionsController extends Controller
         $Collection = $this->loadCollection(Yii::app()->request->getQuery('id'));
 
         // проверяем, что колелкция не временная
-        if ($Collection->temporary) {
+        if (empty($Collection) || $Collection->temporary) {
             throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
         }
 
@@ -360,7 +367,7 @@ class CollectionsController extends Controller
         $Collection = $this->loadCollection(Yii::app()->request->getQuery('id'));
 
         // проверяем, что колелкция не временная
-        if (!$Collection->temporary) {
+        if (empty($Collection) || !$Collection->temporary) {
             throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
         }
 
@@ -584,10 +591,6 @@ class CollectionsController extends Controller
         Yii::import( "xupload.models.XUploadForm" );
         $PhotoUploadModel = new MyXUploadForm;
 
-        if ($model->temporary) {
-            throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
-        }
-
         $view = '_formNormalCollection';
 
 		// Uncomment the following line if AJAX validation is needed
@@ -635,6 +638,17 @@ class CollectionsController extends Controller
 		));
 	}
 
+    public function filterForActionUpdate($filterChain)
+    {
+        $Collection = $this->loadCollection(Yii::app()->request->getQuery('id'));
+
+        if (empty($Collection) || $Collection->temporary) {
+            throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
+        }
+
+        $filterChain->run();
+    }
+
     /**
      * Редактирование временной коллекции
      * @param integer $id айди коллекции
@@ -644,10 +658,6 @@ class CollectionsController extends Controller
     public function actionUpdateTemp($id)
     {
         $model = $this->loadCollection($id);
-
-        if (!$model->temporary) {
-            throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
-        }
 
         Yii::import( "xupload.models.XUploadForm" );
         $PhotoUploadModel = new MyXUploadForm;
@@ -699,6 +709,17 @@ class CollectionsController extends Controller
         ));
     }
 
+    public function filterForActionUpdateTemp($filterChain)
+    {
+        $Collection = $this->loadCollection(Yii::app()->request->getQuery('id'));
+
+        if (empty($Collection) || !$Collection->temporary) {
+            throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
+        }
+
+        $filterChain->run();
+    }
+
 	/**
 	 * Удаляет коллекцию
 	 * @param integer $id айди коллекции
@@ -720,6 +741,17 @@ class CollectionsController extends Controller
         }
 	}
 
+    public function filterForActionDelete($filterChain)
+    {
+        $Collection = $this->loadCollection(Yii::app()->request->getQuery('id'));
+
+        if (empty($Collection) || $Collection->temporary) {
+            throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
+        }
+
+        $filterChain->run();
+    }
+
     /**
      * Удаляет временную коллекцию
      * @param integer $id айди временной коллекции
@@ -733,6 +765,17 @@ class CollectionsController extends Controller
             Yii::t('collections', 'Временная коллекция удалена')
         );
         $this->redirect(array('index'));
+    }
+
+    public function filterForActionDeleteTemp($filterChain)
+    {
+        $Collection = $this->loadCollection(Yii::app()->request->getQuery('id'));
+
+        if (empty($Collection) || !$Collection->temporary) {
+            throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
+        }
+
+        $filterChain->run();
     }
 
 

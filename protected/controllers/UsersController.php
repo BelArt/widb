@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Контроллер действий с пользователями
+ */
 class UsersController extends Controller
 {
     private $_user;
@@ -9,6 +12,7 @@ class UsersController extends Controller
 		return array(
 			'accessControl',
             'forActionUpdate + update',
+            'forActionDelete + delete',
 		);
 	}
 
@@ -90,7 +94,11 @@ class UsersController extends Controller
 
     public function filterForActionUpdate($filterChain)
     {
-        $this->loadUser(Yii::app()->request->getQuery('id'));
+        $User = $this->loadUser(Yii::app()->request->getQuery('id'));
+
+        if (empty($User)) {
+            throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
+        }
 
         $filterChain->run();
     }
@@ -163,8 +171,23 @@ class UsersController extends Controller
 
     public function actionDelete($id)
     {
-        // не будем удалять, т.к. пользователь много где используется
-        throw new CException(Yii::t('common', 'Произошла ошибка!'));
+        $User = $this->loadUser($id);
+
+        DeleteHelper::deleteUser($User);
+        Yii::app()->user->setFlash('success', Yii::t('admin', 'Пользователь удален'));
+
+        $this->redirect(array('users/view'));
+    }
+
+    public function filterForActionDelete($filterChain)
+    {
+        $User = $this->loadUser(Yii::app()->request->getQuery('id'));
+
+        if (empty($User)) {
+            throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
+        }
+
+        $filterChain->run();
     }
 
 }

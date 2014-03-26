@@ -37,15 +37,15 @@ $this->widget('bootstrap.widgets.TbGridView', array(
             'buttons' => array(
                 'view' => array('visible' => 'false'),
                 'update' => array('visible' => Yii::app()->user->checkAccess('oUserEdit') ? 'true' : 'false'),
-                /*'delete' => array(
+                'delete' => array(
                     'visible' => Yii::app()->user->checkAccess('oUserDelete') ? 'true' : 'false',
                     'options' => array(
                         'data-dialog-title' => CHtml::encode(Yii::t('admin', 'Удалить пользователя?')),
                         'data-dialog-message' => CHtml::encode(Yii::t('admin', 'Вы не сможете его восстановить')),
                         'class' => '_deleteUser'
                     ),
-                )*/
-                'delete' => array('visible' => 'false'),
+                )
+                //'delete' => array('visible' => 'false'),
             )
         )
     ),

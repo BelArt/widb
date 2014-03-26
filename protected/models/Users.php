@@ -134,4 +134,13 @@ class Users extends ActiveRecord
             'user' => Yii::t('admin', 'Пользователь'),
         );
     }
+
+    public function deleteUser()
+    {
+        if ($this->isNewRecord) {
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
+        }
+
+        parent::deleteRecord();
+    }
 }
