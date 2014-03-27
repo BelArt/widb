@@ -220,11 +220,11 @@ class Users extends ActiveRecord
      */
     public function getIdsOfAllowedCollectionsForFormSelect()
     {
-        if ($this->isNewRecord) {
-            throw new CException(Yii::t('common', 'Произошла ошибка!'));
-        }
-
         $result = array();
+        throw new CException(Yii::t('common', 'Произошла ошибка!'));
+        if ($this->isNewRecord) {
+            return $result;
+        }
 
         $records = UserAllowedCollection::model()->findAll(
             array(

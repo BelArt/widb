@@ -212,12 +212,21 @@ class DeleteHelper extends CApplicationComponent
 
         try {
             $User->deleteUser();
-            UserAllowedCollection::model()->deleteAll('user_id = :userId', array(':userId' => $User->id));
+            self::deleteUserAllowedCollections($User);
             self::updateUserFieldsInAllTables($User);
             $Transaction->commit();
         } catch (Exception $Exception) {
             $Transaction->rollback();
             throw $Exception;
+        }
+    }
+
+    private static function deleteUserAllowedCollections(Users $User)
+    {
+        $records = UserAllowedCollection::model()->findAll('user_id = :userId', array(':userId' => $User->id));
+
+        foreach ($records as $Record) {
+            $Record->deleteUserAllowedCollection();
         }
     }
 
