@@ -25,6 +25,7 @@ class ErrorAndExceptionHandler extends CComponent
                     echo $error['message'];
                 } else {
                     $Controller = new Controller(null);
+                    ob_clean();
                     $Controller->render('application.views.common.errorCustomAndTrace',$error);
                 }
 
@@ -34,6 +35,7 @@ class ErrorAndExceptionHandler extends CComponent
                     echo Yii::t('common', 'Произошла ошибка!');
                 } else {
                     $Controller = new Controller(null);
+                    ob_clean();
                     $Controller->render('application.views.common.errorStandart');
                 }
             }
@@ -62,6 +64,7 @@ class ErrorAndExceptionHandler extends CComponent
                         echo $error['message'];
                     } else {
                         $Controller = new Controller(null);
+                        ob_clean();
                         $Controller->render('application.views.common.errorCustomAndTrace',$error);
                     }
 
@@ -71,6 +74,7 @@ class ErrorAndExceptionHandler extends CComponent
                         echo $error['message'];
                     } else {
                         $Controller = new Controller(null);
+                        ob_clean();
                         $Controller->render('application.views.common.errorCustom', $error);
                     }
                 }
@@ -84,6 +88,7 @@ class ErrorAndExceptionHandler extends CComponent
                         echo $error['message'];
                     } else {
                         $Controller = new Controller(null);
+                        ob_clean();
                         $Controller->render('application.views.common.errorCustomAndTrace',$error);
                     }
 
@@ -93,6 +98,7 @@ class ErrorAndExceptionHandler extends CComponent
                         echo Yii::t('common', 'Произошла ошибка!');
                     } else {
                         $Controller = new Controller(null);
+                        ob_clean();
                         $Controller->render('application.views.common.errorStandart');
                     }
                 }
@@ -130,6 +136,7 @@ class ErrorAndExceptionHandler extends CComponent
             'message' => $Event->exception->getMessage(),
             'file' => $Event->exception->getFile(),
             'line' => $Event->exception->getLine(),
+            'trace' => $Event->exception->getTraceAsString(),
         );
     }
 

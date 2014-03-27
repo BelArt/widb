@@ -757,7 +757,7 @@ class Collections extends ActiveRecord
             $records = UserAllowedCollection::model()->findAll($Criteria);
 
             foreach ($records as $Record) {
-                $Record->deleteRecord();
+                $Record->deleteUserAllowedCollection();
             }
 
             // удаляем превью

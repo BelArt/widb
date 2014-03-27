@@ -66,7 +66,8 @@ echo CHtml::closeTag('div');
 echo CHtml::closeTag('div');
 
 // выбор доступных коллекций делаем только для обычных пользователей - для КМ и админов нет смысла делать, им доступно все
-if ($User->role == 'user') {
+// также выбор делаем при создании пользователя
+if ($User->isNewRecord || $User->role == 'user') {
 
     echo CHtml::tag('hr');
 
