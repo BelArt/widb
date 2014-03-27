@@ -79,41 +79,6 @@ class UserAllowedCollection extends ActiveRecord
 	}
 
 	/**
-	 * Retrieves a list of models based on the current search/filter conditions.
-	 *
-	 * Typical usecase:
-	 * - Initialize the model fields with values from filter form.
-	 * - Execute this method to get CActiveDataProvider instance which will filter
-	 * models according to data in model fields.
-	 * - Pass data provider to CGridView, CListView or any similar widget.
-	 *
-	 * @return CActiveDataProvider the data provider that can return the models
-	 * based on the search/filter conditions.
-	 */
-	public function search()
-	{
-		// @todo Please modify the following code to remove attributes that should not be searched.
-
-		$criteria=new CDbCriteria;
-
-		$criteria->compare('id',$this->id,true);
-		$criteria->compare('collection_id',$this->collection_id,true);
-		$criteria->compare('user_id',$this->user_id,true);
-		$criteria->compare('date_create',$this->date_create,true);
-		$criteria->compare('date_modify',$this->date_modify,true);
-		$criteria->compare('date_delete',$this->date_delete,true);
-		$criteria->compare('sort',$this->sort,true);
-		$criteria->compare('deleted',$this->deleted);
-		$criteria->compare('user_create',$this->user_create,true);
-		$criteria->compare('user_modify',$this->user_modify,true);
-		$criteria->compare('user_delete',$this->user_delete,true);
-
-		return new CActiveDataProvider($this, array(
-			'criteria'=>$criteria,
-		));
-	}
-
-	/**
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
 	 * @param string $className active record class name.
@@ -123,4 +88,13 @@ class UserAllowedCollection extends ActiveRecord
 	{
 		return parent::model($className);
 	}
+
+    public function deleteUserAllowedCollection()
+    {
+        if ($this->isNewRecord) {
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
+        }
+
+        parent::deleteRecord();
+    }
 }

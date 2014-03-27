@@ -858,5 +858,22 @@ class Collections extends ActiveRecord
         return self::model()->findAll($Criteria);
     }
 
+    /**
+     * Возвращает массив со всеми коллекциями для построения селекта на формах
+     * @return array
+     */
+    public static function getAllCollectionsArrayForFormSelect()
+    {
+        $collections = Collections::model()->findAll();
+
+        $result = array();
+
+        foreach ($collections as $Collection) {
+            $result[$Collection->id] = $Collection->name;
+        }
+
+        return $result;
+    }
+
 
 }

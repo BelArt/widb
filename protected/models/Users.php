@@ -22,6 +22,7 @@ class Users extends ActiveRecord
 {
     public $newPassword;
     public $repeatNewPassword;
+    public $allowedCollections;
 
 	/**
 	 * @return string the associated database table name
@@ -81,6 +82,7 @@ class Users extends ActiveRecord
     {
         if ($this->scenario == 'insert' || $this->scenario == 'update') {
             $this->preparePasswordForSaving();
+            $this->saveUserAllowedCollections();
         }
 
         return parent::beforeSave();
@@ -90,6 +92,40 @@ class Users extends ActiveRecord
     {
         if (!empty($this->newPassword)) {
             $this->password = CPasswordHelper::hashPassword($this->newPassword);
+        }
+    }
+
+    private function saveUserAllowedCollections()
+    {
+        $records = UserAllowedCollection::model()->findAll(
+            array(
+                'select' => 'id',
+                'condition' => 'user_id = :user_id',
+                'params' => array(':user_id' => $this->id)
+            )
+        );
+
+        if (!empty($records)) {
+            foreach ($records as $Record) {
+                $Record->deleteUserAllowedCollection();
+            }
+        }
+
+        $Transaction = Yii::app()->db->beginTransaction();
+
+        try {
+            foreach ($this->allowedCollections as $collectionId) {
+                $NewRecord = new UserAllowedCollection();
+                $NewRecord->user_id = $this->id;
+                $NewRecord->collection_id = $collectionId;
+                if (!$NewRecord->save()) {
+                    throw new CException(Yii::t('common', 'Произошла ошибка!'));
+                }
+            }
+            $Transaction->commit();
+        } catch (Exception $Exception) {
+            $Transaction->rollback();
+            throw $Exception;
         }
     }
 
@@ -177,23 +213,34 @@ class Users extends ActiveRecord
         parent::deleteRecord();
     }
 
-    /*public function getNewPassword()
+    /**
+     * Возвращает массив доступных пользователю коллекций для соответствующего селекта на форме.
+     * @return array
+     * @throws CException
+     */
+    public function getIdsOfAllowedCollectionsForFormSelect()
     {
-        return $this->_newPassword;
+        if ($this->isNewRecord) {
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
+        }
+
+        $result = array();
+
+        $records = UserAllowedCollection::model()->findAll(
+            array(
+                'select' => 'collection_id',
+                'condition' => 'user_id = :user_id',
+                'params' => array(':user_id' => $this->id)
+            )
+        );
+
+        if (!empty($records)) {
+            foreach ($records as $Record) {
+                $result[] = $Record->collection_id;
+            }
+        }
+
+        return $result;
     }
 
-    public function getRepeatNewPassword()
-    {
-        return $this->_repeatNewPassword;
-    }
-
-    public function setNewPassword($val)
-    {
-        $this->_newPassword = $val;
-    }
-
-    public function setRepeatNewPassword($val)
-    {
-        $this->_repeatNewPassword = $val;
-    }*/
 }

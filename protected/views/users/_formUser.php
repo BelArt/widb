@@ -55,7 +55,6 @@ echo CHtml::openTag('div', array('class' => 'controls'));
 echo CHtml::passwordField('Users[newPassword]', $User->newPassword, array('class' => '_passwordField'));
 echo CHtml::closeTag('div');
 echo CHtml::closeTag('div');
-
 echo CHtml::openTag('div', array('class' => 'control-group'));
 echo CHtml::label(Yii::t('admin', 'Повторите новый пароль'), 'Users_repeatNewPassword', array('class' => 'control-label'));
 echo CHtml::openTag('div', array('class' => 'controls'));
@@ -64,8 +63,32 @@ echo CHtml::openTag('span', array('class' => '_passwordErrorMessage passwordErro
 echo CHtml::encode(Yii::t('admin', 'Пароли не совпадают!'));
 echo CHtml::closeTag('span');
 echo CHtml::closeTag('div');
-
 echo CHtml::closeTag('div');
+
+// выбор доступных коллекций делаем только для обычных пользователей - для КМ и админов нет смысла делать, им доступно все
+if ($User->role == 'user') {
+
+    echo CHtml::tag('hr');
+
+    echo CHtml::openTag('div', array('class' => 'control-group'));
+    echo CHtml::label(Yii::t('admin', 'Коллекции, доступные пользователю'), 'Users_allowedCollections', array('class' => 'control-label'));
+    echo CHtml::openTag('div', array('class' => 'controls'));
+    $this->widget('bootstrap.widgets.TbSelect2', array(
+        'asDropDownList' => true,
+        'name' => 'Users[allowedCollections]',
+        'data' => Collections::getAllCollectionsArrayForFormSelect(),
+        'htmlOptions' => array(
+            'multiple' => 'multiple',
+            'id' => 'Users_allowedCollections'
+        ),
+        'value' => $User->getIdsOfAllowedCollectionsForFormSelect()
+    ));
+    echo CHtml::closeTag('div');
+    echo CHtml::closeTag('div');
+}
+
+
+
 
 echo CHtml::openTag('div', array(
     'class' => 'form-actions',
