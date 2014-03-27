@@ -63,6 +63,12 @@ class Controller extends CController
                 'url' => $this->createUrl('dictionaries/view'),
             );
         }
+        if (Yii::app()->user->checkAccess('oUsersView')) {
+            $adminMenu[] = array(
+                'label' => Yii::t('admin', 'Пользователи'),
+                'url' => $this->createUrl('users/view'),
+            );
+        }
         return $adminMenu;
     }
 }

@@ -16,6 +16,10 @@ class ImagesController extends Controller
 	{
 		return array(
 			'accessControl', // perform access control for CRUD operations
+            'forActionView + view',
+            'forActionUpdate + update',
+            'forActionDelete + delete',
+            'forActionCreate + create',
 		);
 	}
 
@@ -136,6 +140,17 @@ class ImagesController extends Controller
             'attributesForMainDetailViewWidget' => $this->getAttributesForMainDetailViewWidget($Image),
             'attributesForSystemDetailViewWidget' => $this->getAttributesForSystemDetailViewWidget($Image)
         ));
+    }
+
+    public function filterForActionView($filterChain)
+    {
+        $Image = $this->loadImage(Yii::app()->request->getQuery('id'));
+
+        if (empty($Image)) {
+            throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
+        }
+
+        $filterChain->run();
     }
 
     /**
@@ -261,9 +276,6 @@ class ImagesController extends Controller
     public function actionCreate($oi)
     {
         $Object = Objects::model()->findByPk($oi);
-        if (empty($Object)) {
-            throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
-        }
 
         $Image = new Images();
 
@@ -307,6 +319,17 @@ class ImagesController extends Controller
             'Image' => $Image,
             'photoUploadModel' => $PhotoUploadModel,
         ));
+    }
+
+    public function filterForActionCreate($filterChain)
+    {
+        $Object = $this->loadImage(Yii::app()->request->getQuery('oi'));
+
+        if (empty($Object)) {
+            throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
+        }
+
+        $filterChain->run();
     }
 
     /**
@@ -371,6 +394,17 @@ class ImagesController extends Controller
         ));
     }
 
+    public function filterForActionUpdate($filterChain)
+    {
+        $Image = $this->loadImage(Yii::app()->request->getQuery('id'));
+
+        if (empty($Image)) {
+            throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
+        }
+
+        $filterChain->run();
+    }
+
     /**
      * Удаление изображения
      * @param $id айди изображения
@@ -381,6 +415,17 @@ class ImagesController extends Controller
         DeleteHelper::deleteImage($id);
         Yii::app()->user->setFlash('success', Yii::t('images', 'Изображение удалено'));
         $this->redirect(Yii::app()->urlManager->createObjectUrl($Object));
+    }
+
+    public function filterForActionDelete($filterChain)
+    {
+        $Image = $this->loadImage(Yii::app()->request->getQuery('id'));
+
+        if (empty($Image)) {
+            throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
+        }
+
+        $filterChain->run();
     }
 
 }

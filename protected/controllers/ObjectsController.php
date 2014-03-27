@@ -190,12 +190,11 @@ class ObjectsController extends Controller
 
     public function filterForActionView($filterChain)
     {
-        /*
-         * Проверяем первый параметр - айди объекта
-         * если чот-то не так, что будет брошено исключение в методе loadObject()
-         * Заодно подгрузим модель объекта
-         */
-        $this->loadObject(Yii::app()->request->getQuery('id'));
+        $Object = $this->loadObject(Yii::app()->request->getQuery('id'));
+
+        if (empty($Object)) {
+            throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
+        }
 
         // тип отображения изображений
         if (!in_array(Yii::app()->request->getQuery('iv'), array('th','ls','tb'))) {
@@ -422,12 +421,11 @@ class ObjectsController extends Controller
 
     public function filterForActionDelete($filterChain)
     {
-        /*
-         * Проверяем первый параметр - айди объекта
-         * если чот-то не так, что будет брошено исключение в методе loadObject()
-         * Заодно подгрузим модель объекта
-         */
-        $this->loadObject(Yii::app()->request->getQuery('id'));
+        $Object = $this->loadObject(Yii::app()->request->getQuery('id'));
+
+        if (empty($Object)) {
+            throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
+        }
 
         $filterChain->run();
     }
@@ -491,12 +489,11 @@ class ObjectsController extends Controller
 
     public function filterForActionUpdate($filterChain)
     {
-        /*
-         * Проверяем первый параметр - айди объекта
-         * если чот-то не так, что будет брошено исключение в методе loadObject()
-         * Заодно подгрузим модель объекта
-         */
-        $this->loadObject(Yii::app()->request->getQuery('id'));
+        $Object = $this->loadObject(Yii::app()->request->getQuery('id'));
+
+        if (empty($Object)) {
+            throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
+        }
 
         $filterChain->run();
     }

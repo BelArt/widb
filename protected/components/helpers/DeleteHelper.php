@@ -195,4 +195,70 @@ class DeleteHelper extends CApplicationComponent
 
 
     }
+
+    /**
+     * Удаляет пользователя
+     * @param Users $User модель пользователя
+     * @throws CException
+     * @throws Exception
+     */
+    public static function deleteUser(Users $User)
+    {
+        if ($User->isNewRecord) {
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
+        }
+
+        $Transaction = Yii::app()->db->beginTransaction();
+
+        try {
+            $User->deleteUser();
+            UserAllowedCollection::model()->deleteAll('user_id = :userId', array(':userId' => $User->id));
+            self::updateUserFieldsInAllTables($User);
+            $Transaction->commit();
+        } catch (Exception $Exception) {
+            $Transaction->rollback();
+            throw $Exception;
+        }
+    }
+
+    private static function updateUserFieldsInAllTables(Users $User)
+    {
+        $modelNames = array(
+            'Authors',
+            'Collections',
+            'Images',
+            'ObjectTypes',
+            'Objects',
+            'PhotoTypes',
+            'TempCollectionObject',
+            'UserAllowedCollection',
+            'Users'
+        );
+
+        foreach ($modelNames as $modelName) {
+            self::updateUserFieldsInTable($modelName, $User);
+        }
+    }
+
+    private static function updateUserFieldsInTable($modelName, Users $User)
+    {
+        $modelName::model()->updateAll(
+            array('user_create' => 0),
+            'user_create = :userId',
+            array(':userId' => $User->id)
+        );
+
+        $modelName::model()->updateAll(
+            array('user_modify' => 0),
+            'user_modify = :userId',
+            array(':userId' => $User->id)
+        );
+
+        $modelName::model()->updateAll(
+            array('user_delete' => 0),
+            'user_delete = :userId',
+            array(':userId' => $User->id)
+        );
+    }
+
 } 

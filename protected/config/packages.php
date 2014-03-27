@@ -92,4 +92,16 @@ return array(
         'css'=>array('css/dictionary-form.css'),
         'depends' => array('global')
     ),
+    'usersView' => array(
+        'basePath'=>'application.assets',
+        //'css'=>array('css/object-view.css'),
+        'js'=>array('js/user-view.js'),
+        'depends' => array('global')
+    ),
+    'userForm' => array(
+        'basePath'=>'application.assets',
+        'js'=>array('js/user-form.js'),
+        'css'=>array('css/user-form.css'),
+        'depends' => array('global')
+    ),
 );

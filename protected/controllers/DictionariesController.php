@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Контроллер справочников
+ */
 class DictionariesController extends Controller
 {
 	/**
@@ -47,10 +50,24 @@ class DictionariesController extends Controller
      */
     public function actionView()
     {
-        $AuthorsDataProvider = new CActiveDataProvider('Authors');
-        $ObjectTypesDataProvider = new CActiveDataProvider('ObjectTypes');
-        $PhotoTypesDataProvider = new CActiveDataProvider('PhotoTypes');
+        $AuthorsDataProvider = new CActiveDataProvider('Authors', array(
+            'pagination' => array(
+                'pageVar' => 'p',
+            ),
+        ));
+        $ObjectTypesDataProvider = new CActiveDataProvider('ObjectTypes', array(
+            'pagination' => array(
+                'pageVar' => 'p',
+            ),
+        ));
+        $PhotoTypesDataProvider = new CActiveDataProvider('PhotoTypes', array(
+            'pagination' => array(
+                'pageVar' => 'p',
+            ),
+        ));
+
         $this->setPageParamsForActionView();
+
         $this->render('view', array(
             'AuthorsDataProvider' => $AuthorsDataProvider,
             'ObjectTypesDataProvider' => $ObjectTypesDataProvider,
@@ -60,7 +77,6 @@ class DictionariesController extends Controller
 
     /**
      * Устанавливает параметры страницы просмотра объекта (тайтл, хлебные крошки, заголовок, меню)
-     * @throws DictionariesControllerException
      */
     private function setPageParamsForActionView()
     {
@@ -116,7 +132,7 @@ class DictionariesController extends Controller
      * @param string $id айди записи в справочнике
      * @param string $type тип справочника
      * @return ActiveRecord модель записи в справочнике
-     * @throws DictionariesControllerException
+     * @throws CException
      */
     private function getDictionaryRecordModel($id, $type)
     {
@@ -132,11 +148,11 @@ class DictionariesController extends Controller
                 $Model = PhotoTypes::model()->findByPk($id);
                 break;
             default:
-                throw new DictionariesControllerException();
+                throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
         if (empty($Model)) {
-            throw new DictionariesControllerException();
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
         return $Model;
@@ -145,7 +161,7 @@ class DictionariesController extends Controller
     /**
      * Устанавливает параметры страницы редактирования записи в справочнике (тайтл, хлебные крошки, заголовок)
      * @param ActiveRecord $Model модель записи в справочнике
-     * @throws DictionariesControllerException
+     * @throws CException
      */
     private function setPageParamsForActionUpdate($Model)
     {
@@ -160,7 +176,7 @@ class DictionariesController extends Controller
                 $this->setPageParamsForActionUpdateForPhotoTypes($Model);
                 break;
             default:
-                throw new DictionariesControllerException();
+                throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
     }
 
@@ -225,7 +241,7 @@ class DictionariesController extends Controller
                 return 'updatePhotoType';
                 break;
             default:
-                throw new DictionariesControllerException();
+                throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
     }
 
@@ -261,7 +277,7 @@ class DictionariesController extends Controller
                 $Model = new PhotoTypes;
                 break;
             default:
-                throw new DictionariesControllerException();
+                throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
         return $Model;
     }
@@ -279,7 +295,7 @@ class DictionariesController extends Controller
                 $this->setPageParamsForActionCreateForPhotoTypes($Model);
                 break;
             default:
-                throw new DictionariesControllerException();
+                throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
     }
 
@@ -338,7 +354,7 @@ class DictionariesController extends Controller
                 return 'createPhotoType';
                 break;
             default:
-                throw new DictionariesControllerException();
+                throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
     }
 
@@ -346,21 +362,18 @@ class DictionariesController extends Controller
      * Удаляет запись из справочника
      * @param string $id айди записи
      * @param string $type тип справочника, см. {@link getDictionaryRecordModel()}
-     * @throws DictionariesControllerException
      */
     public function actionDelete($id, $type)
     {
         $Model = $this->getDictionaryRecordModel($id, $type);
-        try {
-            if (DeleteHelper::deleteDictionaryRecord($Model)) {
-                Yii::app()->user->setFlash('success', Yii::t('admin', 'Запись удалена'));
-                $this->redirect(array('dictionaries/view'));
-            } else {
-                Yii::app()->user->setFlash('error', Yii::t('admin', 'Запись не удалена, т.к. она где-то используется'));
-                $this->redirect(Yii::app()->request->urlReferrer);
-            }
-        } catch (DeleteHelperException $Exception) {
-            throw new DictionariesControllerException($Exception);
+
+        if (DeleteHelper::deleteDictionaryRecord($Model)) {
+            Yii::app()->user->setFlash('success', Yii::t('admin', 'Запись удалена'));
+            $this->redirect(array('dictionaries/view'));
+        } else {
+            Yii::app()->user->setFlash('error', Yii::t('admin', 'Запись не удалена, т.к. она где-то используется'));
+            $this->redirect(Yii::app()->request->urlReferrer);
         }
+
     }
 }
