@@ -4,7 +4,7 @@ Yii::app()->clientScript->registerPackage('usersView');
 $this->widget('bootstrap.widgets.TbGridView', array(
     'type' => 'striped bordered',
     'dataProvider' => $UsersDataProvider,
-    'template' => "{items}",
+    'template' => '{items}'.PHP_EOL.'{pager}',
     'columns' => array(
         array(
             'name' => 'initials',

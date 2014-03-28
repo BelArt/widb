@@ -31,16 +31,17 @@ $(function(){
         $Obj.parents('.controls').prev('label.error').removeClass('error');
     });
 
-    // проверяем, совпадают ли пароль и его повтор
+    // проверяем, совпадают ли пароль и его повтор, и сбрасывает ошибку валидации
     $('._repeatPasswordField, ._passwordField').on('propertychange change keyup paste input', function(){
-        /*console.log($(this).val());
-        console.log($('._repeatPasswordField').val());*/
+
+        $('._passwordErrorMessage').hide();
+
         var password = $('._passwordField').val();
         var repeatPassword = $('._repeatPasswordField').val();
         if (password != repeatPassword) {
-            $('._passwordErrorMessage').show();
+            $('._passwordsArentEqualMessage').show();
         } else {
-            $('._passwordErrorMessage').hide();
+            $('._passwordsArentEqualMessage').hide();
         }
     });
 

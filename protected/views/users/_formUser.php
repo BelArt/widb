@@ -53,21 +53,24 @@ echo CHtml::openTag('div', array('class' => 'control-group'));
 echo CHtml::label(Yii::t('admin', 'Новый пароль'), 'Users_newPassword', array('class' => 'control-label'));
 echo CHtml::openTag('div', array('class' => 'controls'));
 echo CHtml::passwordField('Users[newPassword]', $User->newPassword, array('class' => '_passwordField'));
+echo CHtml::openTag('span', array('class' => '_passwordErrorMessage passwordErrorMessage', 'style' => $User->hasErrors('password') ? '' : 'display:none;'));
+echo CHtml::encode($User->getError('password'));
+echo CHtml::closeTag('span');
+echo CHtml::openTag('span', array('class' => '_passwordsArentEqualMessage passwordErrorMessage', 'style' => 'display:none;'));
+echo CHtml::encode(Yii::t('admin', 'Пароли не совпадают!'));
+echo CHtml::closeTag('span');
 echo CHtml::closeTag('div');
 echo CHtml::closeTag('div');
 echo CHtml::openTag('div', array('class' => 'control-group'));
 echo CHtml::label(Yii::t('admin', 'Повторите новый пароль'), 'Users_repeatNewPassword', array('class' => 'control-label'));
 echo CHtml::openTag('div', array('class' => 'controls'));
 echo CHtml::passwordField('Users[repeatNewPassword]', $User->repeatNewPassword, array('class' => '_repeatPasswordField'));
-echo CHtml::openTag('span', array('class' => '_passwordErrorMessage passwordErrorMessage', 'style' => $User->hasErrors('password') ? '' : 'display:none;'));
-echo CHtml::encode(Yii::t('admin', 'Пароли не совпадают!'));
-echo CHtml::closeTag('span');
 echo CHtml::closeTag('div');
 echo CHtml::closeTag('div');
 
 // выбор доступных коллекций делаем только для обычных пользователей - для КМ и админов нет смысла делать, им доступно все
 // также выбор делаем при создании пользователя
-if ($User->isNewRecord || $User->role == 'user') {
+if ($User->scenario == 'insert' || ($User->scenario == 'update' && $User->role == 'user')) {
 
     echo CHtml::tag('hr');
 

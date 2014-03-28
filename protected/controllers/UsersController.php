@@ -83,8 +83,16 @@ class UsersController extends Controller
             $User->repeatNewPassword = $_POST['Users']['repeatNewPassword'];
             $User->allowedCollections = !empty($_POST['Users']['allowedCollections']) ? $_POST['Users']['allowedCollections'] : null;
 
-            if ($User->save()) {
-                $this->redirect(array('view'));
+            $Transaction = Yii::app()->db->beginTransaction();
+
+            try {
+                if ($User->save()) {
+                    $Transaction->commit();
+                    $this->redirect(array('view'));
+                }
+            } catch (Exception $Exception) {
+                $Transaction->rollback();
+                throw $Exception;
             }
         }
 
@@ -149,8 +157,16 @@ class UsersController extends Controller
             $User->repeatNewPassword = $_POST['Users']['repeatNewPassword'];
             $User->allowedCollections = !empty($_POST['Users']['allowedCollections']) ? $_POST['Users']['allowedCollections'] : null;
 
-            if ($User->save()) {
-                $this->redirect(array('view'));
+            $Transaction = Yii::app()->db->beginTransaction();
+
+            try {
+                if ($User->save()) {
+                    $Transaction->commit();
+                    $this->redirect(array('view'));
+                }
+            } catch (Exception $Exception) {
+                $Transaction->rollback();
+                throw $Exception;
             }
         }
 

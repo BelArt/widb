@@ -9,7 +9,7 @@ $this->widget(
     array(
         'type' => 'striped bordered',
         'dataProvider' => $ObjectTypesDataProvider,
-        'template' => "{items}",
+        'template' => '{items}'.PHP_EOL.'{pager}',
         'columns' => array(
             array(
                 'name' => 'name',

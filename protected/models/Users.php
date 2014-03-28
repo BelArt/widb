@@ -38,24 +38,27 @@ class Users extends ActiveRecord
 	public function rules()
 	{
 		return array(
-            // сначала обязательные
+            // сначала со специфичной логикой
+            array('password', 'validatePassword', 'on' => 'insert, update'),
+            array('email', 'unique', 'message' => Yii::t('admin', 'Пользователь с таким E-mail уже зарегистрирован!'), 'on' => 'insert, update'),
+            // обязательные
             array(
                 'initials, email, role',
                 'validators.MyRequiredValidator',
-                'except' => 'delete'
+                'on' => 'insert, update'
             ),
-            // потом проверки на формат
-            array('sort', 'validators.IntegerValidator', 'skipOnError' => true, 'except' => 'delete'),
-            array('email', 'email', 'skipOnError' => true, 'except' => 'delete'),
-            array('role', 'validatorRole', 'skipOnError' => true, 'except' => 'delete'),
-            // потом отдельно на длину
-            array('surname, name, middlename, initials, position, email', 'length', 'max'=>150, 'except' => 'delete', 'skipOnError' => true),
-            array('password', 'length', 'max'=>64, 'except' => 'delete', 'skipOnError' => true),
+            // проверки на формат
+            array('sort', 'validators.IntegerValidator', 'on' => 'insert, update'),
+            array('email', 'email', 'on' => 'insert, update'),
+            array('role', 'validateRole', 'on' => 'insert, update'),
+            // на длину
+            array('surname, name, middlename, initials, position, email', 'length', 'max'=>150, 'on' => 'insert, update'),
+            array('password', 'length', 'max'=>64, 'on' => 'insert, update'),
             // и безопасные
 		);
 	}
 
-    public function validatorRole($attribute, $params)
+    public function validateRole($attribute, $params)
     {
         $roles = array_keys($this->getArrayOfPossibleRoles());
 
@@ -64,56 +67,62 @@ class Users extends ActiveRecord
         }
     }
 
-    protected function beforeValidate()
-    {
-        $this->validateNewPassword();
-
-        return parent::beforeValidate();
-    }
-
-    private function validateNewPassword()
+    public function validatePassword($attribute, $params)
     {
         if ($this->newPassword != $this->repeatNewPassword) {
             $this->addError('password', Yii::t('admin', 'Пароли не совпадают!'));
+            return;
+        }
+        if ($this->scenario == 'insert' && MyValidator::valueIsEmpty($this->newPassword)) {
+            $this->addError('password', Yii::t('common', 'Поле не заполнено!'));
         }
     }
 
     protected function beforeSave()
     {
-        if ($this->scenario == 'insert' || $this->scenario == 'update') {
-            $this->preparePasswordForSaving();
-            $this->saveUserAllowedCollections();
-        }
+        $this->preparePasswordForSaving();
 
         return parent::beforeSave();
     }
 
+    protected function afterSave()
+    {
+        $this->saveUserAllowedCollections();
+
+        parent::afterSave();
+    }
+
     private function preparePasswordForSaving()
     {
-        if (!empty($this->newPassword)) {
-            $this->password = CPasswordHelper::hashPassword($this->newPassword);
+        if ($this->scenario == 'insert' || $this->scenario == 'update') {
+            if (!empty($this->newPassword)) {
+                $this->password = CPasswordHelper::hashPassword($this->newPassword);
+            }
         }
     }
 
     private function saveUserAllowedCollections()
     {
-        $records = UserAllowedCollection::model()->findAll(
-            array(
-                'select' => 'id',
-                'condition' => 'user_id = :user_id',
-                'params' => array(':user_id' => $this->id)
-            )
-        );
+        if ($this->scenario == 'insert' || $this->scenario == 'update') {
 
-        if (!empty($records)) {
-            foreach ($records as $Record) {
-                $Record->deleteUserAllowedCollection();
+            if (empty($this->allowedCollections)) {
+                return;
             }
-        }
 
-        $Transaction = Yii::app()->db->beginTransaction();
+            $records = UserAllowedCollection::model()->findAll(
+                array(
+                    'select' => 'id',
+                    'condition' => 'user_id = :user_id',
+                    'params' => array(':user_id' => $this->id)
+                )
+            );
 
-        try {
+            if (!empty($records)) {
+                foreach ($records as $Record) {
+                    $Record->deleteUserAllowedCollection();
+                }
+            }
+
             foreach ($this->allowedCollections as $collectionId) {
                 $NewRecord = new UserAllowedCollection();
                 $NewRecord->user_id = $this->id;
@@ -122,10 +131,6 @@ class Users extends ActiveRecord
                     throw new CException(Yii::t('common', 'Произошла ошибка!'));
                 }
             }
-            $Transaction->commit();
-        } catch (Exception $Exception) {
-            $Transaction->rollback();
-            throw $Exception;
         }
     }
 
