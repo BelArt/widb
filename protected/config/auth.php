@@ -4,6 +4,13 @@ return array(
     /*
      * Операции
      */
+    // Администрирование системы
+    'oSystemManagement' => array(
+        'type' => CAuthItem::TYPE_OPERATION,
+        'description' => 'Администрирование системы',
+        'bizRule' => null,
+        'data' => null
+    ),
     // Пользователи
     'oUsersView' => array(
         'type' => CAuthItem::TYPE_OPERATION,
@@ -242,6 +249,7 @@ return array(
         'data' => null,
         'children' => array(
             'oUsersView',
+            'oSystemManagement',
             'oUserView',
             'oUserCreate',
             'oUserEdit',

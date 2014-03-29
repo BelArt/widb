@@ -69,6 +69,12 @@ class Controller extends CController
                 'url' => $this->createUrl('users/view'),
             );
         }
+        if (Yii::app()->user->checkAccess('oSystemManagement')) {
+            $adminMenu[] = array(
+                'label' => Yii::t('admin', 'Управление системой'),
+                'url' => $this->createUrl('admin/index'),
+            );
+        }
         return $adminMenu;
     }
 }

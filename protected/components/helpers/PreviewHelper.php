@@ -2,7 +2,7 @@
 /**
  * Хелпер для работы с превью.
  */
-class PreviewHelper extends CApplicationComponent
+class PreviewHelper
 {
     /**
      * @var integer размер квадрата маленького превью, в px
