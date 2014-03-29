@@ -306,4 +306,29 @@ class DeleteHelper
 
     }
 
+    /**
+     * Удаляем несохраненные превью.
+     */
+    public static function deleteUnsavedPreviews()
+    {
+        $tmpFolderPath = Yii::getPathOfAlias('webroot')
+            .DIRECTORY_SEPARATOR
+            .Yii::app()->params['filesFolder']
+            .DIRECTORY_SEPARATOR
+            .Yii::app()->params['tempFilesFolder'];
+
+        MyFileHelper::removeDirectory($tmpFolderPath);
+        MyFileHelper::createDirectory($tmpFolderPath);
+    }
+
+    public static function deleteEmptyFolders()
+    {
+
+    }
+
+    public static function uncheckHasPreviewCheckboxIfReallyHasNoPreview()
+    {
+
+    }
+
 } 
