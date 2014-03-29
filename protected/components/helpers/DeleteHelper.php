@@ -3,7 +3,7 @@
  * Хелпер для удаления сущностей в проекте
  */
 
-class DeleteHelper extends CApplicationComponent
+class DeleteHelper
 {
     /**
      * Удаляет изображение
@@ -268,6 +268,42 @@ class DeleteHelper extends CApplicationComponent
             'user_delete = :userId',
             array(':userId' => $User->id)
         );
+    }
+
+    /**
+     * Реально удаляет все "удаленные" записи
+     */
+    public static function deleteDeletedRecords()
+    {
+        $modelNames = array(
+            'Authors',
+            'Collections',
+            'Images',
+            'ObjectTypes',
+            'Objects',
+            'PhotoTypes',
+            'TempCollectionObject',
+            'UserAllowedCollection',
+            'Users'
+        );
+
+        $Transaction = Yii::app()->db->beginTransaction();
+
+        try {
+            foreach ($modelNames as $modelName) {
+                self::deleteDeletedRecordsInTable($modelName);
+            }
+            $Transaction->commit();
+        } catch (Exception $Exception) {
+            $Transaction->rollback();
+            throw $Exception;
+        }
+    }
+
+    private static function deleteDeletedRecordsInTable($modelName)
+    {
+        $modelName::model()->deleteAll('deleted = 1');
+
     }
 
 } 

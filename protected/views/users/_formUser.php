@@ -50,9 +50,9 @@ echo $form->textFieldRow($User, 'sort', array(
 echo CHtml::tag('hr');
 
 echo CHtml::openTag('div', array('class' => 'control-group'));
-echo CHtml::label(Yii::t('admin', 'Новый пароль'), 'Users_newPassword', array('class' => 'control-label'));
+echo CHtml::label(Yii::t('admin', 'Новый пароль').($User->scenario == 'insert' ? ' <span class="required">*</span>' : ''), 'Users_newPassword', array('class' => 'control-label '.($User->scenario == 'insert' ? ' required' : '')));
 echo CHtml::openTag('div', array('class' => 'controls'));
-echo CHtml::passwordField('Users[newPassword]', $User->newPassword, array('class' => '_passwordField'));
+echo CHtml::passwordField('Users[newPassword]', $User->newPassword, array('class' => '_passwordField '));
 echo CHtml::openTag('span', array('class' => '_passwordErrorMessage passwordErrorMessage', 'style' => $User->hasErrors('password') ? '' : 'display:none;'));
 echo CHtml::encode($User->getError('password'));
 echo CHtml::closeTag('span');
@@ -62,7 +62,7 @@ echo CHtml::closeTag('span');
 echo CHtml::closeTag('div');
 echo CHtml::closeTag('div');
 echo CHtml::openTag('div', array('class' => 'control-group'));
-echo CHtml::label(Yii::t('admin', 'Повторите новый пароль'), 'Users_repeatNewPassword', array('class' => 'control-label'));
+echo CHtml::label(Yii::t('admin', 'Повторите новый пароль'), 'Users_repeatNewPassword', array('class' => 'control-label '.($User->scenario == 'insert' ? ' required' : '')));
 echo CHtml::openTag('div', array('class' => 'controls'));
 echo CHtml::passwordField('Users[repeatNewPassword]', $User->repeatNewPassword, array('class' => '_repeatPasswordField'));
 echo CHtml::closeTag('div');
