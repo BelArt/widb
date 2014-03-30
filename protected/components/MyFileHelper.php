@@ -24,4 +24,38 @@ class MyFileHelper extends CFileHelper
         @chmod($dst,$newDirMode);
         return $res;
     }
+
+    /**
+     * Рекурсивное удаление пустых поддиректорий директории
+     * @param string $directory - путь к директории, у которой надо удалить пустые поддиректории
+     */
+    public static function removeEmptySubdirectories($directory)
+    {
+        self::removeEmptySubdirectoriesAndDirectoryItself($directory);
+        if (!is_dir($directory)) {
+            self::createDirectory($directory);
+        }
+
+    }
+
+    /**
+     * Рекурсивное удаление пустых поддиректорий директории, включая ее саму
+     * @param string $directory - путь к директории, у которой надо удалить пустые поддиректории
+     */
+    private static function removeEmptySubdirectoriesAndDirectoryItself($directory)
+    {
+        $items=glob($directory.DIRECTORY_SEPARATOR.'{,.}*',GLOB_MARK | GLOB_BRACE);
+        foreach($items as $item)
+        {
+            if(basename($item)=='.' || basename($item)=='..')
+                continue;
+            if(substr($item,-1)==DIRECTORY_SEPARATOR) {
+                self::removeEmptySubdirectoriesAndDirectoryItself($item);
+            }
+
+        }
+        if(is_dir($directory) && count(scandir($directory)) <= 2) {
+            rmdir($directory);
+        }
+    }
 } 

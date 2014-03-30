@@ -321,9 +321,18 @@ class DeleteHelper
         MyFileHelper::createDirectory($tmpFolderPath);
     }
 
-    public static function deleteEmptyFolders()
+    /**
+     * Удаляет пустые поддиректории в папке превью
+     */
+    public static function deleteEmptyFoldersInPreviews()
     {
+        $previewsFolderPath = Yii::getPathOfAlias('webroot')
+            .DIRECTORY_SEPARATOR
+            .Yii::app()->params['filesFolder']
+            .DIRECTORY_SEPARATOR
+            .Yii::app()->params['previewsFolder'];
 
+        MyFileHelper::removeEmptySubdirectories($previewsFolderPath);
     }
 
     public static function uncheckHasPreviewCheckboxIfReallyHasNoPreview()

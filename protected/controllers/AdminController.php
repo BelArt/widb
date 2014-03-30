@@ -77,7 +77,7 @@ class AdminController extends Controller
         // удаляем несохраненные превью
         DeleteHelper::deleteUnsavedPreviews();
         // удаляем пустые папки
-        DeleteHelper::deleteEmptyFolders();
+        DeleteHelper::deleteEmptyFoldersInPreviews();
         // если стоит галочка Есть превью, а на диске превью нет - снимаем галочку
         DeleteHelper::uncheckHasPreviewCheckboxIfReallyHasNoPreview();
 

@@ -838,7 +838,7 @@ class Collections extends ActiveRecord
         }
         // @@WIDB-79 end
 
-        PreviewHelper::savePreviews($this);
+        //PreviewHelper::savePreviews($this);
 
         parent::afterSave();
     }
