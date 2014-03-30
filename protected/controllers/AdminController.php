@@ -17,7 +17,7 @@ class AdminController extends Controller
     {
         return array(
             array('allow',
-                'actions' => array('index', 'deleteDeleted'),
+                'actions' => array('index', 'deleteDeleted', 'repairPreview'),
                 'roles' => array('oSystemManagement'),
             ),
             array('deny',  // deny all users
@@ -44,6 +44,10 @@ class AdminController extends Controller
             array(
                 'label' => Yii::t('admin', 'Реально удалить "удаленные" записи из всех таблиц'),
                 'url' => $this->createUrl('admin/deleteDeleted'),
+            ),
+            array(
+                'label' => Yii::t('admin', 'Восстановить согласованность данных о превью'),
+                'url' => $this->createUrl('admin/repairPreview'),
             )
         );
     }
@@ -62,6 +66,22 @@ class AdminController extends Controller
         DeleteHelper::deleteDeletedRecords();
 
         Yii::app()->user->setFlash('success', Yii::t('admin', 'Все "удаленные" записи реально удалены'));
+        $this->redirect(array('admin/index'));
+    }
+
+    /**
+     * Восстанавливает согласованность данных о превью
+     */
+    public function actionRepairPreview()
+    {
+        // удаляем несохраненные превью
+        DeleteHelper::deleteUnsavedPreviews();
+        // удаляем пустые папки
+        DeleteHelper::deleteEmptyFoldersInPreviews();
+        // если стоит галочка Есть превью, а на диске превью нет - снимаем галочку
+        DeleteHelper::uncheckHasPreviewCheckboxIfReallyHasNoPreview();
+
+        Yii::app()->user->setFlash('success', Yii::t('admin', 'Теперь все круто'));
         $this->redirect(array('admin/index'));
     }
 }

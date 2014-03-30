@@ -1,3 +1,7 @@
-<?php foreach($actions as $action): ?>
-    <?php echo CHtml::link(CHtml::encode($action['label']), $action['url']); ?>
-<?php endforeach; ?>
+<?php
+$this->widget('bootstrap.widgets.TbMenu', array(
+    'type' => 'pills',
+    'stacked' => true,
+    'items' => $actions,
+));
+?>

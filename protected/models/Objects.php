@@ -49,20 +49,18 @@ class Objects extends ActiveRecord
 	{
 		return array(
             // сначала обязательные
-            array('name, type_id, inventory_number, code', 'required', 'except' => 'delete'),
-            // потом проверки на формат
-            // если атрибут не указан в обязательных, то свойство allowEmpty должно быть true, иначе false
-            // самописные валидаторы по умолчанию имеют allowEmpty = false
-            array('author_id, collection_id', 'application.components.validators.IntegerValidator', 'skipOnError' => true, 'allowEmpty' => true, 'except' => 'delete'),
-            array('type_id', 'application.components.validators.IntegerValidator', 'skipOnError' => true, 'except' => 'delete'),
-            array('code', 'application.components.validators.CodeValidator', 'skipOnError' => true, 'except' => 'delete'),
-            array('width, height, depth', 'validators.MyFloatValidator', 'maxIntegerSize' => 3, 'maxFractionalSize' => 2,  'except' => 'delete', 'skipOnError' => true),
-            array('has_preview', 'boolean', 'strict' => true, 'skipOnError' => true, 'except' => 'delete'),
-            array('sort', 'application.components.validators.IntegerValidator', 'skipOnError' => true, 'allowEmpty' => true, 'except' => 'delete'),
-            // потом отдельно на длину
-            array('name, code, department, keeper, period, author_text', 'length', 'max'=>150, 'except' => 'delete', 'skipOnError' => true),
-            array('inventory_number', 'length', 'max'=>50, 'except' => 'delete', 'skipOnError' => true),
-            array('width, height, depth', 'length', 'max'=>6, 'except' => 'delete', 'skipOnError' => true),
+            array('name, type_id, inventory_number, code', 'validators.MyRequiredValidator', 'on' => 'insert, update'),
+            // проверки на формат
+            array('author_id, collection_id', 'validators.IntegerValidator', 'on' => 'insert, update'),
+            array('type_id', 'validators.IntegerValidator', 'on' => 'insert, update'),
+            array('code', 'validators.CodeValidator', 'on' => 'insert, update'),
+            array('width, height, depth', 'validators.MyFloatValidator', 'maxIntegerSize' => 3, 'maxFractionalSize' => 2,  'on' => 'insert, update'),
+            array('has_preview', 'boolean', 'strict' => true, 'on' => 'insert, update'),
+            array('sort', 'validators.IntegerValidator', 'on' => 'insert, update'),
+            // на длину
+            array('name, code, department, keeper, period, author_text', 'length', 'max'=>150, 'on' => 'insert, update'),
+            array('inventory_number', 'length', 'max'=>50, 'on' => 'insert, update'),
+            array('width, height, depth', 'length', 'max'=>6, 'on' => 'insert, update'),
             // и безопасные
             array('description', 'safe'),
 		);
@@ -234,7 +232,7 @@ class Objects extends ActiveRecord
         }
         // @@WIDB-79 end
 
-        PreviewHelper::savePreviews($this);
+        //PreviewHelper::savePreviews($this);
 
         parent::afterSave();
     }
