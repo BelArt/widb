@@ -41,6 +41,9 @@ Thumbs.db
 # PuPHPet #
 .vagrant
 
+# Composer #
+/vendor
+
 # IDEs #
 .idea/
 .project

@@ -323,7 +323,7 @@ class ImagesController extends Controller
 
     public function filterForActionCreate($filterChain)
     {
-        $Object = $this->loadImage(Yii::app()->request->getQuery('oi'));
+        $Object = Objects::model()->findByPk(Yii::app()->request->getQuery('oi'));
 
         if (empty($Object)) {
             throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));

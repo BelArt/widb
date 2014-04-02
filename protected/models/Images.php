@@ -124,10 +124,10 @@ class Images extends ActiveRecord
 
     protected function afterFind()
     {
-        parent::afterFind();
-
         // формируем набор превью
         $this->setThumbnails();
+
+        parent::afterFind();
     }
 
     public function beforeSave()
@@ -164,8 +164,6 @@ class Images extends ActiveRecord
             PreviewHelper::savePreviews($this);
         }
         // @@WIDB-79 end
-
-        //PreviewHelper::savePreviews($this);
 
         parent::afterSave();
     }

@@ -682,28 +682,6 @@ class PreviewHelper
 
             $dir = self::getPreviewFolderPath($Caller);
 
-            // удаляем папку и превью, если они есть, т.е. будем перезаписывать вновь загружаемыми
-            /*if (file_exists($dir)) {
-                foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir, FilesystemIterator::SKIP_DOTS), RecursiveIteratorIterator::CHILD_FIRST) as $path) {
-                    if ($path->isFile()) {
-                        if (!unlink($path->getPathname())) {
-                            throw new CException(Yii::t('common', 'Произошла ошибка!'));
-                        }
-                    } else {
-                        if (!rmdir($path->getPathname())) {
-                            throw new CException(Yii::t('common', 'Произошла ошибка!'));
-                        }
-                    }
-                }
-                if (!rmdir($dir)) {
-                    throw new CException(Yii::t('common', 'Произошла ошибка!'));
-                }
-            }
-
-            if (!mkdir($dir, 0777, true)) {
-                throw new CException(Yii::t('common', 'Произошла ошибка при сохранении превью'));
-            }*/
-
             if (!file_exists($dir)) {
                 if (!mkdir($dir, 0777, true)) {
                     throw new PreviewHelperException();
