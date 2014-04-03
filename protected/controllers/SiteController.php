@@ -135,7 +135,7 @@ class SiteController extends Controller
                 break;
             // удаляем сохраненное превью
             case 'deletePreview':
-                PreviewHelper::deletePreview($params);
+                $this->deletePreviews($params);
                 break;
             // удаляем выбранные объекты из обычной коллекции
             case 'deleteObjects':
@@ -158,6 +158,44 @@ class SiteController extends Controller
                 $this->moveObjectsToOtherCollection($params);
                 break;
         }
+
+    }
+
+    /**
+     * Удаляет превью
+     * @param array $params
+     * @throws SiteControllerException
+     */
+    protected function deletePreviews(array $params)
+    {
+        /*
+         * всякие проверки
+         */
+        if (empty($params['type']) || empty($params['id'])) {
+            throw new SiteControllerException();
+        }
+
+        $Model = null;
+
+        switch ($params['type']) {
+            case 'collection':
+                $Model = Collections::model()->findByPk($params['id']);
+                break;
+            case 'object':
+                $Model = Objects::model()->findByPk($params['id']);
+                break;
+            case 'image':
+                $Model = Images::model()->findByPk($params['id']);
+                break;
+            default:
+                throw new SiteControllerException();
+        }
+
+        if (empty($Model)) {
+            throw new SiteControllerException();
+        }
+
+        $Model->deletePreviews();
 
     }
 

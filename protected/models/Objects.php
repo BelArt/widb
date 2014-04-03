@@ -55,7 +55,7 @@ class Objects extends ActiveRecord
             array('type_id', 'validators.IntegerValidator', 'on' => 'insert, update'),
             array('code', 'validators.CodeValidator', 'on' => 'insert'),
             array('width, height, depth', 'validators.MyFloatValidator', 'maxIntegerSize' => 3, 'maxFractionalSize' => 2,  'on' => 'insert, update'),
-            array('has_preview', 'boolean', 'strict' => true, 'on' => 'insert, update'),
+            array('has_preview', 'boolean', 'on' => 'insert, update'),
             array('sort', 'validators.IntegerValidator', 'on' => 'insert, update'),
             // на длину
             array('name, code, department, keeper, period, author_text', 'length', 'max'=>150, 'on' => 'insert, update'),

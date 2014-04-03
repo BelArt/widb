@@ -130,6 +130,10 @@ class ActiveRecord extends CActiveRecord
         return false;
     }
 
+    /**
+     * Сохраняет подгруженные превью из временной папки в постоянное место
+     * @throws CException
+     */
     public function saveUploadedPreviews()
     {
         // если было что сохранить
@@ -140,6 +144,23 @@ class ActiveRecord extends CActiveRecord
             // обязательно для повторного сохранения, иначе при создании yii будет пытаться вставить эту запись еще раз,
             // что вызовет ошибку
             $this->isNewRecord = false;
+
+            if (!$this->save(false)) {
+                throw new CException(Yii::t('common', 'Произошла ошибка!'));
+            }
+        }
+    }
+
+    /**
+     * Удаляет превью
+     * @throws CException
+     */
+    public function deletePreviews()
+    {
+        // если было что удалять
+        if (PreviewHelper::deletePreview($this)) {
+
+            $this->has_preview = 0;
 
             if (!$this->save(false)) {
                 throw new CException(Yii::t('common', 'Произошла ошибка!'));

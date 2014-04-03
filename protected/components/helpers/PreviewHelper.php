@@ -531,35 +531,12 @@ class PreviewHelper
 
     /**
      * Удаляет превью
-     * @param mixed $params или модель, или массив соответствующей структуры
+     * @param ActiveRecord $Model модель
      * @throws CException
+     * @returns boolean
      */
-    public static function deletePreview($params)
+    public static function deletePreview(ActiveRecord $Model)
     {
-        $Model = null;
-
-        if (!empty($params) && is_array($params) && !empty($params['type']) && !empty($params['id'])) {
-            switch ($params['type']) {
-                case 'collection':
-                    $Model = Collections::model()->findByPk($params['id']);
-                    break;
-                case 'object':
-                    $Model = Objects::model()->findByPk($params['id']);
-                    break;
-                case 'image':
-                    $Model = Images::model()->findByPk($params['id']);
-                    break;
-                default:
-                    throw new PreviewHelperException();
-            }
-        } elseif (!empty($params) && is_object($params) && (get_class($params) == 'Collections' || get_class($params) == 'Objects' || get_class($params) == 'Images')) {
-            $Model = $params;
-        }
-
-        if (empty($Model)) {
-            throw new PreviewHelperException();
-        }
-
         $previewsFolder = self::getPreviewFolderPath($Model);
 
         if (file_exists($previewsFolder)) {
@@ -585,53 +562,51 @@ class PreviewHelper
             $files = array_diff(scandir($previewsFolder), array('..', '.'));
 
             if (empty($files)) {
+
+                // удаляем саму папку
                 if (!rmdir($previewsFolder)) {
                     throw new PreviewHelperException();
                 }
+
+                // удаляем пустую родительскую папку
+                switch (get_class($Model)) {
+                    case 'Objects':
+                        $Collection = Collections::model()->findByPk($Model->collection_id);
+                        $previewsFolder = self::getPreviewFolderPath($Collection);
+                        $files = array_diff(scandir($previewsFolder), array('..', '.'));
+                        if (empty($files)) {
+                            if (!rmdir($previewsFolder)) {
+                                throw new PreviewHelperException();
+                            }
+                        }
+                        break;
+                    case 'Images':
+                        $Object = Objects::model()->findByPk($Model->object_id);
+                        $previewsFolder = self::getPreviewFolderPath($Object);
+                        $files = array_diff(scandir($previewsFolder), array('..', '.'));
+                        if (empty($files)) {
+                            if (!rmdir($previewsFolder)) {
+                                throw new PreviewHelperException();
+                            }
+                        }
+                        $Collection = Collections::model()->findByPk($Object->collection_id);
+                        $previewsFolder = self::getPreviewFolderPath($Collection);
+                        $files = array_diff(scandir($previewsFolder), array('..', '.'));
+                        if (empty($files)) {
+                            if (!rmdir($previewsFolder)) {
+                                throw new PreviewHelperException();
+                            }
+                        }
+                        break;
+                }
+
             }
 
-            // удаляем пустую родительскую папку
-            switch (get_class($Model)) {
-                case 'Objects':
-                    $Collection = Collections::model()->findByPk($Model->collection_id);
-                    $previewsFolder = self::getPreviewFolderPath($Collection);
-                    $files = array_diff(scandir($previewsFolder), array('..', '.'));
-                    if (empty($files)) {
-                        if (!rmdir($previewsFolder)) {
-                            throw new PreviewHelperException();
-                        }
-                    }
-                    break;
-                case 'Images':
-                    $Object = Objects::model()->findByPk($Model->object_id);
-                    $previewsFolder = self::getPreviewFolderPath($Object);
-                    $files = array_diff(scandir($previewsFolder), array('..', '.'));
-                    if (empty($files)) {
-                        if (!rmdir($previewsFolder)) {
-                            throw new PreviewHelperException();
-                        }
-                    }
-                    $Collection = Collections::model()->findByPk($Object->collection_id);
-                    $previewsFolder = self::getPreviewFolderPath($Collection);
-                    $files = array_diff(scandir($previewsFolder), array('..', '.'));
-                    if (empty($files)) {
-                        if (!rmdir($previewsFolder)) {
-                            throw new PreviewHelperException();
-                        }
-                    }
-                    break;
-            }
+            return true;
 
         }
 
-
-        // @@WIDB-79 start
-        $Model->has_preview = 0;
-        if (!$Model->save()) {
-            throw new PreviewHelperException();
-        }
-        // @@WIDB-79 end
-
+        return false;
     }
 
     /**
