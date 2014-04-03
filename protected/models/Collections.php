@@ -55,14 +55,9 @@ class Collections extends ActiveRecord
 			array('temporary, has_preview, temporary_public', 'boolean', 'except' => 'delete'),
             array('parent_id, sort', 'application.components.validators.EmptyOrPositiveIntegerValidator', 'skipOnError' => true, 'except' => 'delete'),
             array('name, code', 'length', 'max' => 150, 'except' => 'delete'),
-            array('code', 'application.components.validators.CodeValidator', 'skipOnError' => true, 'except' => 'delete'),
+            array('code', 'application.components.validators.CodeValidator', 'on' => 'insert'),
 
             array('description', 'safe'),
-
-
-			// The following rule is used by search().
-			// @todo Please remove those attributes that should not be searched.
-			//array('id, parent_id, name, description, code, temporary, has_preview, date_create, date_modify, date_delete, sort, deleted', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -191,7 +186,7 @@ class Collections extends ActiveRecord
     public function getThumbnailBig()
     {
         if ($this->isNewRecord) {
-            throw new CollectionsException();
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
         return $this->thumbnailBig;
@@ -200,7 +195,7 @@ class Collections extends ActiveRecord
     public function getThumbnailMedium()
     {
         if ($this->isNewRecord) {
-            throw new CollectionsException();
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
         return $this->thumbnailMedium;
@@ -209,7 +204,7 @@ class Collections extends ActiveRecord
     public function getThumbnailSmall()
     {
         if ($this->isNewRecord) {
-            throw new CollectionsException();
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
         return $this->thumbnailSmall;
@@ -447,7 +442,7 @@ class Collections extends ActiveRecord
      * Возвращает массив с айди временных коллекций, доступных пользователю
      * @param integer $userId айди пользователя
      * @return array массив с айди коллекций, доступных пользователю
-     * @throws CollectionsException
+     * @throws CException
      */
     public static function getIdsOfTempCollectionsAllowedToUser($userId)
     {
@@ -461,7 +456,7 @@ class Collections extends ActiveRecord
         );
 
         if (empty($User)) {
-            throw new CollectionsException();
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
         // все временные коллекции
@@ -693,13 +688,13 @@ class Collections extends ActiveRecord
 
     /**
      * Проверяет, можно ли удалить коллекцию
-     * @throws CollectionsException
+     * @throws CException
      * @return bool
      */
     public function isReadyToBeDeleted()
     {
         if ($this->isNewRecord) {
-            throw new CollectionsException();
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
         if ($this->temporary) {
@@ -733,12 +728,12 @@ class Collections extends ActiveRecord
 
     /**
      * Удаляет обычную коллекцию
-     * @throws CollectionsException|Exception
+     * @throws CException|Exception
      */
     public function deleteNormalCollection()
     {
         if ($this->isNewRecord || $this->temporary) {
-            throw new CollectionsException();
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
         $Transaction = Yii::app()->db->beginTransaction();
@@ -776,12 +771,12 @@ class Collections extends ActiveRecord
 
     /**
      * Удаляет временную коллекцию
-     * @throws CollectionsException
+     * @throws CException
      */
     public function deleteTempCollection()
     {
         if ($this->isNewRecord || !$this->temporary) {
-            throw new CollectionsException();
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
         $Transaction = Yii::app()->db->beginTransaction();
@@ -827,20 +822,6 @@ class Collections extends ActiveRecord
             throw $Exception;
         }
 
-    }
-
-    public function afterSave()
-    {
-        // @@WIDB-79 start
-        // проверяем на сценарий для исключения рекурсивного вызова этой функции в afterSave() после сохранения данных о превью
-        if ($this->scenario != PreviewHelper::SCENARIO_SAVE_PREVIEWS) {
-            PreviewHelper::savePreviews($this);
-        }
-        // @@WIDB-79 end
-
-        //PreviewHelper::savePreviews($this);
-
-        parent::afterSave();
     }
 
     /**

@@ -26,9 +26,11 @@ echo $form->textAreaRow($model,'description',array(
     'rows' => 5
 ));
 
-echo $form->textFieldRow($model,'code', array(
-    'class' => 'input-xlarge _collectionForm_hideErrorsKeypress'
-));
+if ($model->isNewRecord) {
+    echo $form->textFieldRow($model,'code', array(
+        'class' => 'input-xlarge _collectionForm_hideErrorsKeypress'
+    ));
+}
 
 echo $form->checkBoxRow($model,'has_preview', array('class' => '_collectionForm_hideErrorsChange _hasPreviewCheckbox'));
 

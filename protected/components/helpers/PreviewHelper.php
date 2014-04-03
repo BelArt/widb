@@ -665,6 +665,7 @@ class PreviewHelper
      * Сохраняем превью
      * @param object $Caller объект, который вызвал этото метод
      * @throws CException
+     * @return boolean
      */
     public static function savePreviews($Caller)
     {
@@ -754,29 +755,16 @@ class PreviewHelper
                         throw new PreviewHelperException();
                     }
 
-
-                    // @@WIDB-79 start
-                    // ставим отметку, что превью есть
-                    $Caller->has_preview = 1;
-
-                    // обязательно для повторного сохранения, иначе при создании yii будет пытаться вставить эту запись еще раз,
-                    // что вызовет ошибку
-                    $Caller->isNewRecord = false;
-
-                    // устанавливаем сценарий для исключения рекурсивного вызова этой функции в afterSave()
-                    $Caller->scenario = self::SCENARIO_SAVE_PREVIEWS;
-
-                    if (!$Caller->save()) {
-                        throw new PreviewHelperException();
-                    }
-                    // @@WIDB-79 end
-
                     self::incrementPreviewVersion($Caller);
                 }
             }
 
             Yii::app()->user->setState(Yii::app()->params['xuploadStatePreviewsName'], null);
+
+            return true;
         }
+
+        return false;
     }
 
     /**
@@ -839,7 +827,8 @@ class PreviewHelper
      * @param string $newCode новое значение поля code
      * @throws PreviewHelperException
      */
-    public static function changePreviewPath($Model, $newCode)
+    // @todo доделать смену кода
+    /*public static function changePreviewPath($Model, $newCode)
     {
         $oldFolder = self::getPreviewFolderPath($Model);
 
@@ -885,5 +874,5 @@ class PreviewHelper
                 throw new PreviewHelperException();
             }
         }
-    }
+    }*/
 }

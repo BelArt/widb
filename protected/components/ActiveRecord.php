@@ -71,21 +71,21 @@ class ActiveRecord extends CActiveRecord
     /**
      * Проверяет, действительно ли есть картинка превью на сервере
      * @param string $size какое превью проверяем - 'small', 'medium', 'big' или 'original'
-     * @throws ActiveRecordException
+     * @throws CException
      * @return bool
      */
     public function reallyHasPreview($size = 'medium')
     {
         if (!in_array($size, array('small', 'medium', 'big', 'original'))) {
-            throw new ActiveRecordException();
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
         if (!in_array(get_class($this), array('Collections', 'Objects', 'Images'))) {
-            throw new ActiveRecordException();
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
         if ($this->isNewRecord) {
-            throw new ActiveRecordException();
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
         $previewUrl = PreviewHelper::getPreviewUrl($this, $size);
@@ -96,16 +96,16 @@ class ActiveRecord extends CActiveRecord
     /**
      * Проверяет, есть ли папка с картинками превью на сервере
      * @return bool
-     * @throws ActiveRecordException
+     * @throws CException
      */
     public function reallyHasPreviews()
     {
         if (!in_array(get_class($this), array('Collections', 'Objects', 'Images'))) {
-            throw new ActiveRecordException();
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
         if ($this->isNewRecord) {
-            throw new ActiveRecordException();
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
         $previewFolder = PreviewHelper::getPreviewFolderPath($this);
@@ -128,5 +128,22 @@ class ActiveRecord extends CActiveRecord
                 return true;
         }
         return false;
+    }
+
+    public function saveUploadedPreviews()
+    {
+        // если было что сохранить
+        if (PreviewHelper::savePreviews($this)) {
+            // ставим отметку, что превью есть
+            $this->has_preview = 1;
+
+            // обязательно для повторного сохранения, иначе при создании yii будет пытаться вставить эту запись еще раз,
+            // что вызовет ошибку
+            $this->isNewRecord = false;
+
+            if (!$this->save(false)) {
+                throw new CException(Yii::t('common', 'Произошла ошибка!'));
+            }
+        }
     }
 }
