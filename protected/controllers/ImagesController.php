@@ -293,6 +293,7 @@ class ImagesController extends Controller
                 $Image->attributes = $_POST['Images'];
                 $Image->object_id = $oi;
                 if ($Image->save()) {
+                    $Image->saveUploadedPreviews();
                     $Transaction->commit();
                     $this->redirect(Yii::app()->urlManager->createObjectUrl($Object));
                 } else {
@@ -323,7 +324,7 @@ class ImagesController extends Controller
 
     public function filterForActionCreate($filterChain)
     {
-        $Object = $this->loadImage(Yii::app()->request->getQuery('oi'));
+        $Object = Objects::model()->findByPk(Yii::app()->request->getQuery('oi'));
 
         if (empty($Object)) {
             throw new CHttpException(404, Yii::t('common', 'Запрашиваемая Вами страница недоступна!'));
@@ -350,20 +351,23 @@ class ImagesController extends Controller
 
         if(isset($_POST['Images']))
         {
-            $movePreviews = false;
+            // @todo доделать смену кода
+            /*$movePreviews = false;
             if (!empty($_POST['Images']['code']) && $Image->code != $_POST['Images']['code']) {
                 $oldImage = clone $Image;
                 $movePreviews = true;
-            }
+            }*/
 
             $transaction = Yii::app()->db->beginTransaction();
 
             try {
                 $Image->attributes = $_POST['Images'];
                 if ($Image->save()) {
-                    if ($movePreviews) {
+                    $Image->saveUploadedPreviews();
+                    // @todo доделать смену кода
+                    /*if ($movePreviews) {
                         PreviewHelper::changePreviewPath($oldImage, $_POST['Images']['code']);
-                    }
+                    }*/
                     $transaction->commit();
                     $this->redirect(array('view','id'=>$Image->id));
                 } else {

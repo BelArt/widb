@@ -57,9 +57,11 @@ echo $form->textFieldRow($model,'inventory_number', array(
     'class' => 'input-small _objectForm_hideErrorsKeypress _translitSource'
 ));
 
-echo $form->textFieldRow($model,'code', array(
-    'class' => 'input-small _objectForm_hideErrorsChange _translitDestination'
-));
+if ($model->isNewRecord) {
+    echo $form->textFieldRow($model,'code', array(
+        'class' => 'input-small _objectForm_hideErrorsChange _translitDestination'
+    ));
+}
 
 echo $form->textFieldRow($model,'width', array(
     'class' => 'input-small _objectForm_hideErrorsKeypress',

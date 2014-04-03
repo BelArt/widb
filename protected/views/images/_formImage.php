@@ -79,9 +79,11 @@ echo $form->textFieldRow($Image,'request', array(
     'class' => 'input-large _imageForm_hideErrorsKeypress'
 ));
 
-echo $form->textFieldRow($Image,'code', array(
-    'class' => 'input-small _imageForm_hideErrorsKeypress'
-));
+if ($Image->isNewRecord) {
+    echo $form->textFieldRow($Image,'code', array(
+        'class' => 'input-small _imageForm_hideErrorsKeypress'
+    ));
+}
 
 echo $form->textFieldRow($Image,'sort', array(
     'class' => 'input-small _imageForm_hideErrorsKeypress',

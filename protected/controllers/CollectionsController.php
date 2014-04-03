@@ -505,6 +505,7 @@ class CollectionsController extends Controller
             try {
                 $model->attributes = $_POST['Collections'];
                 if ($model->save()) {
+                    $model->saveUploadedPreviews();
                     $transaction->commit();
                     $this->redirect(array('index'));
                 } else {
@@ -553,6 +554,7 @@ class CollectionsController extends Controller
             try {
                 $model->attributes = $_POST['Collections'];
                 if ($model->save()) {
+                    $model->saveUploadedPreviews();
                     $transaction->commit();
                     $this->redirect(array('index'));
                 } else {
@@ -598,11 +600,12 @@ class CollectionsController extends Controller
 
 		if(isset($_POST['Collections']))
 		{
-            $movePreviews = false;
+            // @todo доделать смену кода
+            /*$movePreviews = false;
             if (!empty($_POST['Collections']['code']) && $model->code != $_POST['Collections']['code']) {
                 $oldCollection = clone $model;
                 $movePreviews = true;
-            }
+            }*/
 
 			$model->attributes = $_POST['Collections'];
 
@@ -610,9 +613,11 @@ class CollectionsController extends Controller
 
             try {
                 if ($model->save()) {
-                    if ($movePreviews) {
+                    $model->saveUploadedPreviews();
+                    // @todo доделать смену кода
+                    /*if ($movePreviews) {
                         PreviewHelper::changePreviewPath($oldCollection, $_POST['Collections']['code']);
-                    }
+                    }*/
                     $transaction->commit();
                     $this->redirect(Yii::app()->urlManager->createNormalCollectionUrl($model));
                 } else {
@@ -669,11 +674,12 @@ class CollectionsController extends Controller
 
         if(isset($_POST['Collections']))
         {
-            $movePreviews = false;
+            // @todo доделать смену кода
+            /*$movePreviews = false;
             if (!empty($_POST['Collections']['code']) && $model->code != $_POST['Collections']['code']) {
                 $oldCollection = clone $model;
                 $movePreviews = true;
-            }
+            }*/
 
             $model->attributes = $_POST['Collections'];
 
@@ -681,9 +687,11 @@ class CollectionsController extends Controller
 
             try {
                 if ($model->save()) {
-                    if ($movePreviews) {
+                    $model->saveUploadedPreviews();
+                    // @todo доделать смену кода
+                    /*if ($movePreviews) {
                         PreviewHelper::changePreviewPath($oldCollection, $_POST['Collections']['code']);
-                    }
+                    }*/
                     $transaction->commit();
                     $this->redirect(Yii::app()->urlManager->createTempCollectionUrl($model));
                 } else {

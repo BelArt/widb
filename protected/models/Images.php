@@ -50,21 +50,21 @@ class Images extends ActiveRecord
             array(
                 'photo_type_id, width, height, dpi, original, source, request, code, date_photo, width_cm, height_cm',
                 'validators.MyRequiredValidator',
-                'except' => 'delete'
+                'on' => 'insert, update'
             ),
             // потом проверки на формат
-            array('photo_type_id', 'validators.IntegerValidator', 'skipOnError' => true, 'except' => 'delete'),
-            array('has_preview, deepzoom', 'boolean', 'strict' => true, 'skipOnError' => true, 'except' => 'delete'),
-            array('width, height, dpi', 'validators.IntegerValidator', 'skipOnError' => true, 'except' => 'delete'),
-            array('sort', 'validators.IntegerValidator', 'skipOnError' => true, 'except' => 'delete'),
-            array('code', 'validators.CodeValidator', 'skipOnError' => true, 'except' => 'delete'),
-            array('date_photo', 'date', 'skipOnError' => true, 'allowEmpty' => false, 'format' => 'dd.MM.yyyy', 'except' => 'delete'),
-            array('width_cm, height_cm', 'validators.MyFloatValidator', 'maxIntegerSize' => 3, 'maxFractionalSize' => 2,  'except' => 'delete', 'skipOnError' => true),
+            array('photo_type_id', 'validators.IntegerValidator', 'on' => 'insert, update'),
+            array('has_preview, deepzoom', 'boolean', 'on' => 'insert, update'),
+            array('width, height, dpi', 'validators.IntegerValidator','on' => 'insert, update'),
+            array('sort', 'validators.IntegerValidator', 'on' => 'insert, update'),
+            array('code', 'validators.CodeValidator', 'on' => 'insert'),
+            array('date_photo', 'date', 'format' => 'dd.MM.yyyy', 'on' => 'insert, update'),
+            array('width_cm, height_cm', 'validators.MyFloatValidator', 'maxIntegerSize' => 3, 'maxFractionalSize' => 2,  'on' => 'insert, update'),
             // потом отдельно на длину
-            array('photo_type_id, sort', 'length', 'max'=>10, 'except' => 'delete', 'skipOnError' => true),
-            array('width, height, dpi', 'length', 'max'=>8, 'except' => 'delete', 'skipOnError' => true),
-            array('width_cm, height_cm', 'length', 'max'=>6, 'except' => 'delete', 'skipOnError' => true),
-            array('original, source, request, code', 'length', 'max'=>150, 'except' => 'delete', 'skipOnError' => true),
+            array('photo_type_id, sort', 'length', 'max'=>10, 'on' => 'insert, update'),
+            array('width, height, dpi', 'length', 'max'=>8, 'on' => 'insert, update'),
+            array('width_cm, height_cm', 'length', 'max'=>6, 'on' => 'insert, update'),
+            array('original, source, request, code', 'length', 'max'=>150, 'on' => 'insert, update'),
             // и безопасные
             array('description', 'safe'),
 		);
@@ -124,10 +124,10 @@ class Images extends ActiveRecord
 
     protected function afterFind()
     {
-        parent::afterFind();
-
         // формируем набор превью
         $this->setThumbnails();
+
+        parent::afterFind();
     }
 
     public function beforeSave()
@@ -154,20 +154,6 @@ class Images extends ActiveRecord
         if (!empty($this->$fieldName)) {
             $this->$fieldName = str_replace(',', '.', $this->$fieldName);
         }
-    }
-
-    public function afterSave()
-    {
-        // @@WIDB-79 start
-        // проверяем на сценарий для исключения рекурсивного вызова этой функции в afterSave() после сохранения данных о превью
-        if ($this->scenario != PreviewHelper::SCENARIO_SAVE_PREVIEWS) {
-            PreviewHelper::savePreviews($this);
-        }
-        // @@WIDB-79 end
-
-        //PreviewHelper::savePreviews($this);
-
-        parent::afterSave();
     }
 
     /**

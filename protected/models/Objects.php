@@ -53,9 +53,9 @@ class Objects extends ActiveRecord
             // проверки на формат
             array('author_id, collection_id', 'validators.IntegerValidator', 'on' => 'insert, update'),
             array('type_id', 'validators.IntegerValidator', 'on' => 'insert, update'),
-            array('code', 'validators.CodeValidator', 'on' => 'insert, update'),
+            array('code', 'validators.CodeValidator', 'on' => 'insert'),
             array('width, height, depth', 'validators.MyFloatValidator', 'maxIntegerSize' => 3, 'maxFractionalSize' => 2,  'on' => 'insert, update'),
-            array('has_preview', 'boolean', 'strict' => true, 'on' => 'insert, update'),
+            array('has_preview', 'boolean', 'on' => 'insert, update'),
             array('sort', 'validators.IntegerValidator', 'on' => 'insert, update'),
             // на длину
             array('name, code, department, keeper, period, author_text', 'length', 'max'=>150, 'on' => 'insert, update'),
@@ -143,7 +143,7 @@ class Objects extends ActiveRecord
     public function getThumbnailBig()
     {
         if ($this->isNewRecord) {
-            throw new ObjectsException();
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
         return $this->thumbnailBig;
@@ -152,7 +152,7 @@ class Objects extends ActiveRecord
     public function getThumbnailMedium()
     {
         if ($this->isNewRecord) {
-            throw new ObjectsException();
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
         return $this->thumbnailMedium;
@@ -161,7 +161,7 @@ class Objects extends ActiveRecord
     public function getThumbnailSmall()
     {
         if ($this->isNewRecord) {
-            throw new ObjectsException();
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
         return $this->thumbnailSmall;
@@ -223,29 +223,16 @@ class Objects extends ActiveRecord
         return $result;
     }
 
-    public function afterSave()
-    {
-        // @@WIDB-79 start
-        // проверяем на сценарий для исключения рекурсивного вызова этой функции в afterSave() после сохранения данных о превью
-        if ($this->scenario != PreviewHelper::SCENARIO_SAVE_PREVIEWS) {
-            PreviewHelper::savePreviews($this);
-        }
-        // @@WIDB-79 end
-
-        //PreviewHelper::savePreviews($this);
-
-        parent::afterSave();
-    }
 
     /**
      * Проверяет, можно ли удалить объект
-     * @throws ObjectsException
+     * @throws CException
      * @return bool
      */
     public function isReadyToBeDeleted()
     {
         if ($this->isNewRecord) {
-            throw new ObjectsException();
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
         $Criteria = new CDbCriteria;
@@ -264,12 +251,12 @@ class Objects extends ActiveRecord
 
     /**
      * Удаляет объект
-     * @throws ObjectsException
+     * @throws CException
      */
     public function deleteObject()
     {
         if ($this->isNewRecord) {
-            throw new ObjectsException();
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
         $Transaction = Yii::app()->db->beginTransaction();
@@ -307,13 +294,13 @@ class Objects extends ActiveRecord
     /**
      * Проверяет, доступен ли текущий объект пользователю.
      * @param integer $userId айдишник пользователя
-     * @throws ObjectsException
+     * @throws CException
      * @return bool
      */
     public function isAllowedToUser($userId)
     {
         if ($this->isNewRecord) {
-            throw new ObjectsException();
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
         return self::getObjectIsAllowedToUser($this->id, $userId);
@@ -324,14 +311,14 @@ class Objects extends ActiveRecord
      * @param integer $objectId айди объекта
      * @param integer $userId айди пользователя
      * @return bool
-     * @throws ObjectsException
+     * @throws CException
      */
     public static function getObjectIsAllowedToUser($objectId, $userId)
     {
         $Object = Objects::model()->findByPk($objectId);
 
         if (empty($Object)) {
-            throw new ObjectsException();
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
         return in_array($Object->collection_id, Collections::getIdsOfCollectionsAllowedToUser($userId));
@@ -340,14 +327,14 @@ class Objects extends ActiveRecord
     /**
      * Добавляет текущий объект во временную коллекцию
      * @param int $tempCollectionId айди временной коллекции
-     * @throws ObjectsException
+     * @throws CException
      */
     public function addToTempCollection($tempCollectionId)
     {
         $Collection = Collections::model()->findByPk($tempCollectionId);
 
         if (empty($Collection) || $Collection->temporary == 0) {
-            throw new ObjectsException();
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
         $TempCollectionObject = TempCollectionObject::model()->findByAttributes(array(
@@ -364,7 +351,7 @@ class Objects extends ActiveRecord
         $TempCollectionObject->object_id = $this->id;
 
         if (!$TempCollectionObject->save()) {
-            throw new ObjectsException();
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
     }
@@ -380,7 +367,7 @@ class Objects extends ActiveRecord
         }
 
         if (empty($Collection) || $Collection->temporary == 1) {
-            throw new ObjectsException();
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
         $Transaction = Yii::app()->db->beginTransaction();
@@ -401,12 +388,12 @@ class Objects extends ActiveRecord
     /**
      * Возвращает размер объекта в формате Длина х Ширина х Высота
      * @return string размер объекта в формате Длина х Ширина х Высота
-     * @throws ObjectsException
+     * @throws CException
      */
     public function getSize()
     {
         if ($this->isNewRecord) {
-            throw new ObjectsException();
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
         $size = '';
@@ -428,12 +415,12 @@ class Objects extends ActiveRecord
     /**
      * Возвращает инициалы автора объекта
      * @return string
-     * @throws ObjectsException
+     * @throws CException
      */
     public function getAuthorInitials()
     {
         if ($this->isNewRecord) {
-            throw new ObjectsException();
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
         $authorInitials = '';

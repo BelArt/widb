@@ -81,6 +81,7 @@ class ObjectsController extends Controller
                 $model->attributes = $_POST['Objects'];
                 $model->collection_id = $ci;
                 if ($model->save()) {
+                    $model->saveUploadedPreviews();
                     $transaction->commit();
                     $this->redirect(Yii::app()->urlManager->createNormalCollectionUrl($Collection));
                 } else {
@@ -447,11 +448,12 @@ class ObjectsController extends Controller
 
         if(isset($_POST['Objects']))
         {
-            $movePreviews = false;
+            // @todo доделать смену кода
+            /*$movePreviews = false;
             if (!empty($_POST['Objects']['code']) && $Object->code != $_POST['Objects']['code']) {
                 $oldObject = clone $Object;
                 $movePreviews = true;
-            }
+            }*/
 
             $Object->attributes = $_POST['Objects'];
 
@@ -459,9 +461,11 @@ class ObjectsController extends Controller
 
             try {
                 if ($Object->save()) {
-                    if ($movePreviews) {
+                    $Object->saveUploadedPreviews();
+                    // @todo доделать смену кода
+                    /*if ($movePreviews) {
                         PreviewHelper::changePreviewPath($oldObject, $_POST['Objects']['code']);
-                    }
+                    }*/
                     $transaction->commit();
                     $this->redirect(Yii::app()->urlManager->createObjectUrl($Object));
                 } else {
