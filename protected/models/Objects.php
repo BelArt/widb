@@ -53,7 +53,7 @@ class Objects extends ActiveRecord
             // проверки на формат
             array('author_id, collection_id', 'validators.IntegerValidator', 'on' => 'insert, update'),
             array('type_id', 'validators.IntegerValidator', 'on' => 'insert, update'),
-            array('code', 'validators.CodeValidator', 'on' => 'insert'),
+            array('code', 'validators.CodeValidator', 'on' => 'insert'), // т.к. не даем редактировать код
             array('width, height, depth', 'validators.MyFloatValidator', 'maxIntegerSize' => 3, 'maxFractionalSize' => 2,  'on' => 'insert, update'),
             array('has_preview', 'boolean', 'on' => 'insert, update'),
             array('sort', 'validators.IntegerValidator', 'on' => 'insert, update'),
@@ -436,16 +436,13 @@ class Objects extends ActiveRecord
         return $authorInitials;
     }
 
-    public function beforeSave()
+    protected function beforeSave()
     {
-        if (parent::beforeSave()) {
-            $this->formatFloatFieldForSavingIntoDB('width');
-            $this->formatFloatFieldForSavingIntoDB('height');
-            $this->formatFloatFieldForSavingIntoDB('depth');
-            return true;
-        } else {
-            return false;
-        }
+        $this->formatFloatFieldForSavingIntoDB('width');
+        $this->formatFloatFieldForSavingIntoDB('height');
+        $this->formatFloatFieldForSavingIntoDB('depth');
+
+        return parent::beforeSave();
     }
 
     private function formatFloatFieldForSavingIntoDB($fieldName)

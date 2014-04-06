@@ -57,7 +57,7 @@ class Images extends ActiveRecord
             array('has_preview, deepzoom', 'boolean', 'on' => 'insert, update'),
             array('width, height, dpi', 'validators.IntegerValidator','on' => 'insert, update'),
             array('sort', 'validators.IntegerValidator', 'on' => 'insert, update'),
-            array('code', 'validators.CodeValidator', 'on' => 'insert'),
+            array('code', 'validators.CodeValidator', 'on' => 'insert'), // т.к. не даем редактировать код
             array('date_photo', 'date', 'format' => 'dd.MM.yyyy', 'on' => 'insert, update'),
             array('width_cm, height_cm', 'validators.MyFloatValidator', 'maxIntegerSize' => 3, 'maxFractionalSize' => 2,  'on' => 'insert, update'),
             // потом отдельно на длину
@@ -130,16 +130,13 @@ class Images extends ActiveRecord
         parent::afterFind();
     }
 
-    public function beforeSave()
+    protected function beforeSave()
     {
-        if (parent::beforeSave()) {
-            $this->formatDatePhotoFieldForSavingIntoDB();
-            $this->formatFloatFieldForSavingIntoDB('width_cm');
-            $this->formatFloatFieldForSavingIntoDB('height_cm');
-            return true;
-        } else {
-            return false;
-        }
+        $this->formatDatePhotoFieldForSavingIntoDB();
+        $this->formatFloatFieldForSavingIntoDB('width_cm');
+        $this->formatFloatFieldForSavingIntoDB('height_cm');
+
+        return parent::beforeSave();
     }
 
     private function formatDatePhotoFieldForSavingIntoDB()

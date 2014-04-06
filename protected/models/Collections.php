@@ -49,16 +49,19 @@ class Collections extends ActiveRecord
 	 */
 	public function rules()
 	{
-		return array(
-            array('temporary_public, parent_id', 'application.components.validators.TempCollectionValidator', 'skipOnError' => true, 'except' => 'delete'),
-            array('name, code', 'required', 'except' => 'delete'),
-			array('temporary, has_preview, temporary_public', 'boolean', 'except' => 'delete'),
-            array('parent_id, sort', 'application.components.validators.EmptyOrPositiveIntegerValidator', 'skipOnError' => true, 'except' => 'delete'),
-            array('name, code', 'length', 'max' => 150, 'except' => 'delete'),
-            array('code', 'application.components.validators.CodeValidator', 'on' => 'insert'),
-
+        return array(
+            // сначала обязательные
+            array('name, code', 'validators.MyRequiredValidator', 'on' => 'insert, update'),
+            // проверки на формат
+            array('parent_id', 'validators.IntegerValidator', 'on' => 'insert, update'),
+            array('code', 'validators.CodeValidator', 'on' => 'insert'), // т.к. не даем редактировать код
+            array('temporary, has_preview, temporary_public', 'boolean', 'on' => 'insert, update'),
+            array('sort', 'validators.IntegerValidator', 'on' => 'insert, update'),
+            // на длину
+            array('name, code', 'length', 'max'=>150, 'on' => 'insert, update'),
+            // и безопасные
             array('description', 'safe'),
-		);
+        );
 	}
 
 	/**
@@ -97,42 +100,6 @@ class Collections extends ActiveRecord
             'preview' => Yii::t('common', 'Превью'),
 		);
 	}
-
-	/**
-	 * Retrieves a list of models based on the current search/filter conditions.
-	 *
-	 * Typical usecase:
-	 * - Initialize the model fields with values from filter form.
-	 * - Execute this method to get CActiveDataProvider instance which will filter
-	 * models according to data in model fields.
-	 * - Pass data provider to CGridView, CListView or any similar widget.
-	 *
-	 * @return CActiveDataProvider the data provider that can return the models
-	 * based on the search/filter conditions.
-	 */
-	/*public function search()
-	{
-		// @todo Please modify the following code to remove attributes that should not be searched.
-
-		$criteria=new CDbCriteria;
-
-		$criteria->compare('id',$this->id,true);
-		$criteria->compare('parent_id',$this->parent_id,true);
-		$criteria->compare('name',$this->name,true);
-		$criteria->compare('description',$this->description,true);
-		$criteria->compare('code',$this->code,true);
-		$criteria->compare('temporary',$this->temporary);
-		$criteria->compare('has_preview',$this->has_preview);
-		$criteria->compare('date_create',$this->date_create,true);
-		$criteria->compare('date_modify',$this->date_modify,true);
-		$criteria->compare('date_delete',$this->date_delete,true);
-		$criteria->compare('sort',$this->sort,true);
-		$criteria->compare('deleted',$this->deleted);
-
-		return new CActiveDataProvider($this, array(
-			'criteria'=>$criteria,
-		));
-	}*/
 
 	/**
 	 * Returns the static model of the specified AR class.
