@@ -2,7 +2,7 @@
 /**
  *
  */
-class WebUser extends CWebUser
+class MyWebUser extends CWebUser
 {
     private $_model;
 

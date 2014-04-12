@@ -3,7 +3,7 @@
  * Хелпер для удаления сущностей в проекте
  */
 
-class DeleteHelper
+class MyDeleteHelper
 {
     /**
      * Удаляет изображение
@@ -171,11 +171,11 @@ class DeleteHelper
 
     /**
      * Удаляет запись из справочника
-     * @param ActiveRecord $Model модель записи, см. {@link DictionariesController::getDictionaryRecordModel()}
+     * @param MyActiveRecord $Model модель записи, см. {@link DictionariesController::getDictionaryRecordModel()}
      * @return bool удалены ли запись или нет. Нет - в случае, если запись где-то используется
      * @throws CException
      */
-    public static function deleteDictionaryRecord(ActiveRecord $Model)
+    public static function deleteDictionaryRecord(MyActiveRecord $Model)
     {
         if ($Model->isReadyToBeDeleted()) {
             $Model->deleteDictionaryRecord();

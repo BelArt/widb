@@ -3,7 +3,7 @@
 /**
  * Контроллер справочников
  */
-class DictionariesController extends Controller
+class DictionariesController extends MyController
 {
 	/**
 	 * @return array action filters
@@ -131,7 +131,7 @@ class DictionariesController extends Controller
      * Возвращает модель записи в соответствующем справочнике
      * @param string $id айди записи в справочнике
      * @param string $type тип справочника
-     * @return ActiveRecord модель записи в справочнике
+     * @return MyActiveRecord модель записи в справочнике
      * @throws CException
      */
     private function getDictionaryRecordModel($id, $type)
@@ -160,7 +160,7 @@ class DictionariesController extends Controller
 
     /**
      * Устанавливает параметры страницы редактирования записи в справочнике (тайтл, хлебные крошки, заголовок)
-     * @param ActiveRecord $Model модель записи в справочнике
+     * @param MyActiveRecord $Model модель записи в справочнике
      * @throws CException
      */
     private function setPageParamsForActionUpdate($Model)
@@ -367,7 +367,7 @@ class DictionariesController extends Controller
     {
         $Model = $this->getDictionaryRecordModel($id, $type);
 
-        if (DeleteHelper::deleteDictionaryRecord($Model)) {
+        if (MyDeleteHelper::deleteDictionaryRecord($Model)) {
             Yii::app()->user->setFlash('success', Yii::t('admin', 'Запись удалена'));
             $this->redirect(array('dictionaries/view'));
         } else {

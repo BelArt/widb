@@ -13,7 +13,7 @@
  * @property string $sort
  * @property integer $deleted
  */
-class ObjectTypes extends ActiveRecord
+class ObjectTypes extends MyActiveRecord
 {
 	/**
 	 * @return string the associated database table name
@@ -33,7 +33,7 @@ class ObjectTypes extends ActiveRecord
             array('name', 'validators.MyRequiredValidator', 'on' => 'insert, update'),
             // потом общие проверки на формат
             // если атрибут не указан в обязательных, то свойство allowEmpty должно быть true
-            array('sort', 'validators.IntegerValidator', 'on' => 'insert, update'),
+            array('sort', 'validators.MyIntegerValidator', 'on' => 'insert, update'),
             // потом отдельно на максимальную длину
             array('name', 'length', 'max'=>150, 'on' => 'insert, update'),
             array('sort', 'length', 'max'=>10, 'on' => 'insert, update'),

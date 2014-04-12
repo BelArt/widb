@@ -1,6 +1,6 @@
 <?php
 
-class SiteController extends Controller
+class SiteController extends MyController
 {
     public function filters()
     {
@@ -131,7 +131,7 @@ class SiteController extends Controller
         switch ($action) {
             // удаляем не сохраненные превью, которые подгрузил пользователь
             case 'clearUserUploads':
-                PreviewHelper::clearUserPreviewsUploads();
+                MyPreviewHelper::clearUserPreviewsUploads();
                 break;
             // удаляем сохраненное превью
             case 'deletePreview':
@@ -350,7 +350,7 @@ class SiteController extends Controller
                 throw new CHttpException(403, Yii::t('yii','You are not authorized to perform this action.'));
             }
 
-            if (DeleteHelper::deleteNormalCollections($params['ids'])) {
+            if (MyDeleteHelper::deleteNormalCollections($params['ids'])) {
                 Yii::app()->user->setFlash(
                     'success',
                     Yii::t('collections', 'Все выбранные дочерние коллекции удалены')
@@ -387,7 +387,7 @@ class SiteController extends Controller
                 }
             }
 
-            DeleteHelper::deleteObjectsFromTempCollection($params['ids'], $params['collectionId']);
+            MyDeleteHelper::deleteObjectsFromTempCollection($params['ids'], $params['collectionId']);
 
             Yii::app()->user->setFlash(
                 'success',
@@ -410,7 +410,7 @@ class SiteController extends Controller
                 throw new CHttpException(403, Yii::t('yii','You are not authorized to perform this action.'));
             }
 
-            if (DeleteHelper::deleteObjectsFromNormalCollection($params['ids'])) {
+            if (MyDeleteHelper::deleteObjectsFromNormalCollection($params['ids'])) {
                 Yii::app()->user->setFlash(
                     'success',
                     Yii::t('objects', 'Все выбранные объекты удалены!')

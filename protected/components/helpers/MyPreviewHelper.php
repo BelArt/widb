@@ -2,7 +2,7 @@
 /**
  * Хелпер для работы с превью.
  */
-class PreviewHelper
+class MyPreviewHelper
 {
     /**
      * @var integer размер квадрата маленького превью, в px
@@ -531,11 +531,11 @@ class PreviewHelper
 
     /**
      * Удаляет превью
-     * @param ActiveRecord $Model модель
+     * @param MyActiveRecord $Model модель
      * @throws CException
      * @returns boolean
      */
-    public static function deletePreview(ActiveRecord $Model)
+    public static function deletePreview(MyActiveRecord $Model)
     {
         $previewsFolder = self::getPreviewFolderPath($Model);
 

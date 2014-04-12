@@ -3,7 +3,7 @@
 /**
  * Контроллер действий с пользователями
  */
-class UsersController extends Controller
+class UsersController extends MyController
 {
     private $_user;
 
@@ -195,7 +195,7 @@ class UsersController extends Controller
     {
         $User = $this->loadUser($id);
 
-        DeleteHelper::deleteUser($User);
+        MyDeleteHelper::deleteUser($User);
         Yii::app()->user->setFlash('success', Yii::t('admin', 'Пользователь удален'));
 
         $this->redirect(array('users/view'));

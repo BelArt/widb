@@ -1,8 +1,8 @@
 <?php
 /**
- * Class NestedPDO для поддержки вложенных транзакций
+ * Class MyPDO для поддержки вложенных транзакций
  */
-class NestedPDO extends PDO
+class MyPDO extends PDO
 {
     // The current transaction level.
     protected $transLevel = 0;

@@ -23,7 +23,7 @@
  *
  * @todo разобраться с поиском
  */
-class Collections extends ActiveRecord
+class Collections extends MyActiveRecord
 {
     /**
      * @var array массив с моделями-детьми (у кого parent_id = id)
@@ -53,10 +53,10 @@ class Collections extends ActiveRecord
             // сначала обязательные
             array('name, code', 'validators.MyRequiredValidator', 'on' => 'insert, update'),
             // проверки на формат
-            array('parent_id', 'validators.IntegerValidator', 'on' => 'insert, update'),
-            array('code', 'validators.CodeValidator', 'on' => 'insert'), // т.к. не даем редактировать код
+            array('parent_id', 'validators.MyIntegerValidator', 'on' => 'insert, update'),
+            array('code', 'validators.MyCodeValidator', 'on' => 'insert'), // т.к. не даем редактировать код
             array('temporary, has_preview, temporary_public', 'boolean', 'on' => 'insert, update'),
-            array('sort', 'validators.IntegerValidator', 'on' => 'insert, update'),
+            array('sort', 'validators.MyIntegerValidator', 'on' => 'insert, update'),
             // на длину
             array('name, code', 'length', 'max'=>150, 'on' => 'insert, update'),
             // и безопасные
@@ -125,9 +125,9 @@ class Collections extends ActiveRecord
      */
     private function setThumbnails()
     {
-        $this->thumbnailBig = PreviewHelper::getBigThumbnailForCollection($this);
-        $this->thumbnailMedium = PreviewHelper::getMediumThumbnailForCollection($this);
-        $this->thumbnailSmall = PreviewHelper::getSmallThumbnailForCollection($this);
+        $this->thumbnailBig = MyPreviewHelper::getBigThumbnailForCollection($this);
+        $this->thumbnailMedium = MyPreviewHelper::getMediumThumbnailForCollection($this);
+        $this->thumbnailSmall = MyPreviewHelper::getSmallThumbnailForCollection($this);
     }
 
     /**
@@ -723,7 +723,7 @@ class Collections extends ActiveRecord
             }
 
             // удаляем превью
-            PreviewHelper::deletePreview($this);
+            MyPreviewHelper::deletePreview($this);
 
             // раз все ок - завершаем транзакцию
             $Transaction->commit();
@@ -778,7 +778,7 @@ class Collections extends ActiveRecord
             }
 
             // удаляем превью
-            PreviewHelper::deletePreview($this);
+            MyPreviewHelper::deletePreview($this);
 
             // раз все ок - завершаем транзакцию
             $Transaction->commit();

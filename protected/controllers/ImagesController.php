@@ -3,7 +3,7 @@
  * Контроллер действий с изображениями
  */
 
-class ImagesController extends Controller
+class ImagesController extends MyController
 {
     private $_image;
     private $_object;
@@ -241,12 +241,12 @@ class ImagesController extends Controller
         $attributes = array();
         $attributes[] = array(
             'label' => $Image->getAttributeLabel('width'),
-            'value' => CHtml::encode(!empty($Image->width_cm) ? OutputHelper::formatSize($Image->width_cm) : ''),
+            'value' => CHtml::encode(!empty($Image->width_cm) ? MyOutputHelper::formatSize($Image->width_cm) : ''),
             'cssClass' => 'detailViewNowrap'
         );
         $attributes[] = array(
             'label' => $Image->getAttributeLabel('height'),
-            'value' => CHtml::encode(!empty($Image->height_cm) ? OutputHelper::formatSize($Image->height_cm) : ''),
+            'value' => CHtml::encode(!empty($Image->height_cm) ? MyOutputHelper::formatSize($Image->height_cm) : ''),
             'cssClass' => 'detailViewNowrap'
         );
         $attributes[] = array(
@@ -298,11 +298,11 @@ class ImagesController extends Controller
                     $this->redirect(Yii::app()->urlManager->createObjectUrl($Object));
                 } else {
                     $Transaction->rollback();
-                    PreviewHelper::clearUserPreviewsUploads();
+                    MyPreviewHelper::clearUserPreviewsUploads();
                 }
             } catch (Exception $Exception) {
                 $Transaction->rollback();
-                PreviewHelper::clearUserPreviewsUploads();
+                MyPreviewHelper::clearUserPreviewsUploads();
                 throw $Exception;
             }
         }
@@ -366,17 +366,17 @@ class ImagesController extends Controller
                     $Image->saveUploadedPreviews();
                     // @todo доделать смену кода
                     /*if ($movePreviews) {
-                        PreviewHelper::changePreviewPath($oldImage, $_POST['Images']['code']);
+                        MyPreviewHelper::changePreviewPath($oldImage, $_POST['Images']['code']);
                     }*/
                     $transaction->commit();
                     $this->redirect(array('view','id'=>$Image->id));
                 } else {
                     $transaction->rollback();
-                    PreviewHelper::clearUserPreviewsUploads();
+                    MyPreviewHelper::clearUserPreviewsUploads();
                 }
             } catch (Exception $Exception) {
                 $transaction->rollback();
-                PreviewHelper::clearUserPreviewsUploads();
+                MyPreviewHelper::clearUserPreviewsUploads();
                 throw $Exception;
             }
         }
@@ -416,7 +416,7 @@ class ImagesController extends Controller
     public function actionDelete($id)
     {
         $Object = $this->loadObject($id);
-        DeleteHelper::deleteImage($id);
+        MyDeleteHelper::deleteImage($id);
         Yii::app()->user->setFlash('success', Yii::t('images', 'Изображение удалено'));
         $this->redirect(Yii::app()->urlManager->createObjectUrl($Object));
     }

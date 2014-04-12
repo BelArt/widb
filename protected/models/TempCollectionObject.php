@@ -13,7 +13,7 @@
  * @property string $sort
  * @property integer $deleted
  */
-class TempCollectionObject extends ActiveRecord
+class TempCollectionObject extends MyActiveRecord
 {
 	/**
 	 * @return string the associated database table name
@@ -32,7 +32,7 @@ class TempCollectionObject extends ActiveRecord
             // сначала обязательные
             array('collection_id, object_id', 'validators.MyRequiredValidator', 'on' => 'insert, update'),
             // потом общие проверки на формат
-            array('sort, collection_id, object_id', 'validators.IntegerValidator', 'on' => 'insert, update'),
+            array('sort, collection_id, object_id', 'validators.MyIntegerValidator', 'on' => 'insert, update'),
             // потом отдельно на максимальную длину
             // и безопасные
         );

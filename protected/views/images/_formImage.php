@@ -49,13 +49,13 @@ echo $form->textFieldRow($Image,'height', array(
 
 echo $form->textFieldRow($Image,'width_cm', array(
     'class' => 'input-small _imageForm_hideErrorsKeypress',
-    'value' => $Image->width_cm == '0.00' ? '' : OutputHelper::formatNumber($Image->width_cm),
+    'value' => $Image->width_cm == '0.00' ? '' : MyOutputHelper::formatNumber($Image->width_cm),
     'append' => Yii::t('common', 'см')
 ));
 
 echo $form->textFieldRow($Image,'height_cm', array(
     'class' => 'input-small _imageForm_hideErrorsKeypress',
-    'value' => $Image->height_cm == '0.00' ? '' : OutputHelper::formatNumber($Image->height_cm),
+    'value' => $Image->height_cm == '0.00' ? '' : MyOutputHelper::formatNumber($Image->height_cm),
     'append' => Yii::t('common', 'см')
 ));
 

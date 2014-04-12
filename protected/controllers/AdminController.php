@@ -3,7 +3,7 @@
 /**
  * Контроллер админских действий
  */
-class AdminController extends Controller
+class AdminController extends MyController
 {
 
 	public function filters()
@@ -63,7 +63,7 @@ class AdminController extends Controller
      */
     public function actionDeleteDeleted()
     {
-        DeleteHelper::deleteDeletedRecords();
+        MyDeleteHelper::deleteDeletedRecords();
 
         Yii::app()->user->setFlash('success', Yii::t('admin', 'Все "удаленные" записи реально удалены'));
         $this->redirect(array('admin/index'));
@@ -75,11 +75,11 @@ class AdminController extends Controller
     public function actionRepairPreview()
     {
         // удаляем несохраненные превью
-        DeleteHelper::deleteUnsavedPreviews();
+        MyDeleteHelper::deleteUnsavedPreviews();
         // удаляем пустые папки
-        DeleteHelper::deleteEmptyFoldersInPreviews();
+        MyDeleteHelper::deleteEmptyFoldersInPreviews();
         // если стоит галочка Есть превью, а на диске превью нет - снимаем галочку
-        DeleteHelper::uncheckHasPreviewCheckboxIfReallyHasNoPreview();
+        MyDeleteHelper::uncheckHasPreviewCheckboxIfReallyHasNoPreview();
 
         Yii::app()->user->setFlash('success', Yii::t('admin', 'Теперь все круто'));
         $this->redirect(array('admin/index'));

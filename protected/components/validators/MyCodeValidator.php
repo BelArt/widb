@@ -3,7 +3,7 @@
 /**
  * Валидатор поля Код.
  */
-class CodeValidator extends CValidator
+class MyCodeValidator extends CValidator
 {
     public $pattern = '/^[a-z0-9_\-]{3,}$/';
     public $allowEmpty = true;

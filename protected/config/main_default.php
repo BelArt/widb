@@ -31,6 +31,7 @@ return array(
         'application.components.helpers.*',
         'application.components.actions.*',
         'application.components.validators.*',
+        'application.components.filters.*',
         'application.widgets.*',
 	),
 
@@ -47,15 +48,15 @@ return array(
 	),
 
     // наш обработчик ошибок
-    'onError' => array('ErrorAndExceptionHandler', 'handleError'),
+    'onError' => array('MyErrorAndExceptionHandler', 'handleError'),
 
     // наш обработчик исключений
-    'onException' => array('ErrorAndExceptionHandler', 'handleException'),
+    'onException' => array('MyErrorAndExceptionHandler', 'handleException'),
 
 	// application components
 	'components'=>array(
 		'user'=>array(
-            'class' => 'WebUser',
+            'class' => 'MyWebUser',
 			// enable cookie-based authentication
 			'allowAutoLogin'=>true,
 		),
@@ -63,7 +64,7 @@ return array(
             'emulatePrepare' => true,
             'charset' => 'utf8',
             'tablePrefix'=>'tbl_',
-            'pdoClass' => 'NestedPDO',
+            'pdoClass' => 'MyPDO',
         ),
 		'urlManager'=>array(
             'class' => 'MyUrlManager',
@@ -107,7 +108,7 @@ return array(
             'forceCopy' => YII_DEBUG,
         ),
         'authManager' => array(
-            'class' => 'PhpAuthManager',
+            'class' => 'MyPhpAuthManager',
         ),
         'image' => array(
             'class'=>'application.extensions.image.CImageComponent',

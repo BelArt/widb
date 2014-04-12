@@ -15,7 +15,7 @@
  * @property string $sort
  * @property integer $deleted
  */
-class Authors extends ActiveRecord
+class Authors extends MyActiveRecord
 {
 	/**
 	 * @return string the associated database table name
@@ -35,7 +35,7 @@ class Authors extends ActiveRecord
             array('initials', 'validators.MyRequiredValidator', 'on' => 'insert, update'),
             // потом общие проверки на формат
             // если атрибут не указан в обязательных, то свойство allowEmpty должно быть true
-            array('sort', 'validators.IntegerValidator', 'on' => 'insert, update'),
+            array('sort', 'validators.MyIntegerValidator', 'on' => 'insert, update'),
             // потом отдельно на максимальную длину
             array('surname, name, middlename, initials', 'length', 'max'=>150, 'on' => 'insert, update'),
             array('sort', 'length', 'max'=>10, 'on' => 'insert, update'),

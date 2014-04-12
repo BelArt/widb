@@ -7,7 +7,7 @@
  * нужно для того, чтобы генерить ссылки с сохраненными настройками отображения дочерних коллекций/объектов/изображений,
  * для создания эффекта "запоминания настроек отображения".
  */
-class SaveGetParamsToSessionFilter extends CFilter
+class MySaveGetParamsToSessionFilter extends CFilter
 {
     protected function preFilter($filterChain)
     {

@@ -3,7 +3,7 @@
 /**
  * Контроллер коллекций
  */
-class CollectionsController extends Controller
+class CollectionsController extends MyController
 {
     private $_collection;
 
@@ -22,7 +22,7 @@ class CollectionsController extends Controller
             'forActionDeleteTemp + deleteTemp',
             'forActionIndex + index',
             array(
-                'application.components.SaveGetParamsToSessionFilter + view, viewTemp, index',
+                'application.components.filters.MySaveGetParamsToSessionFilter + view, viewTemp, index',
             ),
 		);
 	}
@@ -510,11 +510,11 @@ class CollectionsController extends Controller
                     $this->redirect(array('index'));
                 } else {
                     $transaction->rollback();
-                    PreviewHelper::clearUserPreviewsUploads();
+                    MyPreviewHelper::clearUserPreviewsUploads();
                 }
             } catch (Exception $e) {
                 $transaction->rollback();
-                PreviewHelper::clearUserPreviewsUploads();
+                MyPreviewHelper::clearUserPreviewsUploads();
                 throw $e;
             }
         }
@@ -559,11 +559,11 @@ class CollectionsController extends Controller
                     $this->redirect(array('index'));
                 } else {
                     $transaction->rollback();
-                    PreviewHelper::clearUserPreviewsUploads();
+                    MyPreviewHelper::clearUserPreviewsUploads();
                 }
             } catch (Exception $e) {
                 $transaction->rollback();
-                PreviewHelper::clearUserPreviewsUploads();
+                MyPreviewHelper::clearUserPreviewsUploads();
                 throw $e;
             }
         }
@@ -616,17 +616,17 @@ class CollectionsController extends Controller
                     $model->saveUploadedPreviews();
                     // @todo доделать смену кода
                     /*if ($movePreviews) {
-                        PreviewHelper::changePreviewPath($oldCollection, $_POST['Collections']['code']);
+                        MyPreviewHelper::changePreviewPath($oldCollection, $_POST['Collections']['code']);
                     }*/
                     $transaction->commit();
                     $this->redirect(Yii::app()->urlManager->createNormalCollectionUrl($model));
                 } else {
                     $transaction->rollback();
-                    PreviewHelper::clearUserPreviewsUploads();
+                    MyPreviewHelper::clearUserPreviewsUploads();
                 }
             } catch (Exception $e) {
                 $transaction->rollback();
-                PreviewHelper::clearUserPreviewsUploads();
+                MyPreviewHelper::clearUserPreviewsUploads();
                 throw $e;
             }
 		}
@@ -690,17 +690,17 @@ class CollectionsController extends Controller
                     $model->saveUploadedPreviews();
                     // @todo доделать смену кода
                     /*if ($movePreviews) {
-                        PreviewHelper::changePreviewPath($oldCollection, $_POST['Collections']['code']);
+                        MyPreviewHelper::changePreviewPath($oldCollection, $_POST['Collections']['code']);
                     }*/
                     $transaction->commit();
                     $this->redirect(Yii::app()->urlManager->createTempCollectionUrl($model));
                 } else {
                     $transaction->rollback();
-                    PreviewHelper::clearUserPreviewsUploads();
+                    MyPreviewHelper::clearUserPreviewsUploads();
                 }
             } catch (Exception $e) {
                 $transaction->rollback();
-                PreviewHelper::clearUserPreviewsUploads();
+                MyPreviewHelper::clearUserPreviewsUploads();
                 throw $e;
             }
         }
@@ -734,7 +734,7 @@ class CollectionsController extends Controller
 	 */
 	public function actionDelete($id)
 	{
-        if (DeleteHelper::deleteNormalCollection($id)) {
+        if (MyDeleteHelper::deleteNormalCollection($id)) {
             Yii::app()->user->setFlash(
                 'success',
                 Yii::t('collections', 'Коллекция удалена')
@@ -766,7 +766,7 @@ class CollectionsController extends Controller
      */
     public function actionDeleteTemp($id)
     {
-        DeleteHelper::deleteTempCollection($id);
+        MyDeleteHelper::deleteTempCollection($id);
 
         Yii::app()->user->setFlash(
             'success',

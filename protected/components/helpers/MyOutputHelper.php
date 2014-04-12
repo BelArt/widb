@@ -2,7 +2,7 @@
 /**
  * Хелпер вывода
  */
-class OutputHelper
+class MyOutputHelper
 {
     const MEASURE_UNIT_CM = 'см';
     const MEASURE_UNIT_PX = 'px';

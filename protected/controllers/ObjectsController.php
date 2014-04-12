@@ -1,6 +1,6 @@
 <?php
 
-class ObjectsController extends Controller
+class ObjectsController extends MyController
 {
     private $_object;
     private $_collection;
@@ -17,7 +17,7 @@ class ObjectsController extends Controller
             'forActionDelete + delete',
             'forActionUpdate + update',
             array(
-                'application.components.SaveGetParamsToSessionFilter + view',
+                'application.components.filters.MySaveGetParamsToSessionFilter + view',
             ),
 		);
 	}
@@ -86,11 +86,11 @@ class ObjectsController extends Controller
                     $this->redirect(Yii::app()->urlManager->createNormalCollectionUrl($Collection));
                 } else {
                     $transaction->rollback();
-                    PreviewHelper::clearUserPreviewsUploads();
+                    MyPreviewHelper::clearUserPreviewsUploads();
                 }
             } catch (Exception $e) {
                 $transaction->rollback();
-                PreviewHelper::clearUserPreviewsUploads();
+                MyPreviewHelper::clearUserPreviewsUploads();
                 throw $e;
             }
         }
@@ -272,17 +272,17 @@ class ObjectsController extends Controller
         $attributes = array(
             array(
                 'label' => $Object->getAttributeLabel('width'),
-                'value' => $Object->width !== '0.00' ? CHtml::encode(OutputHelper::formatSize($Object->width)) : '',
+                'value' => $Object->width !== '0.00' ? CHtml::encode(MyOutputHelper::formatSize($Object->width)) : '',
                 'cssClass' => 'detailViewNowrap'
             ),
             array(
                 'label' => $Object->getAttributeLabel('height'),
-                'value' => $Object->height !== '0.00' ? CHtml::encode(OutputHelper::formatSize($Object->height)) : '',
+                'value' => $Object->height !== '0.00' ? CHtml::encode(MyOutputHelper::formatSize($Object->height)) : '',
                 'cssClass' => 'detailViewNowrap'
             ),
             array(
                 'label' => $Object->getAttributeLabel('depth'),
-                'value' => $Object->depth !== '0.00' ? CHtml::encode(OutputHelper::formatSize($Object->depth)) : '',
+                'value' => $Object->depth !== '0.00' ? CHtml::encode(MyOutputHelper::formatSize($Object->depth)) : '',
                 'cssClass' => 'detailViewNowrap'
             ),
             array(
@@ -405,7 +405,7 @@ class ObjectsController extends Controller
     {
         $Collection = $this->loadCollection($id);
 
-        if (DeleteHelper::deleteObjectFromNormalCollection($id)) {
+        if (MyDeleteHelper::deleteObjectFromNormalCollection($id)) {
             Yii::app()->user->setFlash(
                 'success',
                 Yii::t('objects', 'Объект удален')
@@ -464,17 +464,17 @@ class ObjectsController extends Controller
                     $Object->saveUploadedPreviews();
                     // @todo доделать смену кода
                     /*if ($movePreviews) {
-                        PreviewHelper::changePreviewPath($oldObject, $_POST['Objects']['code']);
+                        MyPreviewHelper::changePreviewPath($oldObject, $_POST['Objects']['code']);
                     }*/
                     $transaction->commit();
                     $this->redirect(Yii::app()->urlManager->createObjectUrl($Object));
                 } else {
                     $transaction->rollback();
-                    PreviewHelper::clearUserPreviewsUploads();
+                    MyPreviewHelper::clearUserPreviewsUploads();
                 }
             } catch (Exception $e) {
                 $transaction->rollback();
-                PreviewHelper::clearUserPreviewsUploads();
+                MyPreviewHelper::clearUserPreviewsUploads();
                 throw $e;
             }
         }
