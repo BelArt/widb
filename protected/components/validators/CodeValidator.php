@@ -38,7 +38,7 @@ class CodeValidator extends CValidator
                 $Record = Images::model()->findByAttributes(array('code' => $object->$attribute), $condition);
                 break;
             default:
-                throw new ValidatorException();
+                throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
         if (!empty($Record)) {

@@ -281,7 +281,7 @@ class PreviewHelper
         $className = get_class($Model);
 
         if (!in_array($className, array('Collections', 'Objects', 'Images'))) {
-            throw new PreviewHelperException();
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
         $previewDir = self::getPreviewFolderPath($Model);
@@ -343,7 +343,7 @@ class PreviewHelper
                 $fileNamePart = self::PREVIEW_ORIGINAL_NAME;
                 break;
             default:
-                throw new PreviewHelperException();
+                throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
         foreach (scandir($previewDir) as $file) {
@@ -366,7 +366,7 @@ class PreviewHelper
         $className = get_class($Model);
 
         if (!in_array($className, array('Collections', 'Objects', 'Images'))) {
-            throw new PreviewHelperException();
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
         $path = '';
@@ -406,7 +406,7 @@ class PreviewHelper
                     .$Model->code;
                 break;
             default:
-                throw new PreviewHelperException();
+                throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
         return $path;
@@ -429,7 +429,7 @@ class PreviewHelper
             file_put_contents($file,'');
         } else {
             if (($versions = file_get_contents($file)) === false) {
-                throw new PreviewHelperException();
+                throw new CException(Yii::t('common', 'Произошла ошибка!'));
             }
         }
 
@@ -456,7 +456,7 @@ class PreviewHelper
                 $version = empty($versions['images']) ? 0 : $versions['images'];
                 break;
             default:
-                throw new PreviewHelperException();
+                throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
         return $version;
@@ -477,7 +477,7 @@ class PreviewHelper
 
         if (file_exists($file)) {
             if (($versions = file_get_contents($file)) === false) {
-                throw new PreviewHelperException();
+                throw new CException(Yii::t('common', 'Произошла ошибка!'));
             }
         }
 
@@ -502,11 +502,11 @@ class PreviewHelper
                 $versions['images'] = $version;
                 break;
             default:
-                throw new PreviewHelperException();
+                throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
         if (false === file_put_contents($file, serialize($versions))) {
-            throw new PreviewHelperException();
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
     }
 
@@ -554,7 +554,7 @@ class PreviewHelper
                     )
                 ) {
                     if (!unlink($previewsFolder.DIRECTORY_SEPARATOR.$file)) {
-                        throw new PreviewHelperException();
+                        throw new CException(Yii::t('common', 'Произошла ошибка!'));
                     }
                 }
             }
@@ -565,7 +565,7 @@ class PreviewHelper
 
                 // удаляем саму папку
                 if (!rmdir($previewsFolder)) {
-                    throw new PreviewHelperException();
+                    throw new CException(Yii::t('common', 'Произошла ошибка!'));
                 }
 
                 // удаляем пустую родительскую папку
@@ -576,7 +576,7 @@ class PreviewHelper
                         $files = array_diff(scandir($previewsFolder), array('..', '.'));
                         if (empty($files)) {
                             if (!rmdir($previewsFolder)) {
-                                throw new PreviewHelperException();
+                                throw new CException(Yii::t('common', 'Произошла ошибка!'));
                             }
                         }
                         break;
@@ -586,7 +586,7 @@ class PreviewHelper
                         $files = array_diff(scandir($previewsFolder), array('..', '.'));
                         if (empty($files)) {
                             if (!rmdir($previewsFolder)) {
-                                throw new PreviewHelperException();
+                                throw new CException(Yii::t('common', 'Произошла ошибка!'));
                             }
                         }
                         $Collection = Collections::model()->findByPk($Object->collection_id);
@@ -594,7 +594,7 @@ class PreviewHelper
                         $files = array_diff(scandir($previewsFolder), array('..', '.'));
                         if (empty($files)) {
                             if (!rmdir($previewsFolder)) {
-                                throw new PreviewHelperException();
+                                throw new CException(Yii::t('common', 'Произошла ошибка!'));
                             }
                         }
                         break;
@@ -620,13 +620,13 @@ class PreviewHelper
             $userImages = Yii::app()->user->getState(Yii::app()->params['xuploadStatePreviewsName']);
 
             if (!is_array($userImages)) {
-                throw new PreviewHelperException();
+                throw new CException(Yii::t('common', 'Произошла ошибка!'));
             }
 
             foreach ($userImages as $image) {
                 if (is_file($image["path"])) {
                     if (!unlink($image["path"])) {
-                        throw new PreviewHelperException();
+                        throw new CException(Yii::t('common', 'Произошла ошибка!'));
                     }
                 }
             }
@@ -647,7 +647,7 @@ class PreviewHelper
         $callerClassName = get_class($Caller);
 
         if (!in_array($callerClassName, array('Collections', 'Objects', 'Images'))) {
-            throw new PreviewHelperException();
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
         // предполагается, что в сессии хранится только одна картинка, которую как раз загрузили
@@ -660,13 +660,13 @@ class PreviewHelper
 
             if (!file_exists($dir)) {
                 if (!mkdir($dir, 0777, true)) {
-                    throw new PreviewHelperException();
+                    throw new CException(Yii::t('common', 'Произошла ошибка!'));
                 }
             }
 
             if (!is_writable($dir)) {
                 if (!chmod($dir, 0777)) {
-                    throw new PreviewHelperException();
+                    throw new CException(Yii::t('common', 'Произошла ошибка!'));
                 }
             }
 
@@ -681,12 +681,12 @@ class PreviewHelper
                     $Image->resize(self::PREVIEW_SMALL_SIZE, self::PREVIEW_SMALL_SIZE, Image::AUTO);
                     if (file_exists($dir . DIRECTORY_SEPARATOR . self::PREVIEW_SMALL_NAME . '.' . $imageExt)) {
                         if (!unlink($dir . DIRECTORY_SEPARATOR . self::PREVIEW_SMALL_NAME . '.' . $imageExt)) {
-                            throw new PreviewHelperException();
+                            throw new CException(Yii::t('common', 'Произошла ошибка!'));
                         }
                     }
                     $Image->save($dir . DIRECTORY_SEPARATOR . self::PREVIEW_SMALL_NAME . '.' . $imageExt);
                     if (!chmod($dir . DIRECTORY_SEPARATOR . self::PREVIEW_SMALL_NAME . '.' . $imageExt, 0777)) {
-                        throw new PreviewHelperException();
+                        throw new CException(Yii::t('common', 'Произошла ошибка!'));
                     }
 
                     // средняя
@@ -695,12 +695,12 @@ class PreviewHelper
                     $Image->resize(self::PREVIEW_MEDIUM_SIZE, self::PREVIEW_MEDIUM_SIZE, Image::AUTO);
                     if (file_exists($dir . DIRECTORY_SEPARATOR . self::PREVIEW_MEDIUM_NAME . '.' . $imageExt)) {
                         if (!unlink($dir . DIRECTORY_SEPARATOR . self::PREVIEW_MEDIUM_NAME . '.' . $imageExt)) {
-                            throw new PreviewHelperException();
+                            throw new CException(Yii::t('common', 'Произошла ошибка!'));
                         }
                     }
                     $Image->save($dir . DIRECTORY_SEPARATOR . self::PREVIEW_MEDIUM_NAME . '.' . $imageExt);
                     if (!chmod($dir . DIRECTORY_SEPARATOR . self::PREVIEW_MEDIUM_NAME . '.' . $imageExt, 0777)) {
-                        throw new PreviewHelperException();
+                        throw new CException(Yii::t('common', 'Произошла ошибка!'));
                     }
 
                     // большая
@@ -709,25 +709,25 @@ class PreviewHelper
                     $Image->resize(self::PREVIEW_BIG_SIZE, self::PREVIEW_BIG_SIZE, Image::AUTO);
                     if (file_exists($dir . DIRECTORY_SEPARATOR . self::PREVIEW_BIG_NAME . '.' . $imageExt)) {
                         if (!unlink($dir . DIRECTORY_SEPARATOR . self::PREVIEW_BIG_NAME . '.' . $imageExt)) {
-                            throw new PreviewHelperException();
+                            throw new CException(Yii::t('common', 'Произошла ошибка!'));
                         }
                     }
                     $Image->save($dir . DIRECTORY_SEPARATOR . self::PREVIEW_BIG_NAME . '.' . $imageExt);
                     if (!chmod($dir . DIRECTORY_SEPARATOR . self::PREVIEW_BIG_NAME . '.' . $imageExt, 0777)) {
-                        throw new PreviewHelperException();
+                        throw new CException(Yii::t('common', 'Произошла ошибка!'));
                     }
 
                     // перемещаем оригинал
                     if (file_exists($dir . DIRECTORY_SEPARATOR . self::PREVIEW_ORIGINAL_NAME . '.' . $imageExt)) {
                         if (!unlink($dir . DIRECTORY_SEPARATOR . self::PREVIEW_ORIGINAL_NAME . '.' . $imageExt)) {
-                            throw new PreviewHelperException();
+                            throw new CException(Yii::t('common', 'Произошла ошибка!'));
                         }
                     }
                     if (!rename($image["path"], $dir . DIRECTORY_SEPARATOR . self::PREVIEW_ORIGINAL_NAME . '.' . $imageExt)) {
-                        throw new PreviewHelperException();
+                        throw new CException(Yii::t('common', 'Произошла ошибка!'));
                     }
                     if (!chmod($dir . DIRECTORY_SEPARATOR . self::PREVIEW_ORIGINAL_NAME . '.' . $imageExt, 0777)) {
-                        throw new PreviewHelperException();
+                        throw new CException(Yii::t('common', 'Произошла ошибка!'));
                     }
 
                     self::incrementPreviewVersion($Caller);
@@ -746,7 +746,7 @@ class PreviewHelper
      * Перемещает превью объекта при перемещении объекта в другую коллекцию
      * @param Objects $Object перемещаемый объект
      * @param Collections $Collection новая коллекцию объекта - куда его перемещаем
-     * @throws PreviewHelperException
+     * @throws CException
      */
     public static function moveObjectToOtherCollection(Objects $Object, Collections $Collection)
     {
@@ -761,28 +761,28 @@ class PreviewHelper
 
         // по какой-то причине новая папка объекта уже есть в коллекции, куда хотим переместить объект - этого не должно быть!
         if (file_exists($newObjectFolder)) {
-            throw new PreviewHelperException();
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
         if (!file_exists($collectionFolder)) {
             if (!mkdir($collectionFolder, 0777, true)) {
-                throw new PreviewHelperException();
+                throw new CException(Yii::t('common', 'Произошла ошибка!'));
             }
         }
 
         if (!is_writable($collectionFolder)) {
             if (!chmod($collectionFolder, 0777)) {
-                throw new PreviewHelperException();
+                throw new CException(Yii::t('common', 'Произошла ошибка!'));
             }
         }
 
         if (!rename($objectFolder, $newObjectFolder)) {
-            throw new PreviewHelperException();
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
         if (!is_writable($newObjectFolder)) {
             if (!chmod($newObjectFolder, 0777)) {
-                throw new PreviewHelperException();
+                throw new CException(Yii::t('common', 'Произошла ошибка!'));
             }
         }
 
@@ -791,63 +791,8 @@ class PreviewHelper
         $files = array_diff(scandir($oldCollectionFolder), array('..', '.'));
         if (empty($files)) {
             if (!rmdir($oldCollectionFolder)) {
-                throw new PreviewHelperException();
+                throw new CException(Yii::t('common', 'Произошла ошибка!'));
             }
         }
     }
-
-    /**
-     * Перемещает папку с превью (при изменении значения поля code)
-     * @param ActiveRecord $Model модель сущности (коллекции, объекта, изображения) со СТАРЫМ значением поля code
-     * @param string $newCode новое значение поля code
-     * @throws PreviewHelperException
-     */
-    // @todo доделать смену кода
-    /*public static function changePreviewPath($Model, $newCode)
-    {
-        $oldFolder = self::getPreviewFolderPath($Model);
-
-        // если превью нет - перемещать ничего не надо
-        if (!file_exists($oldFolder)) {
-            return;
-        }
-
-        $Model->code = $newCode;
-        $newFolder = self::getPreviewFolderPath($Model);
-
-        $parentFolder = '';
-        switch (get_class($Model)) {
-            case 'Collections':
-                $parentFolder = Yii::getPathOfAlias('webroot')
-                    .DIRECTORY_SEPARATOR
-                    .Yii::app()->params['filesFolder']
-                    .DIRECTORY_SEPARATOR
-                    .Yii::app()->params['previewsFolder'];
-                break;
-            case 'Objects':
-                $parentFolder = self::getPreviewFolderPath($Model->collection);
-                break;
-            case 'Images':
-                $parentFolder = self::getPreviewFolderPath($Model->object);
-                break;
-            default:
-                throw new PreviewHelperException();
-        }
-
-        if (!is_writable($parentFolder)) {
-            if (!chmod($parentFolder, 0777)) {
-                throw new PreviewHelperException();
-            }
-        }
-
-        if (!rename($oldFolder, $newFolder)) {
-            throw new PreviewHelperException();
-        }
-
-        if (!is_writable($newFolder)) {
-            if (!chmod($newFolder, 0777)) {
-                throw new PreviewHelperException();
-            }
-        }
-    }*/
 }
