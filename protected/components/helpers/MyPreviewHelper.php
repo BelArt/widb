@@ -659,13 +659,7 @@ class MyPreviewHelper
             $dir = self::getPreviewFolderPath($Caller);
 
             if (!file_exists($dir)) {
-                if (!mkdir($dir, 0777, true)) {
-                    throw new CException(Yii::t('common', 'Произошла ошибка!'));
-                }
-            }
-
-            if (!is_writable($dir)) {
-                if (!chmod($dir, 0777)) {
+                if (!mkdir($dir, 0755, true)) {
                     throw new CException(Yii::t('common', 'Произошла ошибка!'));
                 }
             }
@@ -685,7 +679,7 @@ class MyPreviewHelper
                         }
                     }
                     $Image->save($dir . DIRECTORY_SEPARATOR . self::PREVIEW_SMALL_NAME . '.' . $imageExt);
-                    if (!chmod($dir . DIRECTORY_SEPARATOR . self::PREVIEW_SMALL_NAME . '.' . $imageExt, 0777)) {
+                    if (!chmod($dir . DIRECTORY_SEPARATOR . self::PREVIEW_SMALL_NAME . '.' . $imageExt, 0644)) {
                         throw new CException(Yii::t('common', 'Произошла ошибка!'));
                     }
 
@@ -699,7 +693,7 @@ class MyPreviewHelper
                         }
                     }
                     $Image->save($dir . DIRECTORY_SEPARATOR . self::PREVIEW_MEDIUM_NAME . '.' . $imageExt);
-                    if (!chmod($dir . DIRECTORY_SEPARATOR . self::PREVIEW_MEDIUM_NAME . '.' . $imageExt, 0777)) {
+                    if (!chmod($dir . DIRECTORY_SEPARATOR . self::PREVIEW_MEDIUM_NAME . '.' . $imageExt, 0644)) {
                         throw new CException(Yii::t('common', 'Произошла ошибка!'));
                     }
 
@@ -713,7 +707,7 @@ class MyPreviewHelper
                         }
                     }
                     $Image->save($dir . DIRECTORY_SEPARATOR . self::PREVIEW_BIG_NAME . '.' . $imageExt);
-                    if (!chmod($dir . DIRECTORY_SEPARATOR . self::PREVIEW_BIG_NAME . '.' . $imageExt, 0777)) {
+                    if (!chmod($dir . DIRECTORY_SEPARATOR . self::PREVIEW_BIG_NAME . '.' . $imageExt, 0644)) {
                         throw new CException(Yii::t('common', 'Произошла ошибка!'));
                     }
 
@@ -726,7 +720,7 @@ class MyPreviewHelper
                     if (!rename($image["path"], $dir . DIRECTORY_SEPARATOR . self::PREVIEW_ORIGINAL_NAME . '.' . $imageExt)) {
                         throw new CException(Yii::t('common', 'Произошла ошибка!'));
                     }
-                    if (!chmod($dir . DIRECTORY_SEPARATOR . self::PREVIEW_ORIGINAL_NAME . '.' . $imageExt, 0777)) {
+                    if (!chmod($dir . DIRECTORY_SEPARATOR . self::PREVIEW_ORIGINAL_NAME . '.' . $imageExt, 0644)) {
                         throw new CException(Yii::t('common', 'Произошла ошибка!'));
                     }
 
@@ -765,25 +759,13 @@ class MyPreviewHelper
         }
 
         if (!file_exists($collectionFolder)) {
-            if (!mkdir($collectionFolder, 0777, true)) {
-                throw new CException(Yii::t('common', 'Произошла ошибка!'));
-            }
-        }
-
-        if (!is_writable($collectionFolder)) {
-            if (!chmod($collectionFolder, 0777)) {
+            if (!mkdir($collectionFolder, 0755, true)) {
                 throw new CException(Yii::t('common', 'Произошла ошибка!'));
             }
         }
 
         if (!rename($objectFolder, $newObjectFolder)) {
             throw new CException(Yii::t('common', 'Произошла ошибка!'));
-        }
-
-        if (!is_writable($newObjectFolder)) {
-            if (!chmod($newObjectFolder, 0777)) {
-                throw new CException(Yii::t('common', 'Произошла ошибка!'));
-            }
         }
 
         // удаляем пустую папку старой коллекции
