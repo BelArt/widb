@@ -3,7 +3,7 @@
 /**
  * Базовый класс ActiveRecord для данного проекта
  */
-class ActiveRecord extends CActiveRecord
+class MyActiveRecord extends CActiveRecord
 {
     protected function beforeSave()
     {
@@ -21,7 +21,7 @@ class ActiveRecord extends CActiveRecord
                 $this->date_modify = $now;
                 $this->user_modify = $userId;
                 break;
-            case PreviewHelper::SCENARIO_SAVE_PREVIEWS:
+            case MyPreviewHelper::SCENARIO_SAVE_PREVIEWS:
                 break;
             case 'delete':
                 $this->date_delete = $now;
@@ -88,7 +88,7 @@ class ActiveRecord extends CActiveRecord
             throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
-        $previewUrl = PreviewHelper::getPreviewUrl($this, $size);
+        $previewUrl = MyPreviewHelper::getPreviewUrl($this, $size);
 
         return !empty($previewUrl);
     }
@@ -108,7 +108,7 @@ class ActiveRecord extends CActiveRecord
             throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
-        $previewFolder = PreviewHelper::getPreviewFolderPath($this);
+        $previewFolder = MyPreviewHelper::getPreviewFolderPath($this);
 
         return file_exists($previewFolder) && is_dir($previewFolder);
     }
@@ -137,7 +137,7 @@ class ActiveRecord extends CActiveRecord
     public function saveUploadedPreviews()
     {
         // если было что сохранить
-        if (PreviewHelper::savePreviews($this)) {
+        if (MyPreviewHelper::savePreviews($this)) {
             // ставим отметку, что превью есть
             $this->has_preview = 1;
 
@@ -158,7 +158,7 @@ class ActiveRecord extends CActiveRecord
     public function deletePreviews()
     {
         // если было что удалять
-        if (PreviewHelper::deletePreview($this)) {
+        if (MyPreviewHelper::deletePreview($this)) {
 
             $this->has_preview = 0;
 

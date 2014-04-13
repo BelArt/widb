@@ -16,7 +16,7 @@
  * @property string $user_modify
  * @property string $user_delete
  */
-class UserAllowedCollection extends ActiveRecord
+class UserAllowedCollection extends MyActiveRecord
 {
 	/**
 	 * @return string the associated database table name
@@ -31,16 +31,14 @@ class UserAllowedCollection extends ActiveRecord
 	 */
 	public function rules()
 	{
-		// NOTE: you should only define rules for those attributes that
-		// will receive user inputs.
-		return array(
-			array('deleted', 'numerical', 'integerOnly'=>true),
-			array('collection_id, user_id, sort, user_create, user_modify, user_delete', 'length', 'max'=>10),
-			array('date_create, date_modify, date_delete', 'safe'),
-			// The following rule is used by search().
-			// @todo Please remove those attributes that should not be searched.
-			array('id, collection_id, user_id, date_create, date_modify, date_delete, sort, deleted, user_create, user_modify, user_delete', 'safe', 'on'=>'search'),
-		);
+        return array(
+            // сначала обязательные
+            array('collection_id, user_id', 'validators.MyRequiredValidator', 'on' => 'insert, update'),
+            // потом общие проверки на формат
+            array('sort, collection_id, user_id', 'validators.MyIntegerValidator', 'on' => 'insert, update'),
+            // потом отдельно на максимальную длину
+            // и безопасные
+        );
 	}
 
 	/**

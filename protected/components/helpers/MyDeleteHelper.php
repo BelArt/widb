@@ -3,26 +3,21 @@
  * Хелпер для удаления сущностей в проекте
  */
 
-class DeleteHelper
+class MyDeleteHelper
 {
     /**
      * Удаляет изображение
      * @param $id айди изображения
-     * @throws DeleteHelperException
+     * @throws CException
      */
     public static function deleteImage($id)
     {
-        try {
-            $Image = Images::model()->findByPk($id);
-            if (empty($Image)) {
-                throw new DeleteHelperException();
-            }
-            $Image->deleteImage();
-        } catch (DeleteHelperException $Exception) {
-            throw $Exception;
-        } catch (Exception $Exception) {
-            throw new DeleteHelperException($Exception);
+        $Image = Images::model()->findByPk($id);
+        if (empty($Image)) {
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
+
+        $Image->deleteImage();
     }
 
     /**
@@ -46,8 +41,8 @@ class DeleteHelper
 
     /**
      * Удаляет объекты из временной коллекции
-     * @param $objectIds айди объектов для удаления
-     * @param $collectionId айди временной коллекции
+     * @param array $objectIds айди объектов для удаления
+     * @param int $collectionId айди временной коллекции
      */
     public static function deleteObjectsFromTempCollection(array $objectIds, $collectionId)
     {
@@ -61,14 +56,14 @@ class DeleteHelper
      * Удаляет объект из обычной коллекции
      * @param $id айди объекта
      * @return bool
-     * @throws DeleteHelperException
+     * @throws CException
      */
     public static function deleteObjectFromNormalCollection($id)
     {
         $Object = Objects::model()->findByPk($id);
 
         if (empty($Object)) {
-            throw new DeleteHelperException();
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
         if ($Object->isReadyToBeDeleted()) {
@@ -83,7 +78,7 @@ class DeleteHelper
      * Удаляет объект из временной коллекции
      * @param $objectId айди объекта
      * @param $collectionId айди коллекции
-     * @throws DeleteHelperException
+     * @throws CException
      */
     public static function deleteObjectFromTempCollection($objectId, $collectionId)
     {
@@ -99,7 +94,7 @@ class DeleteHelper
         $Record = TempCollectionObject::model()->find($Criteria);
 
         if (empty($Record)) {
-            throw new DeleteHelperException();
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
         $Record->deleteRecord();
@@ -109,14 +104,14 @@ class DeleteHelper
      * Удаляет обычную коллекцию
      * @param int $id айди обычной коллекции
      * @return bool true - удалена, false - не удалена, из-за того, что не выполнены все необходимые для удаления условия
-     * @throws DeleteHelperException
+     * @throws CException
      */
     public static function deleteNormalCollection($id)
     {
         $Collection = Collections::model()->findByPk($id);
 
         if (empty($Collection) || $Collection->temporary) {
-            throw new DeleteHelperException();
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
         if ($Collection->isReadyToBeDeleted()) {
@@ -130,14 +125,14 @@ class DeleteHelper
     /**
      * Удаляет временную коллекцию
      * @param int $id айди временную коллекции
-     * @throws DeleteHelperException
+     * @throws CException
      */
     public static function deleteTempCollection($id)
     {
         $Collection = Collections::model()->findByPk($id);
 
         if (empty($Collection) || !$Collection->temporary) {
-            throw new DeleteHelperException();
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
         $Collection->deleteTempCollection();
@@ -176,24 +171,18 @@ class DeleteHelper
 
     /**
      * Удаляет запись из справочника
-     * @param ActiveRecord $Model модель записи, см. {@link DictionariesController::getDictionaryRecordModel()}
+     * @param MyActiveRecord $Model модель записи, см. {@link DictionariesController::getDictionaryRecordModel()}
      * @return bool удалены ли запись или нет. Нет - в случае, если запись где-то используется
-     * @throws DeleteHelperException
+     * @throws CException
      */
-    public static function deleteDictionaryRecord(ActiveRecord $Model)
+    public static function deleteDictionaryRecord(MyActiveRecord $Model)
     {
-        try {
-            if ($Model->isReadyToBeDeleted()) {
-                $Model->deleteDictionaryRecord();
-                return true;
-            } else {
-                return false;
-            }
-        } catch (DictionariesException $Exception) {
-            throw new DeleteHelperException($Exception);
+        if ($Model->isReadyToBeDeleted()) {
+            $Model->deleteDictionaryRecord();
+            return true;
+        } else {
+            return false;
         }
-
-
     }
 
     /**

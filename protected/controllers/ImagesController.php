@@ -3,7 +3,7 @@
  * Контроллер действий с изображениями
  */
 
-class ImagesController extends Controller
+class ImagesController extends MyController
 {
     private $_image;
     private $_object;
@@ -15,7 +15,7 @@ class ImagesController extends Controller
 	public function filters()
 	{
 		return array(
-			'accessControl', // perform access control for CRUD operations
+            'accessControl',
             'forActionView + view',
             'forActionUpdate + update',
             'forActionDelete + delete',
@@ -241,12 +241,12 @@ class ImagesController extends Controller
         $attributes = array();
         $attributes[] = array(
             'label' => $Image->getAttributeLabel('width'),
-            'value' => CHtml::encode(!empty($Image->width_cm) ? OutputHelper::formatSize($Image->width_cm) : ''),
+            'value' => CHtml::encode(!empty($Image->width_cm) ? MyOutputHelper::formatSize($Image->width_cm) : ''),
             'cssClass' => 'detailViewNowrap'
         );
         $attributes[] = array(
             'label' => $Image->getAttributeLabel('height'),
-            'value' => CHtml::encode(!empty($Image->height_cm) ? OutputHelper::formatSize($Image->height_cm) : ''),
+            'value' => CHtml::encode(!empty($Image->height_cm) ? MyOutputHelper::formatSize($Image->height_cm) : ''),
             'cssClass' => 'detailViewNowrap'
         );
         $attributes[] = array(
@@ -295,14 +295,15 @@ class ImagesController extends Controller
                 if ($Image->save()) {
                     $Image->saveUploadedPreviews();
                     $Transaction->commit();
+                    Yii::app()->user->setFlash('success', Yii::t('images', 'Изображение создано'));
                     $this->redirect(Yii::app()->urlManager->createObjectUrl($Object));
                 } else {
                     $Transaction->rollback();
-                    PreviewHelper::clearUserPreviewsUploads();
+                    MyPreviewHelper::clearUserPreviewsUploads();
                 }
             } catch (Exception $Exception) {
                 $Transaction->rollback();
-                PreviewHelper::clearUserPreviewsUploads();
+                MyPreviewHelper::clearUserPreviewsUploads();
                 throw $Exception;
             }
         }
@@ -351,12 +352,6 @@ class ImagesController extends Controller
 
         if(isset($_POST['Images']))
         {
-            // @todo доделать смену кода
-            /*$movePreviews = false;
-            if (!empty($_POST['Images']['code']) && $Image->code != $_POST['Images']['code']) {
-                $oldImage = clone $Image;
-                $movePreviews = true;
-            }*/
 
             $transaction = Yii::app()->db->beginTransaction();
 
@@ -364,19 +359,16 @@ class ImagesController extends Controller
                 $Image->attributes = $_POST['Images'];
                 if ($Image->save()) {
                     $Image->saveUploadedPreviews();
-                    // @todo доделать смену кода
-                    /*if ($movePreviews) {
-                        PreviewHelper::changePreviewPath($oldImage, $_POST['Images']['code']);
-                    }*/
                     $transaction->commit();
+                    Yii::app()->user->setFlash('success', Yii::t('images', 'Изображение отредактировано'));
                     $this->redirect(array('view','id'=>$Image->id));
                 } else {
                     $transaction->rollback();
-                    PreviewHelper::clearUserPreviewsUploads();
+                    MyPreviewHelper::clearUserPreviewsUploads();
                 }
             } catch (Exception $Exception) {
                 $transaction->rollback();
-                PreviewHelper::clearUserPreviewsUploads();
+                MyPreviewHelper::clearUserPreviewsUploads();
                 throw $Exception;
             }
         }
@@ -416,7 +408,7 @@ class ImagesController extends Controller
     public function actionDelete($id)
     {
         $Object = $this->loadObject($id);
-        DeleteHelper::deleteImage($id);
+        MyDeleteHelper::deleteImage($id);
         Yii::app()->user->setFlash('success', Yii::t('images', 'Изображение удалено'));
         $this->redirect(Yii::app()->urlManager->createObjectUrl($Object));
     }

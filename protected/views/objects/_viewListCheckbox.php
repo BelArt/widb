@@ -25,13 +25,13 @@ $itemUrl = Yii::app()->urlManager->createObjectUrl($data);
             <p class="itemListData1">
                 <span class='itemListAuthor'><?= CHtml::encode($data->getAuthorInitials()) ?></span>
                 <?php if (!empty($data->period)): ?>
-                    <span class="itemListCreationPeriod">, <?= CHtml::encode(OutputHelper::stringToLower($data->period)) ?></span>
+                    <span class="itemListCreationPeriod">, <?= CHtml::encode(MyOutputHelper::stringToLower($data->period)) ?></span>
                 <?php endif; ?>
             </p>
             <p class="itemListData2">
                 <span class="itemListInventoryNumber"><?= CHtml::encode($data->inventory_number) ?></span>
                 <?php if(!empty($data->type->name)): ?>
-                    <span class="itemListObjectType">, <?= CHtml::encode(OutputHelper::stringToLower($data->type->name)) ?></span>
+                    <span class="itemListObjectType">, <?= CHtml::encode(MyOutputHelper::stringToLower($data->type->name)) ?></span>
                 <?php endif; ?>
                 <?php if(!empty($data->size)): ?>
                     <span class="itemListSize">, <?= CHtml::encode($data->size) ?></span>

@@ -98,7 +98,7 @@ php:
         display_errors: On
         error_reporting: '-1'
         log_errors: On
-        error_log: /var/www/protected/runtime/php.log
+        display_startup_errors: On
     timezone: Europe/Moscow
 xdebug:
     install: '1'

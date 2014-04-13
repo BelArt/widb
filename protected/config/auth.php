@@ -215,7 +215,7 @@ return array(
     'tCollectionIsAllowed' => array(
         'type' => CAuthItem::TYPE_TASK,
         'description' => 'Доступная Коллекция',
-        'bizRule' => 'return $params["Collection"]->isAllowedToUser(Yii::app()->user->id);',
+        'bizRule' => 'return !empty($params["Collection"]) && $params["Collection"]->isAllowedToUser(Yii::app()->user->id);',
         'data' => null,
         'children' => array(
             'tTempCollectionIsOwn',
@@ -230,7 +230,7 @@ return array(
     'tTempCollectionIsOwn' => array(
         'type' => CAuthItem::TYPE_TASK,
         'description' => 'Своя Временная коллекция',
-        'bizRule' => 'return $params["Collection"]->temporary && (Yii::app()->user->id == $params["Collection"]->user_create);',
+        'bizRule' => 'return !empty($params["Collection"]) && $params["Collection"]->temporary && (Yii::app()->user->id == $params["Collection"]->user_create);',
         'data' => null,
         'children' => array(
             'oTempCollectionEdit',

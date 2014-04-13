@@ -13,7 +13,7 @@
  * @property string $sort
  * @property integer $deleted
  */
-class ObjectTypes extends ActiveRecord
+class ObjectTypes extends MyActiveRecord
 {
 	/**
 	 * @return string the associated database table name
@@ -30,13 +30,13 @@ class ObjectTypes extends ActiveRecord
 	{
         return array(
             // сначала обязательные
-            array('name', 'required', 'except' => 'delete', 'skipOnError' => true),
+            array('name', 'validators.MyRequiredValidator', 'on' => 'insert, update'),
             // потом общие проверки на формат
             // если атрибут не указан в обязательных, то свойство allowEmpty должно быть true
-            array('sort', 'application.components.validators.IntegerValidator', 'skipOnError' => true, 'allowEmpty' => true, 'except' => 'delete'),
+            array('sort', 'validators.MyIntegerValidator', 'on' => 'insert, update'),
             // потом отдельно на максимальную длину
-            array('name', 'length', 'max'=>150, 'skipOnError' => true, 'except' => 'delete'),
-            array('sort', 'length', 'max'=>10, 'skipOnError' => true, 'except' => 'delete'),
+            array('name', 'length', 'max'=>150, 'on' => 'insert, update'),
+            array('sort', 'length', 'max'=>10, 'on' => 'insert, update'),
             // и безопасные
             array('description', 'safe'),
         );
@@ -83,12 +83,12 @@ class ObjectTypes extends ActiveRecord
      * Проверяет, можно ли удалять запись.
      * Нельзя, если запись где-то используется.
      * @return bool можно ли удалять запись
-     * @throws DictionariesException
+     * @throws CException
      */
     public function isReadyToBeDeleted()
     {
         if ($this->isNewRecord) {
-            throw new DictionariesException();
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
         $Criteria = new CDbCriteria;
@@ -107,18 +107,14 @@ class ObjectTypes extends ActiveRecord
 
     /**
      * Удаляет запись
-     * @throws DictionariesException
+     * @throws CException
      */
     public function deleteDictionaryRecord()
     {
         if ($this->isNewRecord) {
-            throw new DictionariesException();
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
-        try {
-            $this->deleteRecord();
-        } catch (ActiveRecordException $Exception) {
-            throw new DictionariesException($Exception);
-        }
+        $this->deleteRecord();
     }
 }

@@ -28,7 +28,7 @@
  * @property string $user_modify
  * @property string $user_delete
  */
-class Objects extends ActiveRecord
+class Objects extends MyActiveRecord
 {
     private $thumbnailBig;
     private $thumbnailMedium;
@@ -51,12 +51,12 @@ class Objects extends ActiveRecord
             // сначала обязательные
             array('name, type_id, inventory_number, code', 'validators.MyRequiredValidator', 'on' => 'insert, update'),
             // проверки на формат
-            array('author_id, collection_id', 'validators.IntegerValidator', 'on' => 'insert, update'),
-            array('type_id', 'validators.IntegerValidator', 'on' => 'insert, update'),
-            array('code', 'validators.CodeValidator', 'on' => 'insert'),
+            array('author_id, collection_id', 'validators.MyIntegerValidator', 'on' => 'insert, update'),
+            array('type_id', 'validators.MyIntegerValidator', 'on' => 'insert, update'),
+            array('code', 'validators.MyCodeValidator', 'on' => 'insert'), // т.к. не даем редактировать код
             array('width, height, depth', 'validators.MyFloatValidator', 'maxIntegerSize' => 3, 'maxFractionalSize' => 2,  'on' => 'insert, update'),
             array('has_preview', 'boolean', 'on' => 'insert, update'),
-            array('sort', 'validators.IntegerValidator', 'on' => 'insert, update'),
+            array('sort', 'validators.MyIntegerValidator', 'on' => 'insert, update'),
             // на длину
             array('name, code, department, keeper, period, author_text', 'length', 'max'=>150, 'on' => 'insert, update'),
             array('inventory_number', 'length', 'max'=>50, 'on' => 'insert, update'),
@@ -135,9 +135,9 @@ class Objects extends ActiveRecord
      */
     private function setThumbnails()
     {
-        $this->thumbnailBig = PreviewHelper::getBigThumbnailForObject($this);
-        $this->thumbnailMedium = PreviewHelper::getMediumThumbnailForObject($this);
-        $this->thumbnailSmall = PreviewHelper::getSmallThumbnailForObject($this);
+        $this->thumbnailBig = MyPreviewHelper::getBigThumbnailForObject($this);
+        $this->thumbnailMedium = MyPreviewHelper::getMediumThumbnailForObject($this);
+        $this->thumbnailSmall = MyPreviewHelper::getSmallThumbnailForObject($this);
     }
 
     public function getThumbnailBig()
@@ -279,7 +279,7 @@ class Objects extends ActiveRecord
             }
 
             // удаляем превью
-            PreviewHelper::deletePreview($this);
+            MyPreviewHelper::deletePreview($this);
 
             // раз все ок - завершаем транзакцию
             $Transaction->commit();
@@ -374,7 +374,7 @@ class Objects extends ActiveRecord
         try {
             $this->collection_id = $Collection->id;
             if ($this->save()) {
-                PreviewHelper::moveObjectToOtherCollection($this, $Collection);
+                MyPreviewHelper::moveObjectToOtherCollection($this, $Collection);
                 $Transaction->commit();
             } else {
                 $Transaction->rollback();
@@ -399,12 +399,12 @@ class Objects extends ActiveRecord
         $size = '';
 
         if ($this->width != '0.00') {
-            $size .= OutputHelper::formatNumber($this->width);
+            $size .= MyOutputHelper::formatNumber($this->width);
             if ($this->height != '0.00') {
-                $size .= ' x '.OutputHelper::formatNumber($this->height);
+                $size .= ' x '.MyOutputHelper::formatNumber($this->height);
             }
             if ($this->depth != '0.00') {
-                $size .= ' x '.OutputHelper::formatNumber($this->depth);
+                $size .= ' x '.MyOutputHelper::formatNumber($this->depth);
             }
             $size .= ' '.Yii::t('common', 'см');
         }
@@ -436,16 +436,13 @@ class Objects extends ActiveRecord
         return $authorInitials;
     }
 
-    public function beforeSave()
+    protected function beforeSave()
     {
-        if (parent::beforeSave()) {
-            $this->formatFloatFieldForSavingIntoDB('width');
-            $this->formatFloatFieldForSavingIntoDB('height');
-            $this->formatFloatFieldForSavingIntoDB('depth');
-            return true;
-        } else {
-            return false;
-        }
+        $this->formatFloatFieldForSavingIntoDB('width');
+        $this->formatFloatFieldForSavingIntoDB('height');
+        $this->formatFloatFieldForSavingIntoDB('depth');
+
+        return parent::beforeSave();
     }
 
     private function formatFloatFieldForSavingIntoDB($fieldName)

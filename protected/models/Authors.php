@@ -15,7 +15,7 @@
  * @property string $sort
  * @property integer $deleted
  */
-class Authors extends ActiveRecord
+class Authors extends MyActiveRecord
 {
 	/**
 	 * @return string the associated database table name
@@ -32,13 +32,13 @@ class Authors extends ActiveRecord
 	{
 		return array(
             // сначала обязательные
-            array('initials', 'required', 'except' => 'delete', 'skipOnError' => true),
+            array('initials', 'validators.MyRequiredValidator', 'on' => 'insert, update'),
             // потом общие проверки на формат
             // если атрибут не указан в обязательных, то свойство allowEmpty должно быть true
-            array('sort', 'application.components.validators.IntegerValidator', 'skipOnError' => true, 'allowEmpty' => true, 'except' => 'delete'),
+            array('sort', 'validators.MyIntegerValidator', 'on' => 'insert, update'),
             // потом отдельно на максимальную длину
-            array('surname, name, middlename, initials', 'length', 'max'=>150, 'except' => 'delete', 'skipOnError' => true),
-            array('sort', 'length', 'max'=>10, 'except' => 'delete', 'skipOnError' => true),
+            array('surname, name, middlename, initials', 'length', 'max'=>150, 'on' => 'insert, update'),
+            array('sort', 'length', 'max'=>10, 'on' => 'insert, update'),
             // и безопасные
 		);
 	}
@@ -86,12 +86,12 @@ class Authors extends ActiveRecord
      * Проверяет, можно ли удалять запись.
      * Нельзя, если запись где-то используется.
      * @return bool можно ли удалять запись
-     * @throws DictionariesException
+     * @throws CException
      */
     public function isReadyToBeDeleted()
     {
         if ($this->isNewRecord) {
-            throw new DictionariesException();
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
         $Criteria = new CDbCriteria;
@@ -115,13 +115,9 @@ class Authors extends ActiveRecord
     public function deleteDictionaryRecord()
     {
         if ($this->isNewRecord) {
-            throw new DictionariesException();
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
-        try {
-            $this->deleteRecord();
-        } catch (ActiveRecordException $Exception) {
-            throw new DictionariesException($Exception);
-        }
+        $this->deleteRecord();
     }
 }

@@ -52,7 +52,7 @@ $this->widget(
                 ),
             ),*/
             array(
-                'value'=>'(!empty($data->date_photo) ? OutputHelper::formatDate($data->date_photo) : "")',
+                'value'=>'(!empty($data->date_photo) ? MyOutputHelper::formatDate($data->date_photo) : "")',
                 'header' => Yii::t('images', 'Дата съемки'),
                 'sortable' => false,
                 'headerHtmlOptions' => array(
@@ -63,7 +63,7 @@ $this->widget(
                 ),
             ),
             /*array(
-                'value'=>'(!empty($data->photoType->name) ? OutputHelper::stringToLower($data->photoType->name) : "")',
+                'value'=>'(!empty($data->photoType->name) ? MyOutputHelper::stringToLower($data->photoType->name) : "")',
                 'header' => Yii::t('images', 'Тип съемки'),
                 'sortable' => false,
                 'headerHtmlOptions' => array(

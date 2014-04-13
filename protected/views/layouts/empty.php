@@ -8,7 +8,7 @@
 	<meta name="language" content="ru" />
 
     <? Yii::app()->clientScript->registerPackage('defaultLayout'); ?>
-    <? Yii::app()->clientScript->registerPackage('boosterFix'); ?>
+    <? Yii::app()->clientScript->registerPackage('layoutFix'); ?>
     <? Yii::app()->clientScript->registerPackage('global'); ?>
     <? Yii::app()->clientScript->registerPackage('emptyLayout'); ?>
 

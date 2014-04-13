@@ -1,6 +1,6 @@
 <?php
 
-class ObjectsController extends Controller
+class ObjectsController extends MyController
 {
     private $_object;
     private $_collection;
@@ -11,13 +11,13 @@ class ObjectsController extends Controller
 	public function filters()
 	{
 		return array(
-			'accessControl', // perform access control for CRUD operations
+            'accessControl',
 			'forActionCreate + create',
             'forActionView + view',
             'forActionDelete + delete',
             'forActionUpdate + update',
             array(
-                'application.components.SaveGetParamsToSessionFilter + view',
+                'application.components.filters.MySaveGetParamsToSessionFilter + view',
             ),
 		);
 	}
@@ -83,14 +83,15 @@ class ObjectsController extends Controller
                 if ($model->save()) {
                     $model->saveUploadedPreviews();
                     $transaction->commit();
+                    Yii::app()->user->setFlash('success', Yii::t('objects', 'Объект создан'));
                     $this->redirect(Yii::app()->urlManager->createNormalCollectionUrl($Collection));
                 } else {
                     $transaction->rollback();
-                    PreviewHelper::clearUserPreviewsUploads();
+                    MyPreviewHelper::clearUserPreviewsUploads();
                 }
             } catch (Exception $e) {
                 $transaction->rollback();
-                PreviewHelper::clearUserPreviewsUploads();
+                MyPreviewHelper::clearUserPreviewsUploads();
                 throw $e;
             }
         }
@@ -272,17 +273,17 @@ class ObjectsController extends Controller
         $attributes = array(
             array(
                 'label' => $Object->getAttributeLabel('width'),
-                'value' => $Object->width !== '0.00' ? CHtml::encode(OutputHelper::formatSize($Object->width)) : '',
+                'value' => $Object->width !== '0.00' ? CHtml::encode(MyOutputHelper::formatSize($Object->width)) : '',
                 'cssClass' => 'detailViewNowrap'
             ),
             array(
                 'label' => $Object->getAttributeLabel('height'),
-                'value' => $Object->height !== '0.00' ? CHtml::encode(OutputHelper::formatSize($Object->height)) : '',
+                'value' => $Object->height !== '0.00' ? CHtml::encode(MyOutputHelper::formatSize($Object->height)) : '',
                 'cssClass' => 'detailViewNowrap'
             ),
             array(
                 'label' => $Object->getAttributeLabel('depth'),
-                'value' => $Object->depth !== '0.00' ? CHtml::encode(OutputHelper::formatSize($Object->depth)) : '',
+                'value' => $Object->depth !== '0.00' ? CHtml::encode(MyOutputHelper::formatSize($Object->depth)) : '',
                 'cssClass' => 'detailViewNowrap'
             ),
             array(
@@ -405,7 +406,7 @@ class ObjectsController extends Controller
     {
         $Collection = $this->loadCollection($id);
 
-        if (DeleteHelper::deleteObjectFromNormalCollection($id)) {
+        if (MyDeleteHelper::deleteObjectFromNormalCollection($id)) {
             Yii::app()->user->setFlash(
                 'success',
                 Yii::t('objects', 'Объект удален')
@@ -448,12 +449,6 @@ class ObjectsController extends Controller
 
         if(isset($_POST['Objects']))
         {
-            // @todo доделать смену кода
-            /*$movePreviews = false;
-            if (!empty($_POST['Objects']['code']) && $Object->code != $_POST['Objects']['code']) {
-                $oldObject = clone $Object;
-                $movePreviews = true;
-            }*/
 
             $Object->attributes = $_POST['Objects'];
 
@@ -462,19 +457,16 @@ class ObjectsController extends Controller
             try {
                 if ($Object->save()) {
                     $Object->saveUploadedPreviews();
-                    // @todo доделать смену кода
-                    /*if ($movePreviews) {
-                        PreviewHelper::changePreviewPath($oldObject, $_POST['Objects']['code']);
-                    }*/
                     $transaction->commit();
+                    Yii::app()->user->setFlash('success', Yii::t('objects', 'Объект отредактирован'));
                     $this->redirect(Yii::app()->urlManager->createObjectUrl($Object));
                 } else {
                     $transaction->rollback();
-                    PreviewHelper::clearUserPreviewsUploads();
+                    MyPreviewHelper::clearUserPreviewsUploads();
                 }
             } catch (Exception $e) {
                 $transaction->rollback();
-                PreviewHelper::clearUserPreviewsUploads();
+                MyPreviewHelper::clearUserPreviewsUploads();
                 throw $e;
             }
         }

@@ -1,6 +1,6 @@
 <?php
 
-class PhpAuthManager extends CPhpAuthManager
+class MyPhpAuthManager extends CPhpAuthManager
 {
     public function init(){
 

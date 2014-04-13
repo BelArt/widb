@@ -18,7 +18,7 @@
  * @property string $sort
  * @property integer $deleted
  */
-class Users extends ActiveRecord
+class Users extends MyActiveRecord
 {
     public $newPassword;
     public $repeatNewPassword;
@@ -48,7 +48,7 @@ class Users extends ActiveRecord
                 'on' => 'insert, update'
             ),
             // проверки на формат
-            array('sort', 'validators.IntegerValidator', 'on' => 'insert, update'),
+            array('sort', 'validators.MyIntegerValidator', 'on' => 'insert, update'),
             array('email', 'email', 'on' => 'insert, update'),
             array('role', 'validateRole', 'on' => 'insert, update'),
             // на длину

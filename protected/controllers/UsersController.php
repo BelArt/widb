@@ -3,14 +3,14 @@
 /**
  * Контроллер действий с пользователями
  */
-class UsersController extends Controller
+class UsersController extends MyController
 {
     private $_user;
 
 	public function filters()
 	{
 		return array(
-			'accessControl',
+            'accessControl',
             'forActionUpdate + update',
             'forActionDelete + delete',
 		);
@@ -88,6 +88,7 @@ class UsersController extends Controller
             try {
                 if ($User->save()) {
                     $Transaction->commit();
+                    Yii::app()->user->setFlash('success', Yii::t('admin', 'Пользователь отредактирован'));
                     $this->redirect(array('view'));
                 }
             } catch (Exception $Exception) {
@@ -162,6 +163,7 @@ class UsersController extends Controller
             try {
                 if ($User->save()) {
                     $Transaction->commit();
+                    Yii::app()->user->setFlash('success', Yii::t('admin', 'Пользователь создан'));
                     $this->redirect(array('view'));
                 }
             } catch (Exception $Exception) {
@@ -195,7 +197,7 @@ class UsersController extends Controller
     {
         $User = $this->loadUser($id);
 
-        DeleteHelper::deleteUser($User);
+        MyDeleteHelper::deleteUser($User);
         Yii::app()->user->setFlash('success', Yii::t('admin', 'Пользователь удален'));
 
         $this->redirect(array('users/view'));

@@ -65,19 +65,19 @@ if ($model->isNewRecord) {
 
 echo $form->textFieldRow($model,'width', array(
     'class' => 'input-small _objectForm_hideErrorsKeypress',
-    'value' => $model->width == '0.00' ? '' : OutputHelper::formatNumber($model->width),
+    'value' => $model->width == '0.00' ? '' : MyOutputHelper::formatNumber($model->width),
     'append' => Yii::t('common', 'см')
 ));
 
 echo $form->textFieldRow($model,'height', array(
     'class' => 'input-small _objectForm_hideErrorsKeypress',
-    'value' => $model->height == '0.00' ? '' : OutputHelper::formatNumber($model->height),
+    'value' => $model->height == '0.00' ? '' : MyOutputHelper::formatNumber($model->height),
     'append' => Yii::t('common', 'см')
 ));
 
 echo $form->textFieldRow($model,'depth', array(
     'class' => 'input-small _objectForm_hideErrorsKeypress',
-    'value' => $model->depth == '0.00' ? '' : OutputHelper::formatNumber($model->depth),
+    'value' => $model->depth == '0.00' ? '' : MyOutputHelper::formatNumber($model->depth),
     'append' => Yii::t('common', 'см')
 ));
 

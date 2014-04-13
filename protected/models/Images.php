@@ -26,7 +26,7 @@
  * @property float $width_cm
  * @property float $height_cm
  */
-class Images extends ActiveRecord
+class Images extends MyActiveRecord
 {
     private $_thumbnailBig;
     private $_thumbnailMedium;
@@ -53,11 +53,11 @@ class Images extends ActiveRecord
                 'on' => 'insert, update'
             ),
             // потом проверки на формат
-            array('photo_type_id', 'validators.IntegerValidator', 'on' => 'insert, update'),
+            array('photo_type_id', 'validators.MyIntegerValidator', 'on' => 'insert, update'),
             array('has_preview, deepzoom', 'boolean', 'on' => 'insert, update'),
-            array('width, height, dpi', 'validators.IntegerValidator','on' => 'insert, update'),
-            array('sort', 'validators.IntegerValidator', 'on' => 'insert, update'),
-            array('code', 'validators.CodeValidator', 'on' => 'insert'),
+            array('width, height, dpi', 'validators.MyIntegerValidator','on' => 'insert, update'),
+            array('sort', 'validators.MyIntegerValidator', 'on' => 'insert, update'),
+            array('code', 'validators.MyCodeValidator', 'on' => 'insert'), // т.к. не даем редактировать код
             array('date_photo', 'date', 'format' => 'dd.MM.yyyy', 'on' => 'insert, update'),
             array('width_cm, height_cm', 'validators.MyFloatValidator', 'maxIntegerSize' => 3, 'maxFractionalSize' => 2,  'on' => 'insert, update'),
             // потом отдельно на длину
@@ -130,16 +130,13 @@ class Images extends ActiveRecord
         parent::afterFind();
     }
 
-    public function beforeSave()
+    protected function beforeSave()
     {
-        if (parent::beforeSave()) {
-            $this->formatDatePhotoFieldForSavingIntoDB();
-            $this->formatFloatFieldForSavingIntoDB('width_cm');
-            $this->formatFloatFieldForSavingIntoDB('height_cm');
-            return true;
-        } else {
-            return false;
-        }
+        $this->formatDatePhotoFieldForSavingIntoDB();
+        $this->formatFloatFieldForSavingIntoDB('width_cm');
+        $this->formatFloatFieldForSavingIntoDB('height_cm');
+
+        return parent::beforeSave();
     }
 
     private function formatDatePhotoFieldForSavingIntoDB()
@@ -161,9 +158,9 @@ class Images extends ActiveRecord
      */
     private function setThumbnails()
     {
-        $this->_thumbnailBig = PreviewHelper::getBigThumbnailForImage($this);
-        $this->_thumbnailMedium = PreviewHelper::getMediumThumbnailForImage($this);
-        $this->_thumbnailSmall = PreviewHelper::getSmallThumbnailForImage($this);
+        $this->_thumbnailBig = MyPreviewHelper::getBigThumbnailForImage($this);
+        $this->_thumbnailMedium = MyPreviewHelper::getMediumThumbnailForImage($this);
+        $this->_thumbnailSmall = MyPreviewHelper::getSmallThumbnailForImage($this);
     }
 
     public function getThumbnailBig()
@@ -240,7 +237,7 @@ class Images extends ActiveRecord
 
         try {
             $this->deleteRecord();
-            PreviewHelper::deletePreview($this);
+            MyPreviewHelper::deletePreview($this);
             $Transaction->commit();
         } catch (Exception $Exception) {
             $Transaction->rollback();
@@ -282,7 +279,7 @@ class Images extends ActiveRecord
         $result = '';
 
         if (!empty($this->date_photo)) {
-            $result .= Yii::t('images', 'Cъемка').' '.OutputHelper::formatDate($this->date_photo);
+            $result .= Yii::t('images', 'Cъемка').' '.MyOutputHelper::formatDate($this->date_photo);
         } else {
             $result .= Yii::t('images', 'Дата съемки неизвестна');
         }

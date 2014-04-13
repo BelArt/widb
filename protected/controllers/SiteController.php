@@ -1,13 +1,15 @@
 <?php
 
-class SiteController extends Controller
+class SiteController extends MyController
 {
     public function filters()
     {
         return array(
+            array(
+                'application.components.filters.MyAccessControlFilter',
+            ),
             'ajaxOnly + ajax',
             'forActionSearch + search',
-            'accessControl', // perform access control for CRUD operations
         );
     }
 
@@ -131,7 +133,7 @@ class SiteController extends Controller
         switch ($action) {
             // удаляем не сохраненные превью, которые подгрузил пользователь
             case 'clearUserUploads':
-                PreviewHelper::clearUserPreviewsUploads();
+                MyPreviewHelper::clearUserPreviewsUploads();
                 break;
             // удаляем сохраненное превью
             case 'deletePreview':
@@ -164,7 +166,7 @@ class SiteController extends Controller
     /**
      * Удаляет превью
      * @param array $params
-     * @throws SiteControllerException
+     * @throws CException
      */
     protected function deletePreviews(array $params)
     {
@@ -172,7 +174,7 @@ class SiteController extends Controller
          * всякие проверки
          */
         if (empty($params['type']) || empty($params['id'])) {
-            throw new SiteControllerException();
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
         $Model = null;
@@ -188,11 +190,11 @@ class SiteController extends Controller
                 $Model = Images::model()->findByPk($params['id']);
                 break;
             default:
-                throw new SiteControllerException();
+                throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
         if (empty($Model)) {
-            throw new SiteControllerException();
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
         $Model->deletePreviews();
@@ -202,7 +204,7 @@ class SiteController extends Controller
     /**
      * Перемещает объекты в другую коллекцию
      * @param array $params
-     * @throws SiteControllerException
+     * @throws CException
      * @throws Exception
      */
     protected function moveObjectsToOtherCollection(array $params)
@@ -212,17 +214,17 @@ class SiteController extends Controller
          */
 
         if (!Yii::app()->user->checkAccess('oChangeObjectsCollection')) {
-            throw new SiteControllerException();
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
         if (empty($params['objectIds']) || empty($params['collectionId'])) {
-            throw new SiteControllerException();
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
         $Collection = Collections::model()->findByPk($params['collectionId']);
 
         if (empty($Collection) || $Collection->temporary == 1) {
-            throw new SiteControllerException();
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
         $Criteria = new CDbCriteria();
@@ -232,7 +234,7 @@ class SiteController extends Controller
 
         // если по каким-то айдшникам объектов не удалось найти запись в БД - например, не все айдишники правильные
         if (count($objects) != count($params['objectIds'])) {
-            throw new SiteControllerException();
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
         /*
@@ -263,7 +265,7 @@ class SiteController extends Controller
      * Добавляем объекты во Временную коллекцию.
      * Если какие-то объекты из переданных уже есть в этой временной коллекции, то просто их игнорируем
      * @param array $params параметры
-     * @throws SiteControllerException
+     * @throws CException
      * @throws Exception
      */
     protected function addObjectsToTempCollection(array $params)
@@ -273,13 +275,13 @@ class SiteController extends Controller
          */
 
         if (empty($params['objectIds']) || empty($params['tempCollectionId'])) {
-            throw new SiteControllerException();
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
         $Collection = Collections::model()->findByPk($params['tempCollectionId']);
 
         if (empty($Collection) || $Collection->temporary == 0) {
-            throw new SiteControllerException();
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
         if (
@@ -290,7 +292,7 @@ class SiteController extends Controller
                 )
             )
         ) {
-            throw new SiteControllerException();
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
         $Criteria = new CDbCriteria();
@@ -300,7 +302,7 @@ class SiteController extends Controller
 
         // если по каким-то айдшникам объектов не удалось найти запись в БД - например, не все айдишники правильные
         if (count($objects) != count($params['objectIds'])) {
-            throw new SiteControllerException();
+            throw new CException(Yii::t('common', 'Произошла ошибка!'));
         }
 
         // проверим все объекты на доступность юзеру
@@ -309,7 +311,7 @@ class SiteController extends Controller
             if (!Yii::app()->user->checkAccess('oObjectToTempCollectionAdd_Object', array(
                     'Collection' => $Object->collection
             ))) {
-                throw new SiteControllerException();
+                throw new CException(Yii::t('common', 'Произошла ошибка!'));
             }
         }
 
@@ -350,7 +352,7 @@ class SiteController extends Controller
                 throw new CHttpException(403, Yii::t('yii','You are not authorized to perform this action.'));
             }
 
-            if (DeleteHelper::deleteNormalCollections($params['ids'])) {
+            if (MyDeleteHelper::deleteNormalCollections($params['ids'])) {
                 Yii::app()->user->setFlash(
                     'success',
                     Yii::t('collections', 'Все выбранные дочерние коллекции удалены')
@@ -387,7 +389,7 @@ class SiteController extends Controller
                 }
             }
 
-            DeleteHelper::deleteObjectsFromTempCollection($params['ids'], $params['collectionId']);
+            MyDeleteHelper::deleteObjectsFromTempCollection($params['ids'], $params['collectionId']);
 
             Yii::app()->user->setFlash(
                 'success',
@@ -410,7 +412,7 @@ class SiteController extends Controller
                 throw new CHttpException(403, Yii::t('yii','You are not authorized to perform this action.'));
             }
 
-            if (DeleteHelper::deleteObjectsFromNormalCollection($params['ids'])) {
+            if (MyDeleteHelper::deleteObjectsFromNormalCollection($params['ids'])) {
                 Yii::app()->user->setFlash(
                     'success',
                     Yii::t('objects', 'Все выбранные объекты удалены!')

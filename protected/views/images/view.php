@@ -11,7 +11,7 @@ Yii::app()->clientScript->registerPackage('imageView');
     <p class="entitySubname">
         <span class="subname"><?= CHtml::encode($Image->getPhotoDateWithIntroWord()) ?></span>
         <?php if (!empty($Image->photoType->name)): ?>
-            <span class="subname">, <?= CHtml::encode(OutputHelper::stringToLower($Image->photoType->name)) ?></span>
+            <span class="subname">, <?= CHtml::encode(MyOutputHelper::stringToLower($Image->photoType->name)) ?></span>
         <?php endif; ?>
     </p>
 <?php endif; ?>

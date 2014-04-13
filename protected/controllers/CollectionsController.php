@@ -3,7 +3,7 @@
 /**
  * Контроллер коллекций
  */
-class CollectionsController extends Controller
+class CollectionsController extends MyController
 {
     private $_collection;
 
@@ -13,7 +13,7 @@ class CollectionsController extends Controller
 	public function filters()
 	{
 		return array(
-			'accessControl', // perform access control for CRUD operations
+            'accessControl',
             'forActionView + view',
             'forActionViewTemp + viewTemp',
             'forActionUpdate + update',
@@ -22,7 +22,7 @@ class CollectionsController extends Controller
             'forActionDeleteTemp + deleteTemp',
             'forActionIndex + index',
             array(
-                'application.components.SaveGetParamsToSessionFilter + view, viewTemp, index',
+                'application.components.filters.MySaveGetParamsToSessionFilter + view, viewTemp, index',
             ),
 		);
 	}
@@ -507,14 +507,15 @@ class CollectionsController extends Controller
                 if ($model->save()) {
                     $model->saveUploadedPreviews();
                     $transaction->commit();
-                    $this->redirect(array('index'));
+                    Yii::app()->user->setFlash('success', Yii::t('collections', 'Коллекция создана'));
+                    $this->redirect($this->redirect(Yii::app()->urlManager->createCollectionsUrl()));
                 } else {
                     $transaction->rollback();
-                    PreviewHelper::clearUserPreviewsUploads();
+                    MyPreviewHelper::clearUserPreviewsUploads();
                 }
             } catch (Exception $e) {
                 $transaction->rollback();
-                PreviewHelper::clearUserPreviewsUploads();
+                MyPreviewHelper::clearUserPreviewsUploads();
                 throw $e;
             }
         }
@@ -556,14 +557,15 @@ class CollectionsController extends Controller
                 if ($model->save()) {
                     $model->saveUploadedPreviews();
                     $transaction->commit();
-                    $this->redirect(array('index'));
+                    Yii::app()->user->setFlash('success', Yii::t('collections', 'Временная коллекция создана'));
+                    $this->redirect(Yii::app()->urlManager->createCollectionsUrl());
                 } else {
                     $transaction->rollback();
-                    PreviewHelper::clearUserPreviewsUploads();
+                    MyPreviewHelper::clearUserPreviewsUploads();
                 }
             } catch (Exception $e) {
                 $transaction->rollback();
-                PreviewHelper::clearUserPreviewsUploads();
+                MyPreviewHelper::clearUserPreviewsUploads();
                 throw $e;
             }
         }
@@ -595,17 +597,8 @@ class CollectionsController extends Controller
 
         $view = '_formNormalCollection';
 
-		// Uncomment the following line if AJAX validation is needed
-		// $this->performAjaxValidation($model);
-
 		if(isset($_POST['Collections']))
 		{
-            // @todo доделать смену кода
-            /*$movePreviews = false;
-            if (!empty($_POST['Collections']['code']) && $model->code != $_POST['Collections']['code']) {
-                $oldCollection = clone $model;
-                $movePreviews = true;
-            }*/
 
 			$model->attributes = $_POST['Collections'];
 
@@ -614,19 +607,16 @@ class CollectionsController extends Controller
             try {
                 if ($model->save()) {
                     $model->saveUploadedPreviews();
-                    // @todo доделать смену кода
-                    /*if ($movePreviews) {
-                        PreviewHelper::changePreviewPath($oldCollection, $_POST['Collections']['code']);
-                    }*/
                     $transaction->commit();
+                    Yii::app()->user->setFlash('success', Yii::t('collections', 'Коллекция отредактирована'));
                     $this->redirect(Yii::app()->urlManager->createNormalCollectionUrl($model));
                 } else {
                     $transaction->rollback();
-                    PreviewHelper::clearUserPreviewsUploads();
+                    MyPreviewHelper::clearUserPreviewsUploads();
                 }
             } catch (Exception $e) {
                 $transaction->rollback();
-                PreviewHelper::clearUserPreviewsUploads();
+                MyPreviewHelper::clearUserPreviewsUploads();
                 throw $e;
             }
 		}
@@ -669,17 +659,8 @@ class CollectionsController extends Controller
 
         $view = '_formTempCollection';
 
-        // Uncomment the following line if AJAX validation is needed
-        // $this->performAjaxValidation($model);
-
         if(isset($_POST['Collections']))
         {
-            // @todo доделать смену кода
-            /*$movePreviews = false;
-            if (!empty($_POST['Collections']['code']) && $model->code != $_POST['Collections']['code']) {
-                $oldCollection = clone $model;
-                $movePreviews = true;
-            }*/
 
             $model->attributes = $_POST['Collections'];
 
@@ -688,19 +669,16 @@ class CollectionsController extends Controller
             try {
                 if ($model->save()) {
                     $model->saveUploadedPreviews();
-                    // @todo доделать смену кода
-                    /*if ($movePreviews) {
-                        PreviewHelper::changePreviewPath($oldCollection, $_POST['Collections']['code']);
-                    }*/
                     $transaction->commit();
+                    Yii::app()->user->setFlash('success', Yii::t('collections', 'Временная коллекция отредактирована'));
                     $this->redirect(Yii::app()->urlManager->createTempCollectionUrl($model));
                 } else {
                     $transaction->rollback();
-                    PreviewHelper::clearUserPreviewsUploads();
+                    MyPreviewHelper::clearUserPreviewsUploads();
                 }
             } catch (Exception $e) {
                 $transaction->rollback();
-                PreviewHelper::clearUserPreviewsUploads();
+                MyPreviewHelper::clearUserPreviewsUploads();
                 throw $e;
             }
         }
@@ -734,7 +712,7 @@ class CollectionsController extends Controller
 	 */
 	public function actionDelete($id)
 	{
-        if (DeleteHelper::deleteNormalCollection($id)) {
+        if (MyDeleteHelper::deleteNormalCollection($id)) {
             Yii::app()->user->setFlash(
                 'success',
                 Yii::t('collections', 'Коллекция удалена')
@@ -766,7 +744,7 @@ class CollectionsController extends Controller
      */
     public function actionDeleteTemp($id)
     {
-        DeleteHelper::deleteTempCollection($id);
+        MyDeleteHelper::deleteTempCollection($id);
 
         Yii::app()->user->setFlash(
             'success',

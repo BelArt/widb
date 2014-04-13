@@ -3,7 +3,7 @@
 /**
  * Валидатор целочисленных значений.
  */
-class IntegerValidator extends MyValidator
+class MyIntegerValidator extends MyValidator
 {
     public $onlyPositive = true;
 

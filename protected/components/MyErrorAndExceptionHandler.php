@@ -6,7 +6,7 @@
  * ошибки/исключения и трейса зависит от режима (дебаг или продакшн)
  */
 
-class ErrorAndExceptionHandler extends CComponent
+class MyErrorAndExceptionHandler extends CComponent
 {
     /**
      * Обработчик ошибок
@@ -14,30 +14,34 @@ class ErrorAndExceptionHandler extends CComponent
      */
     public static function handleError(CErrorEvent $Event)
     {
-        // если вдруг метод вызвали не при ошибке
-        if($error = self::getErrorInfo($Event))
-        {
-            self::sendErrorHeader(500);
+        while (ob_get_level()) {
+            ob_end_clean();
+        }
 
-            if (defined('YII_DEBUG') && YII_DEBUG === true) {
+        $error = self::getErrorInfo($Event);
 
-                if (Yii::app()->request->isAjaxRequest) {
-                    echo $error['message'];
-                } else {
-                    $Controller = new Controller(null);
-                    ob_clean();
-                    $Controller->render('application.views.common.errorCustomAndTrace',$error);
-                }
+        $Controller = new MyController(null);
+        if (Yii::app()->user->isGuest) {
+            $Controller->layout = '//layouts/empty';
+            $Controller->pageName = 'Web Images Database';
+        }
 
+        self::sendErrorHeader(500);
+
+        if (defined('YII_DEBUG') && YII_DEBUG === true) {
+
+            if (Yii::app()->request->isAjaxRequest) {
+                echo $error['message'];
             } else {
+                $Controller->render('application.views.common.errorCustomAndTrace',$error);
+            }
 
-                if (Yii::app()->request->isAjaxRequest) {
-                    echo Yii::t('common', 'Произошла ошибка!');
-                } else {
-                    $Controller = new Controller(null);
-                    ob_clean();
-                    $Controller->render('application.views.common.errorStandart');
-                }
+        } else {
+
+            if (Yii::app()->request->isAjaxRequest) {
+                echo Yii::t('common', 'Произошла ошибка!');
+            } else {
+                $Controller->render('application.views.common.errorStandart');
             }
         }
 
@@ -51,56 +55,57 @@ class ErrorAndExceptionHandler extends CComponent
      */
     public static function handleException(CExceptionEvent $Event)
     {
-        // если вдруг метод вызвали не при ошибке
-        if($error = self::getExceptionInfo($Event))
-        {
-            if (get_class($Event->exception) == 'CHttpException') {
+        while (ob_get_level()) {
+            ob_end_clean();
+        }
 
-                self::sendErrorHeader($error['code']);
+        $error = self::getExceptionInfo($Event);
 
-                if (defined('YII_DEBUG') && YII_DEBUG === true) {
+        $Controller = new MyController(null);
 
-                    if (Yii::app()->request->isAjaxRequest) {
-                        echo $error['message'];
-                    } else {
-                        $Controller = new Controller(null);
-                        ob_clean();
-                        $Controller->render('application.views.common.errorCustomAndTrace',$error);
-                    }
+        if (Yii::app()->user->isGuest) {
+            $Controller->layout = '//layouts/empty';
+            $Controller->pageName = 'Web Images Database';
+        }
 
+        if (get_class($Event->exception) == 'CHttpException') {
+
+            self::sendErrorHeader($error['code']);
+
+            if (defined('YII_DEBUG') && YII_DEBUG === true) {
+
+                if (Yii::app()->request->isAjaxRequest) {
+                    echo $error['message'];
                 } else {
-
-                    if (Yii::app()->request->isAjaxRequest) {
-                        echo $error['message'];
-                    } else {
-                        $Controller = new Controller(null);
-                        ob_clean();
-                        $Controller->render('application.views.common.errorCustom', $error);
-                    }
+                    $Controller->render('application.views.common.errorCustomAndTrace',$error);
                 }
+
             } else {
 
-                self::sendErrorHeader(500);
-
-                if (defined('YII_DEBUG') && YII_DEBUG === true) {
-
-                    if (Yii::app()->request->isAjaxRequest) {
-                        echo $error['message'];
-                    } else {
-                        $Controller = new Controller(null);
-                        ob_clean();
-                        $Controller->render('application.views.common.errorCustomAndTrace',$error);
-                    }
-
+                if (Yii::app()->request->isAjaxRequest) {
+                    echo $error['message'];
                 } else {
+                    $Controller->render('application.views.common.errorCustom', $error);
+                }
+            }
+        } else {
 
-                    if (Yii::app()->request->isAjaxRequest) {
-                        echo Yii::t('common', 'Произошла ошибка!');
-                    } else {
-                        $Controller = new Controller(null);
-                        ob_clean();
-                        $Controller->render('application.views.common.errorStandart');
-                    }
+            self::sendErrorHeader(500);
+
+            if (defined('YII_DEBUG') && YII_DEBUG === true) {
+
+                if (Yii::app()->request->isAjaxRequest) {
+                    echo $error['message'];
+                } else {
+                    $Controller->render('application.views.common.errorCustomAndTrace',$error);
+                }
+
+            } else {
+
+                if (Yii::app()->request->isAjaxRequest) {
+                    echo Yii::t('common', 'Произошла ошибка!');
+                } else {
+                    $Controller->render('application.views.common.errorStandart');
                 }
             }
         }
