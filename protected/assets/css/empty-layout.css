@@ -5,13 +5,15 @@ body {
     height: 100%;
 }
 .emptyLayout {
-    width: 100%;
+    width: 1170px;
     height: 100%;
+    margin: 0 auto;
 }
 .emptyLayout .emptyLayoutContainer {
     width: 100%;
     height: 100%;
     vertical-align: middle;
+    overflow: hidden;
 }
 .emptyLayout .emptyLayoutContainer .title {
     text-align: center;
