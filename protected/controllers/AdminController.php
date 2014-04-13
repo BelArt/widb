@@ -9,7 +9,9 @@ class AdminController extends MyController
 	public function filters()
 	{
 		return array(
-			'accessControl',
+            array(
+                'application.components.filters.MyAccessControlFilter',
+            ),
 		);
 	}
 

@@ -15,7 +15,9 @@ class ImagesController extends MyController
 	public function filters()
 	{
 		return array(
-			'accessControl', // perform access control for CRUD operations
+            array(
+                'application.components.filters.MyAccessControlFilter',
+            ),
             'forActionView + view',
             'forActionUpdate + update',
             'forActionDelete + delete',

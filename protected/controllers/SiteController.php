@@ -5,9 +5,11 @@ class SiteController extends MyController
     public function filters()
     {
         return array(
+            array(
+                'application.components.filters.MyAccessControlFilter',
+            ),
             'ajaxOnly + ajax',
             'forActionSearch + search',
-            'accessControl', // perform access control for CRUD operations
         );
     }
 

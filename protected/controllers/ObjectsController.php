@@ -11,7 +11,9 @@ class ObjectsController extends MyController
 	public function filters()
 	{
 		return array(
-			'accessControl', // perform access control for CRUD operations
+            array(
+                'application.components.filters.MyAccessControlFilter',
+            ),
 			'forActionCreate + create',
             'forActionView + view',
             'forActionDelete + delete',

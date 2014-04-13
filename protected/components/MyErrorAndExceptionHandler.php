@@ -18,8 +18,10 @@ class MyErrorAndExceptionHandler extends CComponent
         $error = self::getErrorInfo($Event);
 
         $Controller = new MyController(null);
-        $Controller->layout = '//layouts/empty';
-        $Controller->pageName = 'Web Images Database';
+        if (Yii::app()->user->isGuest) {
+            $Controller->layout = '//layouts/empty';
+            $Controller->pageName = 'Web Images Database';
+        }
 
         self::sendErrorHeader(500);
 
@@ -55,8 +57,11 @@ class MyErrorAndExceptionHandler extends CComponent
         $error = self::getExceptionInfo($Event);
 
         $Controller = new MyController(null);
-        $Controller->layout = '//layouts/empty';
-        $Controller->pageName = 'Web Images Database';
+
+        if (Yii::app()->user->isGuest) {
+            $Controller->layout = '//layouts/empty';
+            $Controller->pageName = 'Web Images Database';
+        }
 
         if (get_class($Event->exception) == 'CHttpException') {
 
