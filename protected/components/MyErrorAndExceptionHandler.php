@@ -14,7 +14,10 @@ class MyErrorAndExceptionHandler extends CComponent
      */
     public static function handleError(CErrorEvent $Event)
     {
-        ob_clean();
+        while (ob_get_level()) {
+            ob_end_clean();
+        }
+
         $error = self::getErrorInfo($Event);
 
         $Controller = new MyController(null);
@@ -52,7 +55,9 @@ class MyErrorAndExceptionHandler extends CComponent
      */
     public static function handleException(CExceptionEvent $Event)
     {
-        ob_clean();
+        while (ob_get_level()) {
+            ob_end_clean();
+        }
 
         $error = self::getExceptionInfo($Event);
 

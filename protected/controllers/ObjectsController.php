@@ -11,9 +11,7 @@ class ObjectsController extends MyController
 	public function filters()
 	{
 		return array(
-            array(
-                'application.components.filters.MyAccessControlFilter',
-            ),
+            'accessControl',
 			'forActionCreate + create',
             'forActionView + view',
             'forActionDelete + delete',
@@ -85,6 +83,7 @@ class ObjectsController extends MyController
                 if ($model->save()) {
                     $model->saveUploadedPreviews();
                     $transaction->commit();
+                    Yii::app()->user->setFlash('success', Yii::t('objects', 'Объект создан'));
                     $this->redirect(Yii::app()->urlManager->createNormalCollectionUrl($Collection));
                 } else {
                     $transaction->rollback();
@@ -450,12 +449,6 @@ class ObjectsController extends MyController
 
         if(isset($_POST['Objects']))
         {
-            // @todo доделать смену кода
-            /*$movePreviews = false;
-            if (!empty($_POST['Objects']['code']) && $Object->code != $_POST['Objects']['code']) {
-                $oldObject = clone $Object;
-                $movePreviews = true;
-            }*/
 
             $Object->attributes = $_POST['Objects'];
 
@@ -464,11 +457,8 @@ class ObjectsController extends MyController
             try {
                 if ($Object->save()) {
                     $Object->saveUploadedPreviews();
-                    // @todo доделать смену кода
-                    /*if ($movePreviews) {
-                        MyPreviewHelper::changePreviewPath($oldObject, $_POST['Objects']['code']);
-                    }*/
                     $transaction->commit();
+                    Yii::app()->user->setFlash('success', Yii::t('objects', 'Объект отредактирован'));
                     $this->redirect(Yii::app()->urlManager->createObjectUrl($Object));
                 } else {
                     $transaction->rollback();

@@ -15,9 +15,7 @@ class ImagesController extends MyController
 	public function filters()
 	{
 		return array(
-            array(
-                'application.components.filters.MyAccessControlFilter',
-            ),
+            'accessControl',
             'forActionView + view',
             'forActionUpdate + update',
             'forActionDelete + delete',
@@ -297,6 +295,7 @@ class ImagesController extends MyController
                 if ($Image->save()) {
                     $Image->saveUploadedPreviews();
                     $Transaction->commit();
+                    Yii::app()->user->setFlash('success', Yii::t('images', 'Изображение создано'));
                     $this->redirect(Yii::app()->urlManager->createObjectUrl($Object));
                 } else {
                     $Transaction->rollback();
@@ -353,12 +352,6 @@ class ImagesController extends MyController
 
         if(isset($_POST['Images']))
         {
-            // @todo доделать смену кода
-            /*$movePreviews = false;
-            if (!empty($_POST['Images']['code']) && $Image->code != $_POST['Images']['code']) {
-                $oldImage = clone $Image;
-                $movePreviews = true;
-            }*/
 
             $transaction = Yii::app()->db->beginTransaction();
 
@@ -366,11 +359,8 @@ class ImagesController extends MyController
                 $Image->attributes = $_POST['Images'];
                 if ($Image->save()) {
                     $Image->saveUploadedPreviews();
-                    // @todo доделать смену кода
-                    /*if ($movePreviews) {
-                        MyPreviewHelper::changePreviewPath($oldImage, $_POST['Images']['code']);
-                    }*/
                     $transaction->commit();
+                    Yii::app()->user->setFlash('success', Yii::t('images', 'Изображение отредактировано'));
                     $this->redirect(array('view','id'=>$Image->id));
                 } else {
                     $transaction->rollback();

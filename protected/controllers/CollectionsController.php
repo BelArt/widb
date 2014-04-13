@@ -13,9 +13,7 @@ class CollectionsController extends MyController
 	public function filters()
 	{
 		return array(
-            array(
-                'application.components.filters.MyAccessControlFilter',
-            ),
+            'accessControl',
             'forActionView + view',
             'forActionViewTemp + viewTemp',
             'forActionUpdate + update',
@@ -509,7 +507,8 @@ class CollectionsController extends MyController
                 if ($model->save()) {
                     $model->saveUploadedPreviews();
                     $transaction->commit();
-                    $this->redirect(array('index'));
+                    Yii::app()->user->setFlash('success', Yii::t('collections', 'Коллекция создана'));
+                    $this->redirect($this->redirect(Yii::app()->urlManager->createCollectionsUrl()));
                 } else {
                     $transaction->rollback();
                     MyPreviewHelper::clearUserPreviewsUploads();
@@ -558,7 +557,8 @@ class CollectionsController extends MyController
                 if ($model->save()) {
                     $model->saveUploadedPreviews();
                     $transaction->commit();
-                    $this->redirect(array('index'));
+                    Yii::app()->user->setFlash('success', Yii::t('collections', 'Временная коллекция создана'));
+                    $this->redirect(Yii::app()->urlManager->createCollectionsUrl());
                 } else {
                     $transaction->rollback();
                     MyPreviewHelper::clearUserPreviewsUploads();
@@ -597,17 +597,8 @@ class CollectionsController extends MyController
 
         $view = '_formNormalCollection';
 
-		// Uncomment the following line if AJAX validation is needed
-		// $this->performAjaxValidation($model);
-
 		if(isset($_POST['Collections']))
 		{
-            // @todo доделать смену кода
-            /*$movePreviews = false;
-            if (!empty($_POST['Collections']['code']) && $model->code != $_POST['Collections']['code']) {
-                $oldCollection = clone $model;
-                $movePreviews = true;
-            }*/
 
 			$model->attributes = $_POST['Collections'];
 
@@ -616,11 +607,8 @@ class CollectionsController extends MyController
             try {
                 if ($model->save()) {
                     $model->saveUploadedPreviews();
-                    // @todo доделать смену кода
-                    /*if ($movePreviews) {
-                        MyPreviewHelper::changePreviewPath($oldCollection, $_POST['Collections']['code']);
-                    }*/
                     $transaction->commit();
+                    Yii::app()->user->setFlash('success', Yii::t('collections', 'Коллекция отредактирована'));
                     $this->redirect(Yii::app()->urlManager->createNormalCollectionUrl($model));
                 } else {
                     $transaction->rollback();
@@ -671,17 +659,8 @@ class CollectionsController extends MyController
 
         $view = '_formTempCollection';
 
-        // Uncomment the following line if AJAX validation is needed
-        // $this->performAjaxValidation($model);
-
         if(isset($_POST['Collections']))
         {
-            // @todo доделать смену кода
-            /*$movePreviews = false;
-            if (!empty($_POST['Collections']['code']) && $model->code != $_POST['Collections']['code']) {
-                $oldCollection = clone $model;
-                $movePreviews = true;
-            }*/
 
             $model->attributes = $_POST['Collections'];
 
@@ -690,11 +669,8 @@ class CollectionsController extends MyController
             try {
                 if ($model->save()) {
                     $model->saveUploadedPreviews();
-                    // @todo доделать смену кода
-                    /*if ($movePreviews) {
-                        MyPreviewHelper::changePreviewPath($oldCollection, $_POST['Collections']['code']);
-                    }*/
                     $transaction->commit();
+                    Yii::app()->user->setFlash('success', Yii::t('collections', 'Временная коллекция отредактирована'));
                     $this->redirect(Yii::app()->urlManager->createTempCollectionUrl($model));
                 } else {
                     $transaction->rollback();

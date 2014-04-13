@@ -10,9 +10,7 @@ class UsersController extends MyController
 	public function filters()
 	{
 		return array(
-            array(
-                'application.components.filters.MyAccessControlFilter',
-            ),
+            'accessControl',
             'forActionUpdate + update',
             'forActionDelete + delete',
 		);
@@ -90,6 +88,7 @@ class UsersController extends MyController
             try {
                 if ($User->save()) {
                     $Transaction->commit();
+                    Yii::app()->user->setFlash('success', Yii::t('admin', 'Пользователь отредактирован'));
                     $this->redirect(array('view'));
                 }
             } catch (Exception $Exception) {
@@ -164,6 +163,7 @@ class UsersController extends MyController
             try {
                 if ($User->save()) {
                     $Transaction->commit();
+                    Yii::app()->user->setFlash('success', Yii::t('admin', 'Пользователь создан'));
                     $this->redirect(array('view'));
                 }
             } catch (Exception $Exception) {

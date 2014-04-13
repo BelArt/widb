@@ -11,9 +11,7 @@ class DictionariesController extends MyController
 	public function filters()
 	{
 		return array(
-            array(
-                'application.components.filters.MyAccessControlFilter',
-            ),
+            'accessControl',
 		);
 	}
 
@@ -119,6 +117,7 @@ class DictionariesController extends MyController
         {
             $Model->attributes = $_POST[$modelName];
             if ($Model->save()) {
+                Yii::app()->user->setFlash('success', Yii::t('admin', 'Запись отредактирована'));
                 $this->redirect(array('view'));
             }
         }
@@ -255,6 +254,7 @@ class DictionariesController extends MyController
         {
             $Model->attributes = $_POST[$modelName];
             if ($Model->save()) {
+                Yii::app()->user->setFlash('success', Yii::t('admin', 'Запись создана'));
                 $this->redirect(array('view'));
             }
         }
