@@ -302,7 +302,7 @@ class MyDeleteHelper
     {
         $tmpFolderPath = Yii::getPathOfAlias('webroot')
             .DIRECTORY_SEPARATOR
-            .Yii::app()->params['filesFolder']
+            .'files'
             .DIRECTORY_SEPARATOR
             .Yii::app()->params['tempFilesFolder'];
 
@@ -317,7 +317,7 @@ class MyDeleteHelper
     {
         $previewsFolderPath = Yii::getPathOfAlias('webroot')
             .DIRECTORY_SEPARATOR
-            .Yii::app()->params['filesFolder']
+            .'files'
             .DIRECTORY_SEPARATOR
             .Yii::app()->params['previewsFolder'];
 
