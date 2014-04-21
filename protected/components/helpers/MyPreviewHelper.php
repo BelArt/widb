@@ -291,7 +291,7 @@ class MyPreviewHelper
             case 'Collections':
                 $previewUrlPart = Yii::app()->baseUrl
                     .DIRECTORY_SEPARATOR
-                    .Yii::app()->params['filesFolder']
+                    .'files'
                     .DIRECTORY_SEPARATOR
                     .Yii::app()->params['previewsFolder']
                     .DIRECTORY_SEPARATOR
@@ -300,7 +300,7 @@ class MyPreviewHelper
             case 'Objects':
                 $previewUrlPart = Yii::app()->baseUrl
                     .DIRECTORY_SEPARATOR
-                    .Yii::app()->params['filesFolder']
+                    .'files'
                     .DIRECTORY_SEPARATOR
                     .Yii::app()->params['previewsFolder']
                     .DIRECTORY_SEPARATOR
@@ -311,7 +311,7 @@ class MyPreviewHelper
             case 'Images':
                 $previewUrlPart = Yii::app()->baseUrl
                     .DIRECTORY_SEPARATOR
-                    .Yii::app()->params['filesFolder']
+                    .'files'
                     .DIRECTORY_SEPARATOR
                     .Yii::app()->params['previewsFolder']
                     .DIRECTORY_SEPARATOR
@@ -375,7 +375,7 @@ class MyPreviewHelper
             case 'Collections':
                 $path = Yii::getPathOfAlias('webroot')
                     .DIRECTORY_SEPARATOR
-                    .Yii::app()->params['filesFolder']
+                    .'files'
                     .DIRECTORY_SEPARATOR
                     .Yii::app()->params['previewsFolder']
                     .DIRECTORY_SEPARATOR
@@ -384,7 +384,7 @@ class MyPreviewHelper
             case 'Objects':
                 $path = Yii::getPathOfAlias('webroot')
                     .DIRECTORY_SEPARATOR
-                    .Yii::app()->params['filesFolder']
+                    .'files'
                     .DIRECTORY_SEPARATOR
                     .Yii::app()->params['previewsFolder']
                     .DIRECTORY_SEPARATOR
@@ -395,7 +395,7 @@ class MyPreviewHelper
             case 'Images':
                 $path = Yii::getPathOfAlias('webroot')
                     .DIRECTORY_SEPARATOR
-                    .Yii::app()->params['filesFolder']
+                    .'files'
                     .DIRECTORY_SEPARATOR
                     .Yii::app()->params['previewsFolder']
                     .DIRECTORY_SEPARATOR
