@@ -7,7 +7,7 @@ $itemUrl = $this->createUrl('images/view', array('id' => $data->id));
 
 <table class="itemList">
     <tr>
-        <td class="itemListCheckboxBlock"><input type="checkbox" class="_imageItem" data-image-id="<?= $data->id ?>" /></td>
+        <td class="itemListCheckboxBlock hidden-print"><input type="checkbox" class="_imageItem" data-image-id="<?= $data->id ?>" /></td>
         <td class="itemListImageBlock">
             <a href="<?= CHtml::encode($data->thumbnailBig) ?>" title="<?= CHtml::encode($data->name) ?>" class="thumbnail _fancybox">
                 <table class="itemListImageWrapper">

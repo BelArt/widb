@@ -7,7 +7,7 @@ $itemUrl = Yii::app()->urlManager->createObjectUrl($data);
 
 <table class="itemList">
     <tr>
-        <td class="itemListCheckboxBlock"><input type="checkbox" class="_objectItem" data-object-id="<?= $data->id ?>" /></td>
+        <td class="itemListCheckboxBlock hidden-print"><input type="checkbox" class="_objectItem" data-object-id="<?= $data->id ?>" /></td>
         <td class="itemListImageBlock">
             <a href="<?= CHtml::encode($data->thumbnailBig) ?>" title="<?= CHtml::encode($data->name) ?>" class="thumbnail _fancybox">
                 <table class="itemListImageWrapper">

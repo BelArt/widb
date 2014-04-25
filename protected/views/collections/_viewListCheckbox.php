@@ -7,7 +7,7 @@ $itemUrl = $data->temporary ? Yii::app()->urlManager->createTempCollectionUrl($d
 
 <table class="itemList">
     <tr>
-        <td class="itemListCheckboxBlock"><input type="checkbox" class="_collectionItem" data-collection-id="<?= $data->id ?>" /></td>
+        <td class="itemListCheckboxBlock hidden-print"><input type="checkbox" class="_collectionItem" data-collection-id="<?= $data->id ?>" /></td>
         <td class="itemListImageBlock">
             <a href="<?= CHtml::encode($itemUrl) ?>" title="<?= CHtml::encode($data->name) ?>" class="thumbnail _normalCollectionLink">
                 <table class="itemListImageWrapper">

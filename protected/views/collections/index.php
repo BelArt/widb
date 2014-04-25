@@ -5,7 +5,7 @@
 Yii::app()->clientScript->registerPackage('collections');
 ?>
 
-<div class="childrenMenuLevel1Wrapper">
+<div class="childrenMenuLevel1Wrapper hidden-print">
 <?php
 
 $classThumbnails = (empty($_GET['cv']) || $_GET['cv'] == 'th') ? 'selected' : '';

@@ -202,15 +202,22 @@
     width: 65px;
     /*height: 150px;*/
 }
+.entityInfoContainer TD {
+    vertical-align: top;
+    padding: 0;
+}
+.entityInfoContainer .entityThumbnailContainer {
+    width: 160px;
+}
 .entityDescription {
     float: left;
     margin: 0px 0px 0px 20px;
-    width: 420px;
+    /*width: 420px;*/
 }
 .entityDescription2 {
     float: left;
     margin: 0px 0px 0px 20px;
-    width: 165px;
+    /*width: 165px;*/
 }
 .clearBoth {
     clear: both;

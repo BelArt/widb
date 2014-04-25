@@ -2,7 +2,7 @@
 /* @var $model Collections */
 ?>
 
-<div class="childrenMenuLevel1Wrapper">
+<div class="childrenMenuLevel1Wrapper hidden-print">
 <?php
 
 $classThumbnails = (empty($_GET['cv']) || $_GET['cv'] == 'th') ? 'selected' : '';
@@ -35,7 +35,7 @@ $this->widget('widgets.children_menu.ChildrenMenu', array(
 ?>
 </div>
 
-<div class="childrenMenuLevel2Wrapper">
+<div class="childrenMenuLevel2Wrapper hidden-print">
 <?php
 $this->widget('widgets.children_menu.ChildrenMenu', array(
     'menuName' => Yii::t('common', 'С отмеченными'),

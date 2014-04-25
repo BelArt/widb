@@ -19,7 +19,7 @@ $itemUrl = $this->createUrl('images/view', array('id' => $data->id));
     </a>
     <table class="itemThumbnailDescriptionBlock">
         <tr>
-            <td class="itemThumbnailCheckboxBlock"><input type="checkbox" class="_imageItem" data-image-id="<?= $data->id ?>" /></td>
+            <td class="itemThumbnailCheckboxBlock hidden-print"><input type="checkbox" class="_imageItem" data-image-id="<?= $data->id ?>" /></td>
             <td class="itemThumbnailTextBlock">
                 <p class='itemThumbnailName longTextFadeCheckbox'><a href="<?= CHtml::encode($itemUrl) ?>" title="<?= CHtml::encode($data->name) ?>"><?= CHtml::encode($data->name) ?></a></p>
                 <p class='itemThumbnailResolution'><?= CHtml::encode($data->getPhotoDateWithIntroWord()) ?></p>

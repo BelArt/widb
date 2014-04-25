@@ -41,7 +41,7 @@
                                 'size' => 'small',
                                 'url' => Yii::app()->urlManager->createUrl('site/logout'),
                                 'htmlOptions' => array(
-                                    'class' => 'navbarBtnLogout pull-right navbarItem '
+                                    'class' => 'navbarBtnLogout pull-right navbarItem hidden-print'
                                 )
                             ),true
                         ),
@@ -53,8 +53,8 @@
         ?>
 	</div><!-- mainmenu -->
 
-    <div class="breadcrumbsAndSectionMenu">
-        <div class="sectionMenuWrapper">
+    <div class="breadcrumbsAndSectionMenu ">
+        <div class="sectionMenuWrapper hidden-print">
             <?php
             $this->widget('application.widgets.section_menu.SectionMenu', array(
                 'menuItems' => $this->pageMenu,

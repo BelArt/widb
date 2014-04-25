@@ -17,7 +17,7 @@
         </div>
     --><?php /*endif; */?>
 
-    <div id="sidebar">
+    <div id="sidebar" class="hidden-print">
         <?php
             $this->widget('CTreeView', array(
                 'data' => Collections::getTreeNormal(),
@@ -32,7 +32,7 @@
         $treeTemp = Collections::getTreeTemp();
     ?>
     <?php if ($treeTemp): ?>
-        <div class="sidebar2">
+        <div class="sidebar2 hidden-print">
             <?php
             $this->widget('CTreeView', array(
                 'data' => $treeTemp,
@@ -45,7 +45,7 @@
     <?php endif; ?>
 
     <?php if ($this->getAdminMenu()): ?>
-        <div id="admin-menu">
+        <div id="admin-menu" class="hidden-print">
             <?php
             $this->widget('bootstrap.widgets.TbMenu', array(
                 'type' => 'pills',

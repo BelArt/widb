@@ -4,7 +4,7 @@
 /* @var $collectionsToMoveTo array */
 
 ?>
-<div class="childrenMenuLevel1Wrapper">
+<div class="childrenMenuLevel1Wrapper hidden-print">
     <?php
 
     $classThumbnails = (empty($_GET['ov']) || $_GET['ov'] == 'th') ? 'selected' : '';
@@ -39,7 +39,7 @@
     ?>
 </div>
 
-<div class="childrenMenuLevel2Wrapper">
+<div class="childrenMenuLevel2Wrapper hidden-print">
     <?php
     if (!$model->temporary) {
 
@@ -120,7 +120,7 @@
     ?>
 </div>
 
-<div class="childrenMenuLevel3Wrapper">
+<div class="childrenMenuLevel3Wrapper hidden-print">
     <?php
     $this->widget('widgets.per_page_toggle.PerPageToggle', array(
         'varName' => 'opp'

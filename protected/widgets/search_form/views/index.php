@@ -1,4 +1,4 @@
-<form class="navbar-form pull-right searchForm" action="<?= CHtml::encode($action) ?>" method="get">
+<form class="navbar-form pull-right searchForm hidden-print" action="<?= CHtml::encode($action) ?>" method="get">
     <div class="input-prepend">
         <span class="add-on">
             <i class="icon-search"></i>

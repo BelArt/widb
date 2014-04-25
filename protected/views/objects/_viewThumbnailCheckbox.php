@@ -17,7 +17,7 @@ $itemUrl = Yii::app()->urlManager->createObjectUrl($data);
     </a>
     <table class="itemThumbnailDescriptionBlock">
         <tr>
-            <td class="itemThumbnailCheckboxBlock"><input type="checkbox" class="_objectItem" data-object-id="<?= $data->id ?>" /></td>
+            <td class="itemThumbnailCheckboxBlock hidden-print"><input type="checkbox" class="_objectItem" data-object-id="<?= $data->id ?>" /></td>
             <td class="itemThumbnailTextBlock">
                 <p class='itemThumbnailName longTextFadeCheckbox'><a href="<?= CHtml::encode($itemUrl) ?>" title="<?= CHtml::encode($data->name) ?>"><?= CHtml::encode($data->name) ?></a></p>
                 <p class='itemThumbnailAuthor longTextFadeCheckbox'><?= CHtml::encode($data->getAuthorInitials()) ?></p>
