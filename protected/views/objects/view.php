@@ -25,7 +25,7 @@ Yii::app()->clientScript->registerPackage('objectView');
                 <a href="<?= CHtml::encode($Object->thumbnailBig) ?>" class="_fancybox" title="<?= CHtml::encode($Object->name) ?>"><img src="<?= CHtml::encode($Object->thumbnailMedium) ?>" alt="<?= CHtml::encode($Object->name) ?>" title="<?= CHtml::encode($Object->name) ?>" class="medium" /></a>
             </div>
         </td>
-        <td>
+        <td class="entityDescriptionContainer">
             <div class="entityDescription">
                 <?
                 $this->widget(

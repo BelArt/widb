@@ -28,7 +28,10 @@ $this->widget(
                     'data-object-id' => '' // айдишник объекта будет записываться сюда джаваскриптом
                 ),
                 'headerHtmlOptions' => array(
-                    'class' => 'valignedMiddle halignedCenter'
+                    'class' => 'valignedMiddle halignedCenter hidden-print'
+                ),
+                'htmlOptions' => array(
+                    'class' => 'hidden-print'
                 ),
             ),
             array(
@@ -107,7 +110,7 @@ $this->widget(
                 'header'=>'',
                 'htmlOptions' => array(
                     'nowrap' => 'nowrap',
-                    'class' => 'valignedMiddle'
+                    'class' => 'valignedMiddle hidden-print'
                 ),
                 'class'=>'bootstrap.widgets.TbButtonColumn',
                 'viewButtonUrl' => 'Yii::app()->urlManager->createObjectUrl($data)',
@@ -117,7 +120,7 @@ $this->widget(
                     'delete' => array('visible' => 'false')
                 ),
                 'headerHtmlOptions' => array(
-                    'class' => 'valignedMiddle halignedCenter'
+                    'class' => 'valignedMiddle halignedCenter hidden-print'
                 ),
             )
         ),

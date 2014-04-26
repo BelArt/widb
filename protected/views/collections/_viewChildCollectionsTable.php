@@ -23,7 +23,14 @@ $this->widget(
                 'checkBoxHtmlOptions' => array(
                     'class' => '_collectionItem',
                     'data-collection-id' => '' // айдишник будет записываться сюда джаваскриптом
-                )
+                ),
+                'headerHtmlOptions' => array(
+                    'class' => 'valignedMiddle hidden-print',
+                    'style' => 'width: 17px'
+                ),
+                'htmlOptions' => array(
+                    'class' => 'hidden-print'
+                ),
             ),
             array(
                 'class' => 'CLinkColumn',
@@ -32,11 +39,21 @@ $this->widget(
                 'header'=>'Название',
                 'linkHtmlOptions' => array(
                     'class' => '_collectionLinkInTableRow _normalCollectionLink'
-                )
+                ),
+                'htmlOptions' => array(
+                    //'nowrap' => 'nowrap',
+                    'class' => 'valignedMiddle'
+                ),
+                'headerHtmlOptions' => array(
+                    'class' => 'valignedMiddle halignedCenter'
+                ),
             ),
             array(
-                'header'=>'Действия',
-                'htmlOptions' => array('nowrap'=>'nowrap'),
+                'header'=>'',
+                'htmlOptions' => array(
+                    'nowrap' => 'nowrap',
+                    'class' => 'valignedMiddle hidden-print'
+                ),
                 'class'=>'bootstrap.widgets.TbButtonColumn',
                 'viewButtonUrl' => 'Yii::app()->urlManager->createNormalCollectionUrl($data)',
                 'updateButtonUrl'=> null,
@@ -49,7 +66,10 @@ $this->widget(
                         )
                     )
                 ),
-
+                'headerHtmlOptions' => array(
+                    'class' => 'valignedMiddle halignedCenter hidden-print',
+                    'style' => 'width: 35px'
+                ),
             )
         ),
         'showTableOnEmpty' => false,

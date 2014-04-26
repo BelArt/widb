@@ -202,22 +202,24 @@
     width: 65px;
     /*height: 150px;*/
 }
-.entityInfoContainer TD {
+.entityInfoContainer .entityThumbnailContainer {
+    width: 160px;
     vertical-align: top;
     padding: 0;
 }
-.entityInfoContainer .entityThumbnailContainer {
-    width: 160px;
+.entityInfoContainer .entityDescriptionContainer {
+    vertical-align: top;
+    padding: 0;
 }
 .entityDescription {
     float: left;
     margin: 0px 0px 0px 20px;
-    /*width: 420px;*/
+    width: 400px;
 }
 .entityDescription2 {
     float: left;
     margin: 0px 0px 0px 20px;
-    /*width: 165px;*/
+    width: 185px;
 }
 .clearBoth {
     clear: both;
@@ -299,7 +301,7 @@
     border: 1px solid #ddd;
     margin: 10px 0px 10px 0px;
 }
-.detailViewNowrap, .detailViewNowrap TD {
+/*.detailViewNowrap,*/ .detailViewNowrap TD {
     white-space: nowrap;
 }
 .childrenMenuLevel1Wrapper {

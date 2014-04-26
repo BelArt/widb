@@ -16,29 +16,40 @@ Yii::app()->clientScript->registerPackage('imageView');
     </p>
 <?php endif; ?>
 
-<div class="entityThumbnail">
-    <a href="<?= CHtml::encode($Image->thumbnailBig) ?>" class="_fancybox" title="<?= CHtml::encode($Image->name) ?>"><img src="<?= CHtml::encode($Image->thumbnailMedium) ?>" alt="<?= CHtml::encode($Image->name) ?>" title="<?= CHtml::encode($Image->name) ?>" class="medium" /></a>
-</div>
+<table class="entityInfoContainer">
+    <tr>
+        <td class="entityThumbnailContainer">
+            <div class="entityThumbnail">
+                <a href="<?= CHtml::encode($Image->thumbnailBig) ?>" class="_fancybox" title="<?= CHtml::encode($Image->name) ?>"><img src="<?= CHtml::encode($Image->thumbnailMedium) ?>" alt="<?= CHtml::encode($Image->name) ?>" title="<?= CHtml::encode($Image->name) ?>" class="medium" /></a>
+            </div>
+        </td>
+        <td class="entityDescriptionContainer">
+            <div class="entityDescription">
+                <?
+                $this->widget('bootstrap.widgets.TbDetailView', array(
+                    'data' => $Image,
+                    'attributes' => $attributesForMainDetailViewWidget,
+                ));
+                ?>
+            </div>
 
-<div class="entityDescription">
-    <?
-    $this->widget('bootstrap.widgets.TbDetailView', array(
-        'data' => $Image,
-        'attributes' => $attributesForMainDetailViewWidget,
-    ));
-    ?>
-</div>
+            <div class="entityDescription2">
+                <?
+                $this->widget('bootstrap.widgets.TbDetailView', array(
+                    'data' => $Image,
+                    'attributes' => $attributesForSystemDetailViewWidget,
+                ));
+                ?>
+            </div>
 
-<div class="entityDescription2">
-    <?
-    $this->widget('bootstrap.widgets.TbDetailView', array(
-        'data' => $Image,
-        'attributes' => $attributesForSystemDetailViewWidget,
-    ));
-    ?>
-</div>
+            <div class="clearBoth"></div>
+        </td>
+    </tr>
+</table>
 
-<div class="clearBoth"></div>
+
+
+
 
 
 
