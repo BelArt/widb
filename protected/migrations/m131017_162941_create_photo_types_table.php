@@ -15,8 +15,8 @@ class m131017_162941_create_photo_types_table extends CDbMigration
             'deleted' => 'boolean not null default 0',
         ), 'ENGINE=InnoDB DEFAULT CHARSET=utf8');
 
-        $this->createIndex('IX_tbl_photo_types_sort', 'tbl_photo_types', 'sort', false);
-        $this->createIndex('IX_tbl_photo_types_deleted', 'tbl_photo_types', 'deleted', false);
+        $this->createIndex('IX_photo_types_sort', 'tbl_photo_types', 'sort', false);
+        $this->createIndex('IX_photo_types_deleted', 'tbl_photo_types', 'deleted', false);
     }
 
     public function safeDown()

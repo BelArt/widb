@@ -24,10 +24,10 @@ class m131017_161658_create_images_table extends CDbMigration
             'deleted' => 'boolean not null default 0',
         ), 'ENGINE=InnoDB DEFAULT CHARSET=utf8');
 
-        $this->createIndex('IX_tbl_images_object_id', 'tbl_images', 'object_id', false);
-        $this->createIndex('IX_tbl_images_photo_type_id', 'tbl_images', 'photo_type_id', false);
-        $this->createIndex('IX_tbl_images_sort', 'tbl_images', 'sort', false);
-        $this->createIndex('IX_tbl_images_deleted', 'tbl_images', 'deleted', false);
+        $this->createIndex('IX_images_object_id', 'tbl_images', 'object_id', false);
+        $this->createIndex('IX_images_photo_type_id', 'tbl_images', 'photo_type_id', false);
+        $this->createIndex('IX_images_sort', 'tbl_images', 'sort', false);
+        $this->createIndex('IX_images_deleted', 'tbl_images', 'deleted', false);
     }
 
     public function safeDown()

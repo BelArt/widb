@@ -18,10 +18,10 @@ class m131107_181736_create_table_user_allowed_collection extends CDbMigration
             'user_delete' => 'int unsigned not null default 0'
         ), 'ENGINE=InnoDB DEFAULT CHARSET=utf8');
 
-        $this->createIndex('IX_tbl_user_allowed_collection_collection_id', 'tbl_user_allowed_collection', 'collection_id', false);
-        $this->createIndex('IX_tbl_user_allowed_collection_user_id', 'tbl_user_allowed_collection', 'user_id', false);
-        $this->createIndex('IX_tbl_user_allowed_collection_sort', 'tbl_user_allowed_collection', 'sort', false);
-        $this->createIndex('IX_tbl_user_allowed_collection_deleted', 'tbl_user_allowed_collection', 'deleted', false);
+        $this->createIndex('IX_user_allowed_collection_collection_id', 'tbl_user_allowed_collection', 'collection_id', false);
+        $this->createIndex('IX_user_allowed_collection_user_id', 'tbl_user_allowed_collection', 'user_id', false);
+        $this->createIndex('IX_user_allowed_collection_sort', 'tbl_user_allowed_collection', 'sort', false);
+        $this->createIndex('IX_user_allowed_collection_deleted', 'tbl_user_allowed_collection', 'deleted', false);
 
     }
 

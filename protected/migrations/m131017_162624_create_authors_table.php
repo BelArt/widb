@@ -17,8 +17,8 @@ class m131017_162624_create_authors_table extends CDbMigration
             'deleted' => 'boolean not null default 0',
         ), 'ENGINE=InnoDB DEFAULT CHARSET=utf8');
 
-        $this->createIndex('IX_tbl_authors_sort', 'tbl_authors', 'sort', false);
-        $this->createIndex('IX_tbl_authors_deleted', 'tbl_authors', 'deleted', false);
+        $this->createIndex('IX_authors_sort', 'tbl_authors', 'sort', false);
+        $this->createIndex('IX_authors_deleted', 'tbl_authors', 'deleted', false);
     }
 
     public function safeDown()

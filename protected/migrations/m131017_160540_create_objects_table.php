@@ -27,11 +27,11 @@ class m131017_160540_create_objects_table extends CDbMigration
             'deleted' => 'boolean not null default 0',
         ), 'ENGINE=InnoDB DEFAULT CHARSET=utf8');
 
-        $this->createIndex('IX_tbl_objects_author_id', 'tbl_objects', 'author_id', false);
-        $this->createIndex('IX_tbl_objects_type_id', 'tbl_objects', 'type_id', false);
-        $this->createIndex('IX_tbl_objects_collection_id', 'tbl_objects', 'collection_id', false);
-        $this->createIndex('IX_tbl_objects_sort', 'tbl_objects', 'sort', false);
-        $this->createIndex('IX_tbl_objects_deleted', 'tbl_objects', 'deleted', false);
+        $this->createIndex('IX_objects_author_id', 'tbl_objects', 'author_id', false);
+        $this->createIndex('IX_objects_type_id', 'tbl_objects', 'type_id', false);
+        $this->createIndex('IX_objects_collection_id', 'tbl_objects', 'collection_id', false);
+        $this->createIndex('IX_objects_sort', 'tbl_objects', 'sort', false);
+        $this->createIndex('IX_objects_deleted', 'tbl_objects', 'deleted', false);
     }
 
     public function safeDown()

@@ -43,6 +43,9 @@ class m140427_154153_clear_test_data extends CDbMigration
 
     public function safeDown()
     {
+        // для отладки можно использовать
+        //$this->truncateTable('{{users}}');
+        // это не вернет всех удаленных данных, но позволит откатить все миграции
         return false;
     }
 }

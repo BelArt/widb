@@ -20,9 +20,9 @@ class m131017_152253_create_collections_table extends CDbMigration
             'deleted' => 'boolean not null default 0',
         ), 'ENGINE=InnoDB DEFAULT CHARSET=utf8');
 
-        $this->createIndex('IX_tbl_collections_parent_id', 'tbl_collections', 'parent_id', false);
-        $this->createIndex('IX_tbl_collections_sort', 'tbl_collections', 'sort', false);
-        $this->createIndex('IX_tbl_collections_deleted', 'tbl_collections', 'deleted', false);
+        $this->createIndex('IX_collections_parent_id', 'tbl_collections', 'parent_id', false);
+        $this->createIndex('IX_collections_sort', 'tbl_collections', 'sort', false);
+        $this->createIndex('IX_collections_deleted', 'tbl_collections', 'deleted', false);
     }
 
     public function safeDown()
