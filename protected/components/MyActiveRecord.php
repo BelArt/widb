@@ -44,8 +44,8 @@ class MyActiveRecord extends CActiveRecord
     {
         return array(
             'condition' => $this->getTableAlias(false, false).'.deleted = 0',
-            'order' => $this->getTableAlias(false, false).'.sort ASC',
-            //'order' => $this->getTableAlias(false, false).'.sort ASC, '.$this->getTableAlias(false, false).'.name ASC',
+            //'order' => $this->getTableAlias(false, false).'.sort DESC,',
+            'order' => $this->getTableAlias(false, false).'.sort DESC, '.$this->getTableAlias(false, false).'.id ASC',
         );
     }
 
