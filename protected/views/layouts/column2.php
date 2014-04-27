@@ -2,21 +2,6 @@
 <?php $this->beginContent('//layouts/main'); ?>
 <div class="span-8 first">
 
-    <?php /*if (!empty($this->pageMenu)): */?><!--
-        <div id="page-menu">
-            <?php
-/*                $this->widget(
-                    'bootstrap.widgets.TbMenu',
-                    array(
-                        'type' => 'pills',
-                        'stacked' => true,
-                        'items' => $this->pageMenu,
-                    )
-                );
-            */?>
-        </div>
-    --><?php /*endif; */?>
-
     <div id="sidebar" class="hidden-print">
         <?php
             $this->widget('CTreeView', array(

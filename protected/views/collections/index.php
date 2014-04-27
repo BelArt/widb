@@ -48,6 +48,7 @@ $this->widget('widgets.children_menu.ChildrenMenu', array(
                 'template' => '{items}'.PHP_EOL.'{pager}',
                 'itemView' => '_viewThumbnailNoCheckbox',
                 'ajaxUpdate' => false,
+                'emptyText' => '',
                 //'htmlOptions' => array('class' => 'collections_thumbnails')
             ));
             break;
