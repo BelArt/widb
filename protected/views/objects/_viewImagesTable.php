@@ -25,7 +25,11 @@ $this->widget(
                     'data-image-id' => '' // айдишник изображения будет записываться сюда джаваскриптом
                 ),
                 'headerHtmlOptions' => array(
-                    'class' => 'valignedMiddle halignedCenter'
+                    'class' => 'valignedMiddle halignedCenter hidden-print'
+                ),
+                'htmlOptions' => array(
+                    'class' => 'valignedMiddle hidden-print',
+                    'nowrap' => 'nowrap'
                 ),
             ),
             array(
@@ -141,7 +145,10 @@ $this->widget(
             ),*/
             array(
                 'header'=>'',
-                'htmlOptions' => array('nowrap'=>'nowrap'),
+                'htmlOptions' => array(
+                    'nowrap' => 'nowrap',
+                    'class' => 'valignedMiddle hidden-print'
+                ),
                 'class'=>'bootstrap.widgets.TbButtonColumn',
                 'viewButtonUrl' => 'Yii::app()->urlManager->createUrl("images/view", array("id" => $data->id));',
                 'updateButtonUrl'=> null,
@@ -150,7 +157,7 @@ $this->widget(
                     'delete' => array('visible' => 'false')
                 ),
                 'headerHtmlOptions' => array(
-                    'class' => 'valignedMiddle halignedCenter'
+                    'class' => 'valignedMiddle halignedCenter hidden-print'
                 ),
             )
         ),

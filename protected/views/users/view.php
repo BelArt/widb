@@ -30,7 +30,13 @@ $this->widget('bootstrap.widgets.TbGridView', array(
         ),*/
         array(
             'header'=>'',
-            'htmlOptions' => array('nowrap'=>'nowrap'),
+            'htmlOptions' => array(
+                'nowrap' => 'nowrap',
+                'class' => 'valignedMiddle hidden-print'
+            ),
+            'headerHtmlOptions' => array(
+                'class' => 'valignedMiddle halignedCenter hidden-print'
+            ),
             'class'=>'bootstrap.widgets.TbButtonColumn',
             'updateButtonUrl'=> 'Yii::app()->urlManager->createUrl("users/update", array("id" => $data->id));',
             'deleteButtonUrl' => 'Yii::app()->urlManager->createUrl("users/delete", array("id" => $data->id));',

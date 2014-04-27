@@ -150,6 +150,11 @@ ul.thumbnails {
         box-shadow: none !important;
         font-size: 12px !important;
         font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        /*border: 1px solid rgb(221, 221, 221) !important;*/
+    }
+    h1,h2,h3,h4,h5,h6 {
+        font-size: 14px !important;
+        font-weight: bold !important;
     }
     a[href]:after {
         content: none !important;
@@ -167,6 +172,9 @@ ul.thumbnails {
         font-weight: bold;
         text-align: center !important;
     }
+    .entityDescription .table TH, .entityDescription2 .table TH {
+        text-align: right !important;
+    }
     .table TD {
         font-weight: normal;
         text-align: left !important;
@@ -175,11 +183,22 @@ ul.thumbnails {
         border: 1px solid rgb(221, 221, 221) !important;
     }
     .nav-tabs>li.active>a {
-        /*background-color: #ffffff !important;*/
-        /*border: 1px solid #ddd !important;*/
         border-top: 1px solid #ddd !important;
         border-right: 1px solid #ddd !important;
         border-left: 1px solid #ddd !important;
         border-bottom: 1px solid #ffffff !important;
+        background: transparent !important;
+    }
+    .input-xxlarge {
+        max-width: 450px;
+    }
+    .thumbnail {
+        -webkit-box-shadow: none !important;
+        -moz-box-shadow: none !important;
+        box-shadow: none !important;
+        -webkit-transition: none !important;
+        -moz-transition: none !important;
+        -o-transition: none !important;
+        transition: none !important;
     }
 }

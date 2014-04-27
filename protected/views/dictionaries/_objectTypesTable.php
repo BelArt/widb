@@ -26,7 +26,13 @@ $this->widget(
             ),
             array(
                 'header'=>'',
-                'htmlOptions' => array('nowrap'=>'nowrap'),
+                'htmlOptions' => array(
+                    'nowrap' => 'nowrap',
+                    'class' => 'valignedMiddle hidden-print'
+                ),
+                'headerHtmlOptions' => array(
+                    'class' => 'valignedMiddle halignedCenter hidden-print'
+                ),
                 'class'=>'bootstrap.widgets.TbButtonColumn',
                 'updateButtonUrl'=> 'Yii::app()->urlManager->createUrl("dictionaries/update", array("id" => $data->id, "type" => "object_types"));',
                 'deleteButtonUrl' => 'Yii::app()->urlManager->createUrl("dictionaries/delete", array("id" => $data->id, "type" => "object_types"));',
