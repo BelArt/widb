@@ -162,7 +162,7 @@ ul.thumbnails {
     .thumbnails>li {
         float: left !important;
         margin-bottom: 20px !important;
-        margin-left: 20px !important;
+        /*margin-left: 20px !important;*/
     }
     .table {
         border: 0px !important;
