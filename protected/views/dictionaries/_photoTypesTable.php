@@ -19,16 +19,16 @@ $this->widget(
                 'name' => 'description',
                 'sortable' => false
             ),
-            array(
+            /*array(
                 'value' => '!empty($data->sort) ? $data->sort : ""',
                 'header' => Yii::t('common', 'Сортировка'),
                 'sortable' => false
-            ),
+            ),*/
             array(
                 'header'=>'',
                 'htmlOptions' => array(
                     'nowrap' => 'nowrap',
-                    'class' => 'valignedMiddle hidden-print'
+                    'class' => 'valignedMiddle halignedCenter hidden-print actionsCell'
                 ),
                 'headerHtmlOptions' => array(
                     'class' => 'valignedMiddle halignedCenter hidden-print'

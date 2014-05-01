@@ -12,7 +12,7 @@
 $this->widget(
     'bootstrap.widgets.TbGridView',
     array(
-        'type' => 'striped bordered condensed',
+        'type' => 'striped bordered',
         //'responsiveTable' => true,
         'dataProvider' => $ObjectsDataProvider,
         'template' => '{items}'.PHP_EOL.'{pager}',
@@ -31,7 +31,18 @@ $this->widget(
                     'class' => 'valignedMiddle halignedCenter hidden-print'
                 ),
                 'htmlOptions' => array(
-                    'class' => 'hidden-print'
+                    'class' => 'hidden-print valignedMiddle halignedCenter'
+                ),
+            ),
+            array(
+                'value'=>'$this->grid->dataProvider->pagination->currentPage * $this->grid->dataProvider->pagination->pageSize + ($row+1)',
+                'header' => '№',
+                'sortable' => false,
+                'headerHtmlOptions' => array(
+                    'class' => 'valignedMiddle'
+                ),
+                'htmlOptions' => array(
+                    'class' => 'itemTableAuthor valignedMiddle halignedCenter'
                 ),
             ),
             array(
@@ -43,7 +54,7 @@ $this->widget(
                     'class' => '_objectLinkInTableRow'
                 ),
                 'headerHtmlOptions' => array(
-                    'class' => 'valignedMiddle halignedCenter'
+                    'class' => 'valignedMiddle'
                 ),
                 'htmlOptions' => array(
                     'class' => 'valignedMiddle'
@@ -54,7 +65,7 @@ $this->widget(
                 'header' => Yii::t('objects', 'Автор'),
                 'sortable' => false,
                 'headerHtmlOptions' => array(
-                    'class' => 'valignedMiddle halignedCenter'
+                    'class' => 'valignedMiddle'
                 ),
                 'htmlOptions' => array(
                     'class' => 'itemTableAuthor valignedMiddle'
@@ -65,7 +76,7 @@ $this->widget(
                 'header' => Yii::t('objects', 'Период создания'),
                 'sortable' => false,
                 'headerHtmlOptions' => array(
-                    'class' => 'valignedMiddle halignedCenter'
+                    'class' => 'valignedMiddle'
                 ),
                 'htmlOptions' => array(
                     'class' => 'itemTableCreationPeriod valignedMiddle',
@@ -77,7 +88,7 @@ $this->widget(
                 'header' => Yii::t('objects', 'Инвентарный номер'),
                 'sortable' => false,
                 'headerHtmlOptions' => array(
-                    'class' => 'valignedMiddle halignedCenter'
+                    'class' => 'valignedMiddle'
                 ),
                 'htmlOptions' => array(
                     'class' => 'itemTableInventoryNumber valignedMiddle'
@@ -88,7 +99,7 @@ $this->widget(
                 'header' => Yii::t('objects', 'Тип объекта'),
                 'sortable' => false,
                 'headerHtmlOptions' => array(
-                    'class' => 'valignedMiddle halignedCenter'
+                    'class' => 'valignedMiddle'
                 ),
                 'htmlOptions' => array(
                     'class' => 'itemTableObjectType valignedMiddle'
@@ -99,7 +110,7 @@ $this->widget(
                 'header' => Yii::t('common', 'Размер'),
                 'sortable' => false,
                 'headerHtmlOptions' => array(
-                    'class' => 'valignedMiddle halignedCenter'
+                    'class' => 'valignedMiddle'
                 ),
                 'htmlOptions' => array(
                     'class' => 'itemTableSize valignedMiddle',
@@ -110,7 +121,7 @@ $this->widget(
                 'header'=>'',
                 'htmlOptions' => array(
                     'nowrap' => 'nowrap',
-                    'class' => 'valignedMiddle hidden-print'
+                    'class' => 'valignedMiddle hidden-print actionsCell halignedCenter'
                 ),
                 'class'=>'bootstrap.widgets.TbButtonColumn',
                 'viewButtonUrl' => 'Yii::app()->urlManager->createObjectUrl($data)',
@@ -120,7 +131,7 @@ $this->widget(
                     'delete' => array('visible' => 'false')
                 ),
                 'headerHtmlOptions' => array(
-                    'class' => 'valignedMiddle halignedCenter hidden-print'
+                    'class' => 'hidden-print'
                 ),
             )
         ),

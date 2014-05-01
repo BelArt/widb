@@ -28,7 +28,7 @@ $this->widget(
                     'class' => 'valignedMiddle halignedCenter hidden-print'
                 ),
                 'htmlOptions' => array(
-                    'class' => 'valignedMiddle hidden-print',
+                    'class' => 'valignedMiddle halignedCenter hidden-print',
                     'nowrap' => 'nowrap'
                 ),
             ),
@@ -41,7 +41,10 @@ $this->widget(
                     'class' => '_imageLinkInTableRow'
                 ),
                 'headerHtmlOptions' => array(
-                    'class' => 'valignedMiddle halignedCenter'
+                    'class' => 'valignedMiddle'
+                ),
+                'htmlOptions' => array(
+                    'class' => 'valignedMiddle',
                 ),
             ),
             /*array(
@@ -60,10 +63,10 @@ $this->widget(
                 'header' => Yii::t('images', 'Дата съемки'),
                 'sortable' => false,
                 'headerHtmlOptions' => array(
-                    'class' => 'valignedMiddle halignedCenter'
+                    'class' => 'valignedMiddle'
                 ),
                 'htmlOptions' => array(
-                    'class' => 'itemTableDatePhoto'
+                    'class' => 'itemTableDatePhoto valignedMiddle'
                 ),
             ),
             /*array(
@@ -82,10 +85,10 @@ $this->widget(
                 'header' => Yii::t('images', 'Путь хранения оригинала'),
                 'sortable' => false,
                 'headerHtmlOptions' => array(
-                    'class' => 'valignedMiddle halignedCenter'
+                    'class' => 'valignedMiddle'
                 ),
                 'htmlOptions' => array(
-                    'class' => 'itemTableOriginalPath'
+                    'class' => 'itemTableOriginalPath valignedMiddle'
                 ),
             ),
             array(
@@ -93,10 +96,10 @@ $this->widget(
                 'header' => Yii::t('common', 'Комментарий'),
                 'sortable' => false,
                 'headerHtmlOptions' => array(
-                    'class' => 'valignedMiddle halignedCenter'
+                    'class' => 'valignedMiddle'
                 ),
                 'htmlOptions' => array(
-                    'class' => 'itemTableDescription'
+                    'class' => 'itemTableDescription valignedMiddle'
                 ),
             ),
             /*array(
@@ -147,7 +150,7 @@ $this->widget(
                 'header'=>'',
                 'htmlOptions' => array(
                     'nowrap' => 'nowrap',
-                    'class' => 'valignedMiddle hidden-print'
+                    'class' => 'valignedMiddle halignedCenter hidden-print actionsCell'
                 ),
                 'class'=>'bootstrap.widgets.TbButtonColumn',
                 'viewButtonUrl' => 'Yii::app()->urlManager->createUrl("images/view", array("id" => $data->id));',

@@ -32,7 +32,7 @@ $this->widget('bootstrap.widgets.TbGridView', array(
             'header'=>'',
             'htmlOptions' => array(
                 'nowrap' => 'nowrap',
-                'class' => 'valignedMiddle hidden-print'
+                'class' => 'valignedMiddle halignedCenter hidden-print actionsCell'
             ),
             'headerHtmlOptions' => array(
                 'class' => 'valignedMiddle halignedCenter hidden-print'

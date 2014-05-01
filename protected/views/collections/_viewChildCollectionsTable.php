@@ -25,11 +25,11 @@ $this->widget(
                     'data-collection-id' => '' // айдишник будет записываться сюда джаваскриптом
                 ),
                 'headerHtmlOptions' => array(
-                    'class' => 'valignedMiddle hidden-print',
+                    'class' => 'valignedMiddle halignedCenter hidden-print',
                     'style' => 'width: 17px'
                 ),
                 'htmlOptions' => array(
-                    'class' => 'hidden-print'
+                    'class' => 'hidden-print valignedMiddle halignedCenter'
                 ),
             ),
             array(
@@ -45,14 +45,14 @@ $this->widget(
                     'class' => 'valignedMiddle'
                 ),
                 'headerHtmlOptions' => array(
-                    'class' => 'valignedMiddle halignedCenter'
+                    'class' => 'valignedMiddle'
                 ),
             ),
             array(
                 'header'=>'',
                 'htmlOptions' => array(
                     'nowrap' => 'nowrap',
-                    'class' => 'valignedMiddle hidden-print'
+                    'class' => 'valignedMiddle halignedCenter hidden-print actionsCell'
                 ),
                 'class'=>'bootstrap.widgets.TbButtonColumn',
                 'viewButtonUrl' => 'Yii::app()->urlManager->createNormalCollectionUrl($data)',

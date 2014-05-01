@@ -10,18 +10,18 @@
 return array(
     'defaultLayout' => array(
         'basePath'=>'application.assets',
-        'css'=>array('css/screen.css', 'css/main.css'),
+        'css'=>array('css/main.css'),
     ),
-    'layoutFix' => array(
+    /*'layoutFix' => array(
         'basePath'=>'application.assets',
         'css'=>array('css/layout-fix.css'),
         'depends' => array('bootstrap.css', 'bootstrap.js')
-    ),
+    ),*/
     'global' => array(
         'basePath'=>'application.assets',
         'css'=>array('css/global.css', 'plugins/fancybox2/jquery.fancybox.css'),
         'js'=>array('js/global.js', 'plugins/fancybox2/jquery.fancybox.pack.js', 'plugins/jsuri/Uri.js'),
-        'depends' => array('layoutFix')
+        'depends' => array('bootstrap.css', 'bootstrap.js')
     ),
     'emptyLayout' => array(
         'basePath'=>'application.assets',

@@ -80,7 +80,10 @@ $this->widget('widgets.children_menu.ChildrenMenu', array(
                         'urlExpression' => '$data->temporary ? Yii::app()->urlManager->createTempCollectionUrl($data) : Yii::app()->urlManager->createNormalCollectionUrl($data)',
                         'header'=>'Название',
                         'headerHtmlOptions' => array(
-                            'class' => 'valignedMiddle halignedCenter'
+                            'class' => 'valignedMiddle'
+                        ),
+                        'htmlOptions' => array(
+                            'class' => 'valignedMiddle'
                         ),
                     ),
                     /*array(
